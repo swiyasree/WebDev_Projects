@@ -43,6 +43,7 @@ body {
   padding: 24px 28px;
   text-decoration: none;
   font-size: 17px;
+  font-family: 'Pragmatica', sans-serif;                                         
 }
 
 .topnav a:hover {
@@ -51,6 +52,7 @@ body {
 
 .topnav a.active {
   color: #af9453;
+  font-family: 'Nimbus Sans L', sans-serif;
 }
 
 body {
@@ -81,10 +83,12 @@ img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 80px;
+  font-size: 60px;
+  font-weight: 1000;
   color: white;
   letter-spacing: 15px;
   text-align: center;
+  font-family: 'Cormorant Garamond', serif;
 }
 
 .mid {
@@ -93,8 +97,6 @@ img {
 }
 
 .smlImg {
-  padding-left: 40px;
-  padding-right: 40px;
   height: 500px;
   width: auto;
 }
@@ -102,19 +104,18 @@ img {
 .image {
   width: auto;
   height: auto;
-  padding-left: 40px;
-  padding-right: 40px;
 }
 
 .decor {
   text-align: center;
   color: black;
-  font-family: serif;
-  letter-spacing: 5px;
+  letter-spacing: 4px;
   padding-left: 15%;
   padding-right: 15%;
   padding-bottom: 80px;
-  font-size: 30px;
+  font-size: 45px;
+  font-family: "F1669 Elzevir W00 Normal";
+  font-weight: bold;
 }
 
 .inline-block {
@@ -142,6 +143,7 @@ img {
   font-size: 15px;
   text-align: center;
   padding-bottom: 100px;
+  font-family: 'Nimbus Sans L', sans-serif;
 }
 
 .bottomnav {
@@ -152,6 +154,7 @@ img {
   margin-left: 90px;
   margin-right: 90px;
   padding: 50px 100px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .nobullets {
@@ -174,6 +177,7 @@ img {
   padding-top: 8px;
   padding-bottom: 8px;
   float: right;
+  font-family: 'Nimbus Sans L', sans-serif;
 }
 
 .container {
@@ -197,6 +201,7 @@ img {
 }
 
 .container1 {
+  display: flex;
   position: relative;
   z-index: 1;
   justify-content: space-between;
@@ -210,11 +215,12 @@ img {
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 15px;
+  font-size: 25px;
   padding: 10px;
   text-align: center;
   /* Center text horizontally */
   letter-spacing: 2px;
+  font-family: "F1592 GLC Garamond W00 Bold";
 }
 
 .text1 {
@@ -227,6 +233,7 @@ img {
   padding: 10px;
   text-align: center;
   letter-spacing: 15px;
+  font-family: 'Nimbus Sans L', sans-serif;                                            
 }
 
 .text2 {
@@ -244,6 +251,8 @@ img {
   padding-top: 8px;
   padding-bottom: 8px;
   text-align: center;
+  font-family: 'Nimbus Sans L', sans-serif;
+                                                
 }
 
 .sec-img {
@@ -255,7 +264,10 @@ img {
   padding-top: 150px;
 }
 
-
+.image,
+.smlImg {
+  height: 100%;
+}
 
 .sec-container {
   position: relative;
@@ -280,11 +292,12 @@ img {
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 15px;
+  font-size: 25px;
   padding: 10px;
   text-align: center;
   /* Center text horizontally */
-  letter-spacing: 2px;
+  letter-spacing: 4px;
+  font-family: "F1592 GLC Garamond W00 Bold";
 }
 
 .text3 {
@@ -297,6 +310,8 @@ img {
   padding: 10px;
   text-align: center;
   letter-spacing: 15px;
+  font-family: 'Nimbus Sans L', sans-serif;
+                                                
 }
 
 .text4 {
@@ -314,6 +329,8 @@ img {
   padding-top: 8px;
   padding-bottom: 8px;
   text-align: center;
+  font-family: 'Nimbus Sans L', sans-serif;
+                                                
 }
 
 .margin-container {
