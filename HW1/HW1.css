@@ -10,8 +10,6 @@ body {
   position: relative;
 }
 
-
-
 #background1 {
   background-image: url('images/image3.png');
   background-size: 100% 140%;
@@ -43,7 +41,7 @@ body {
   padding: 24px 28px;
   text-decoration: none;
   font-size: 17px;
-  font-family: 'Pragmatica', sans-serif;                                         
+  font-family: 'Pragmatica', sans-serif;
 }
 
 .topnav a:hover {
@@ -53,10 +51,6 @@ body {
 .topnav a.active {
   color: #af9453;
   font-family: 'Nimbus Sans L', sans-serif;
-}
-
-body {
-  margin: 0;
 }
 
 .image-container {
@@ -72,13 +66,7 @@ img {
   margin: 0 auto;
 }
 
-.bgImg .top {
-  object-fit: cover;
-  object-position: 20% 60%;
-  width: 100%;
-}
-
-.text {
+.bigtext {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -91,22 +79,12 @@ img {
   font-family: 'Cormorant Garamond', serif;
 }
 
-.mid {
-  background-color: white;
-  text-align: center;
-}
-
-.smlImg {
+.partylights {
   height: 500px;
   width: auto;
 }
 
-.image {
-  width: auto;
-  height: auto;
-}
-
-.decor {
+.midpage-text {
   text-align: center;
   color: black;
   letter-spacing: 4px;
@@ -138,7 +116,7 @@ img {
   text-align: center;
 }
 
-.jaj {
+.jimmy-janice-text {
   color: #af9453;
   font-size: 15px;
   text-align: center;
@@ -157,7 +135,7 @@ img {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.nobullets {
+.no-bullets-list {
   list-style-type: none;
   border-right-color: white;
   border-right-width: 1px;
@@ -165,7 +143,7 @@ img {
   padding: 30px;
 }
 
-.consultation {
+.consultation-text {
   transform: translateX(-50%);
   color: white;
   border-color: white;
@@ -186,16 +164,9 @@ img {
   padding: 0 50px;
 }
 
-.boxtext {
-  float: right;
-}
-
-.inner-container {
+.inner-container1 {
   position: relative;
   display: inline-block;
-}
-
-.services {
   height: 100%;
   object-fit: cover;
 }
@@ -209,7 +180,7 @@ img {
   padding-top: 140px;
 }
 
-.overlay-text {
+.midtext {
   position: absolute;
   top: 55%;
   left: 50%;
@@ -218,12 +189,11 @@ img {
   font-size: 25px;
   padding: 10px;
   text-align: center;
-  /* Center text horizontally */
   letter-spacing: 2px;
   font-family: "F1592 GLC Garamond W00 Bold";
 }
 
-.text1 {
+.toptext {
   position: absolute;
   top: 20%;
   left: 50%;
@@ -233,10 +203,10 @@ img {
   padding: 10px;
   text-align: center;
   letter-spacing: 15px;
-  font-family: 'Nimbus Sans L', sans-serif;                                            
+  font-family: 'Nimbus Sans L', sans-serif;
 }
 
-.text2 {
+.bottomtext {
   position: absolute;
   top: 70%;
   left: 50%;
@@ -252,10 +222,10 @@ img {
   padding-bottom: 8px;
   text-align: center;
   font-family: 'Nimbus Sans L', sans-serif;
-                                                
+
 }
 
-.sec-img {
+.container2 {
   position: relative;
   bottom: 50%;
   z-index: 2;
@@ -264,29 +234,26 @@ img {
   padding-top: 150px;
 }
 
-.image,
-.smlImg {
+.flower1,
+.partylights {
   height: 100%;
 }
 
-.sec-container {
+.inner-container2 {
   position: relative;
   display: inline-block;
-}
-
-.gallery {
   height: 100%;
   object-fit: cover;
 }
 
-.flo {
+.flower2 {
   width: auto;
   height: auto;
   padding-left: 40px;
   padding-right: 40px;
 }
 
-.over-text {
+.mid-text {
   position: absolute;
   top: 55%;
   left: 50%;
@@ -295,12 +262,11 @@ img {
   font-size: 25px;
   padding: 10px;
   text-align: center;
-  /* Center text horizontally */
   letter-spacing: 4px;
   font-family: "F1592 GLC Garamond W00 Bold";
 }
 
-.text3 {
+.top-text {
   position: absolute;
   top: 20%;
   left: 50%;
@@ -311,10 +277,10 @@ img {
   text-align: center;
   letter-spacing: 15px;
   font-family: 'Nimbus Sans L', sans-serif;
-                                                
+
 }
 
-.text4 {
+.bottom-text {
   position: absolute;
   top: 70%;
   left: 50%;
@@ -330,7 +296,7 @@ img {
   padding-bottom: 8px;
   text-align: center;
   font-family: 'Nimbus Sans L', sans-serif;
-                                                
+
 }
 
 .margin-container {
