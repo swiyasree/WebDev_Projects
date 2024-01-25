@@ -1,46 +1,47 @@
+
 body {
   margin: 0;
   padding: 0;
 }
 
-.background {
-  background-attachment: fixed;
-  min-height: 100vh;
-  background-repeat: no-repeat;
-  position: relative;
-}
-
 #background1 {
   background-image: url('images/image3.png');
-  background-size: 100% 140%;
+  background-size: 100% 130%;
   background-position: center;
-  width: 100%;
+  background-attachment: fixed;
+  min-height: 80vh;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
 #background2 {
   background-image: url('images/image2.png');
   width: 100%;
-  background-size: 100% 150%;
+  background-size: 100% 110%;
   background-position: center;
-  z-index: 1;
+  background-attachment: fixed;
+  min-height: 70vh;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
 .topnav {
-  overflow: hidden;
   background-color: white;
   position: fixed;
-  top: 0;
-  width: 100%;
+  width: 90%;
+  left: 5%;
+  right:5%;
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 .topnav a {
   float: left;
   text-align: center;
   color: black;
-  padding: 24px 28px;
+  padding: 28px 32px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 20px;
   font-family: 'Pragmatica', sans-serif;
 }
 
@@ -79,11 +80,6 @@ img {
   font-family: 'Cormorant Garamond', serif;
 }
 
-.partylights {
-  height: 500px;
-  width: auto;
-}
-
 .midpage-text {
   text-align: center;
   color: black;
@@ -100,7 +96,8 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 5%;
+  flex-wrap: nowrap;
 }
 
 .arrow {
@@ -111,7 +108,7 @@ img {
 }
 
 .closed-quote {
-  padding-top: 150px;
+  padding-top: 5%;
   font-size: 80px;
   text-align: center;
 }
@@ -120,18 +117,15 @@ img {
   color: #af9453;
   font-size: 15px;
   text-align: center;
-  padding-bottom: 100px;
+  padding-bottom: 5%;
   font-family: 'Nimbus Sans L', sans-serif;
 }
 
 .bottomnav {
   background-color: #af9453;
   color: white;
-  margin-top: 150px;
-  margin-bottom: 50px;
-  margin-left: 90px;
-  margin-right: 90px;
-  padding: 50px 100px;
+  margin:5% 5%;
+  padding: 2% 4%;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -140,6 +134,7 @@ img {
   border-right-color: white;
   border-right-width: 1px;
   border-right-style: solid;
+  font-size: 1vw;
   padding: 30px;
 }
 
@@ -149,7 +144,7 @@ img {
   border-color: white;
   border-style: solid;
   border-width: 1px;
-  font-size: 15px;
+  font-size: 1vw;
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 8px;
@@ -158,26 +153,33 @@ img {
   font-family: 'Nimbus Sans L', sans-serif;
 }
 
-.container {
-  display: flex;
-  align-items: center;
-  padding: 0 50px;
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+  height: auto;
 }
 
-.inner-container1 {
-  position: relative;
-  display: inline-block;
-  height: 100%;
+.column {
+  box-sizing: border-box;
+  float: left;
+  padding: 65px;
+  width: 100%; 
+}
+
+.column img {
+  width: 100%;
+  height: 580px;
   object-fit: cover;
 }
 
-.container1 {
-  display: flex;
-  position: relative;
-  z-index: 1;
-  justify-content: space-between;
-  text-align: center;
-  padding-top: 140px;
+@media (min-width: 659px) {
+  .column {
+    width: calc((408 / (408 + 659)) * 100%);
+  }
+  .column:nth-child(2) {
+    width: calc((659 / (408 + 659)) * 100%);
+  }
 }
 
 .midtext {
@@ -186,7 +188,7 @@ img {
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 25px;
+  font-size: 22px;
   padding: 10px;
   text-align: center;
   letter-spacing: 2px;
@@ -195,11 +197,11 @@ img {
 
 .toptext {
   position: absolute;
-  top: 20%;
+  top: 25%;
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-size: 28px;
+  font-size: 24px;
   padding: 10px;
   text-align: center;
   letter-spacing: 15px;
@@ -215,7 +217,7 @@ img {
   border-color: white;
   border-style: solid;
   border-width: 1px;
-  font-size: 15px;
+  font-size: 12px;
   padding-left: 70px;
   padding-right: 70px;
   padding-top: 8px;
@@ -227,11 +229,9 @@ img {
 
 .container2 {
   position: relative;
-  bottom: 50%;
-  z-index: 2;
   justify-content: space-between;
   float: right;
-  padding-top: 150px;
+  padding-top: 140px;
 }
 
 .flower1,
@@ -268,11 +268,11 @@ img {
 
 .top-text {
   position: absolute;
-  top: 20%;
+  top: 25%;
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  font-size: 28px;
+  font-size: 24px;
   padding: 10px;
   text-align: center;
   letter-spacing: 15px;
@@ -300,6 +300,6 @@ img {
 }
 
 .margin-container {
-  margin-left: 90px;
-  margin-right: 90px;
+  margin-left: 5%;
+  margin-right: 5%;
 }
