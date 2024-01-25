@@ -9,7 +9,7 @@ body {
   background-size: 100% 130%;
   background-position: center;
   background-attachment: fixed;
-  min-height: 80vh;
+  min-height: 90vh;
   background-repeat: no-repeat;
   position: relative;
 }
@@ -20,7 +20,7 @@ body {
   background-size: 100% 110%;
   background-position: center;
   background-attachment: fixed;
-  min-height: 70vh;
+  min-height: 80vh;
   background-repeat: no-repeat;
   position: relative;
 }
