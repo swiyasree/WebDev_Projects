@@ -6,10 +6,10 @@ body {
 
 #background1 {
   background-image: url('images/image3.png');
-  background-size: 100% 130%;
+  background-size: 100% 100%;
   background-position: center;
   background-attachment: fixed;
-  min-height: 90vh;
+  min-height: 80vh;
   background-repeat: no-repeat;
   position: relative;
 }
@@ -20,32 +20,41 @@ body {
   background-size: 100% 110%;
   background-position: center;
   background-attachment: fixed;
-  min-height: 80vh;
+  min-height: 100vh;
   background-repeat: no-repeat;
   position: relative;
 }
 
+.navbar-content {
+  padding-left: 5%;
+  padding-right: 5%;
+  }
+
 .topnav {
   background-color: white;
   position: fixed;
-  width: 90%;
-  left: 5%;
-  right:5%;
-  z-index: 1000;
-  box-sizing: border-box;
+  top:0;
+  width: 100%;
+  z-index: 2;
 }
 
 .topnav a {
   float: left;
   text-align: center;
   color: black;
-  padding: 28px 32px;
+  padding-top: 28px;
+  padding-bottom: 28px;
+  padding-left: 32px;
   text-decoration: none;
   font-size: 20px;
   font-family: 'Pragmatica', sans-serif;
 }
 
 .topnav a:hover {
+  color: #af9453;
+}
+
+.topnav a.smallactive {
   color: #af9453;
 }
 
@@ -69,7 +78,7 @@ img {
 
 .bigtext {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 60px;
@@ -86,7 +95,8 @@ img {
   letter-spacing: 4px;
   padding-left: 15%;
   padding-right: 15%;
-  padding-bottom: 80px;
+  padding-bottom: 5%;
+  padding-top: 5%;
   font-size: 45px;
   font-family: "F1669 Elzevir W00 Normal";
   font-weight: bold;
@@ -117,7 +127,7 @@ img {
   color: #af9453;
   font-size: 15px;
   text-align: center;
-  padding-bottom: 5%;
+  padding-bottom: 10%;
   font-family: 'Nimbus Sans L', sans-serif;
 }
 
@@ -163,7 +173,7 @@ img {
 .column {
   box-sizing: border-box;
   float: left;
-  padding: 65px;
+  padding: 5%;
   width: 100%; 
 }
 
