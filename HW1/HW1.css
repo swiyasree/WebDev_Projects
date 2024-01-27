@@ -54,10 +54,6 @@ body {
   color: #af9453;
 }
 
-.topnav a.smallactive {
-  color: #af9453;
-}
-
 .topnav a.active {
   color: #af9453;
   font-family: 'Nimbus Sans L', sans-serif;
