@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('HW2.html')
 
 @app.route('/get_stock_data')
 def get_stock_data():
