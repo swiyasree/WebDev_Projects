@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../static/index.css">
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+    <script src="../static/home.js"></script>
+</head>
+<body style="background-image: url('../static/img/back.svg');">
+    <h1>Stock Search</h1>
+    <div class="container">
+        <form action="/" id="stockform" method="get">
+            <div id="inputWrapper">
+                <input type="text" id="stock_ticker" name="stock_ticker" placeholder="Enter Stock Ticker Symbol" required>
+                <button type="submit" id="searchbutton">
+                    <svg class="svg_img" xmlns="http://www.w3.org/2000/svg">
+                        <image href="../static/img/search-solid.svg"/>
+                    </svg>
+                </button>
+                <button type="button" id="clear_text">
+                    <svg class="svg_img" xmlns="http://www.w3.org/2000/svg">
+                        <image href="../static/img/times-solid.svg"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="content-display">
+        <ul id="hiddenContent" style="display: none;">
+            <li><a id="companydata" href="#company" onclick="getStockTicker()">Company</a></li>
+            <li><a id="stockSummary" href="#summary" onclick="getStockSummary()">Stock Summary</a></li>
+            <li><a id="stockcharts" href="#charts">Charts</a></li>
+            <li><a id="stocknews" href="#news" onclick="getStockNews()">Latest News</a></li>
+        </ul>
+        <br/>
+        <div class="stocks_container">
+            <div id="companystocks"></div>
+            <div id="stocksummary"></div>
+            <div id="stockCharts" class="highcharts-container"></div></div>
+            <div id="stockNews"></div>
+        </div>
+    </div>
+</body>
+</html>

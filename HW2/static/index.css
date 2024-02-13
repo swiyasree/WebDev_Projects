@@ -1,0 +1,225 @@
+body {
+  text-align: center;
+  font-family: 'Open Sans';
+  font-weight: lighter;
+  background-repeat: no-repeat;
+  background-position:center;
+  background-size: cover;
+  height: 25vh;
+}
+
+h1 {
+  color: #233b50;
+}
+
+.container {
+  margin-top: 20px;
+}
+
+.content-display {
+  position: relative;
+  top: 55%;
+  margin: 0 auto; /* Center horizontally */
+  width: 800px; /* Match the width of the input wrapper */
+  overflow-y: auto; /* Add scrollbar if content exceeds height */
+}
+
+#inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  width: 800px;
+}
+
+input {
+  color: #a6a5af;
+  border: none; /* Remove default border */
+  border-radius: 10px; /* Apply border radius */
+  box-shadow: 0 2px 4px rgba(166, 165, 175, 0.5);
+}
+
+input[type="text"] {
+  box-sizing: border-box; /* Include padding and border in the total width and height */
+  height: 40px; /* Adjusted height to 40px */
+  width: 800px; /* Width remains the same */
+  font-size: 14px;
+  padding-left: 40px;
+  color: #a6a5af;
+}
+
+button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+#searchbutton {
+  position: absolute;
+  left: 0px; /* Adjust the left position */
+  top: 50%; /* Position 50% from the top of the input box height */
+  transform: translateY(-50%);
+}
+
+#clear_text {
+  position: absolute;
+  right: 0px; /* Adjust the right position */
+  top: 50%; /* Position 50% from the top of the input box height */
+  transform: translateY(-50%);
+}
+
+.svg_img {
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  height: 40px;
+  width: 40px;
+  margin-left: 10px; /* Add left padding */
+  margin-top: 10px; /* Add top padding */
+}
+
+.svg_img image {
+  fill: #a6a5af; /* Set the fill color for SVG images */
+  height: 20px;
+  width: 20px;
+}
+
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #fafafc;
+  width: 800px;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: #7a898e;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #d2d2d2;
+}
+
+li a:active {
+  background-color: #9d9d9d;
+}
+
+.stocks_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+  width: 800px;
+}
+
+#stockticker,
+#stocksummary {
+  margin: 0 10px;
+  text-align: left;
+  text-align: center;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  background-color: #fafafc;
+  height: 180px;
+  width: 800px;
+}
+
+.card img {
+  width: 100px;
+  height: 100px;
+  margin: 20px;
+}
+
+/* Style for the article title */
+.card-text h3 {
+  font-family: 'Open Sans';
+  font-weight: 40px;
+  font-size: 18px; /* Adjust font size as needed */
+  color: black; /* Your desired text color */
+  text-align: left;
+}
+
+/* Style for the article date */
+.card-text p {
+  font-family: 'Open Sans';
+  font-weight: lighter;
+  font-size: 14px; /* Adjust font size as needed */
+  color: black; /* Your desired text color */
+  text-align: left;
+}
+
+/* Style for the link to original post */
+.card-text a {
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 14px; /* Adjust font size as needed */
+  color: blue; /* Your desired link color */
+  text-decoration: none; /* Remove underline */
+  text-align: left;
+}
+
+.card-text a:hover {
+  color: purple; /* Your desired link hover color */
+}
+
+
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-text > * {
+  margin-bottom: 10px;
+}
+
+/* Style for the logo image */
+#companystocks img {
+  margin-bottom: 10px; /* Add space below the image */
+  text-align: center;
+}
+
+/* Style for the key-value pairs */
+#companystocks p {
+  margin: 5px 0; /* Add some vertical margin */
+  font-weight: bold;
+}
+
+hr {
+  margin: 10px 0; /* Add margin top and bottom for spacing */
+  border: 0; /* Remove default border */
+  border-top: 2px solid #f8f8f8; /* Add custom border on top */
+}
+
+#companystocks,
+#stocksummary,
+#stockNews {
+  width: 100%; /* Occupy full width within the content-display */
+  margin-top: 20px; /* Adjust spacing */
+}
+
+.highcharts-container {
+  height: 600px; /* Adjust the height of the container */
+  width: 100%;
+  object-fit:cover;
+}
+
