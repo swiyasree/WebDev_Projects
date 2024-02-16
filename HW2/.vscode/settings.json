@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/a4fc30bc-fa46-492e-b045-c874c43666b5/resourceGroups/CSCI-571-HW2_group/providers/Microsoft.Web/sites/CSCI-571-HW2",
+    "appService.deploySubpath": "."
+}
