@@ -10,7 +10,7 @@ app = Flask(__name__)
 def home():
     return render_template('HW2.html')
 
-@app.route('/get_stock_data')
+@app.route('/Company/', methods=["GET"])
 def get_stock_data():
     stock_ticker = request.args.get('stock_ticker')
 
@@ -33,7 +33,7 @@ def get_stock_data():
     else:
         return jsonify({'error': 'Failed to fetch stock data or invalid stock ticker'})
 
-@app.route('/get_stock_summary')
+@app.route('/Stock summary/', methods=["GET"])
 def get_stock_summary():
     stock_ticker = request.args.get('stock_ticker')
 
@@ -75,7 +75,7 @@ def get_stock_summary():
     else:
         return jsonify({'error': 'Failed to fetch stock SUMMARY data or invalid stock ticker'})
     
-@app.route('/get_stock_charts')
+@app.route('/Charts/', methods=["GET"])
 def get_stock_charts():
     stock_ticker = request.args.get('stock_ticker')
     current_date = datetime.now().date()
@@ -106,7 +106,7 @@ def get_stock_charts():
     else:
         return jsonify({'error': 'Failed to fetch stock charts or invalid stock ticker'})
 
-@app.route('/get_news')
+@app.route('/Latest News/', methods=["GET"])
 def get_news():
     stock_ticker = request.args.get('stock_ticker')
     current_date = datetime.now().date()
