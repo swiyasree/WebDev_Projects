@@ -24,22 +24,22 @@
                     <svg class="svg_img" xmlns="http://www.w3.org/2000/svg">
                         <image href="../static/img/times-solid.svg"/>
                     </svg>
-                </button>
+                </button>                
             </div>
         </form>
     </div>
-    <div class="content-display">
+    <div class="content-display" id="displayContent">
         <ul id="hiddenContent" style="display: none;">
-            <li><a id="companydata" href="#company" onclick="getStockTicker()">Company</a></li>
-            <li><a id="stockSummary" href="#summary" onclick="getStockSummary()">Stock Summary</a></li>
+            <li><a id="companydata" href="#company">Company</a></li>
+            <li><a id="stockSummary" href="#summary">Stock Summary</a></li>
             <li><a id="stockcharts" href="#charts">Charts</a></li>
-            <li><a id="stocknews" href="#news" onclick="getStockNews()">Latest News</a></li>
+            <li><a id="stocknews" href="#news">Latest News</a></li>
         </ul>
         <br/>
         <div class="stocks_container">
             <div id="companystocks"></div>
             <div id="stocksummary"></div>
-            <div id="stockCharts" class="highcharts-container"></div></div>
+            <div id="stockCharts" class="highcharts-container"></div>
             <div id="stockNews"></div>
         </div>
     </div>
