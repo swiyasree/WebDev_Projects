@@ -106,7 +106,7 @@ li a {
   font-family: 'Open Sans';
   font-weight: lighter;
   display: block;
-  color: #7a898e;
+  color: black;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -125,7 +125,6 @@ li a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 20px;
   width: 1000px;
 }
 
@@ -141,10 +140,11 @@ li a:hover {
   grid-template-columns: auto 1fr;
   grid-column-gap: 20px;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   background-color: #fafafc;
-  height: 180px;
+  height: 140px;
   width: 1000px;
+
 }
 
 .card img {
@@ -153,31 +153,34 @@ li a:hover {
   margin: 20px;
 }
 
-/* Style for the article title */
 .card-text h3 {
-  font-family: 'Open Sans';
-  font-weight: 40px;
-  font-size: 18px; /* Adjust font size as needed */
-  color: black; /* Your desired text color */
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
   text-align: left;
+  margin-top: 20px;
+  margin-bottom: 0;
+  white-space: normal;
+  overflow: hidden;
 }
 
-/* Style for the article date */
 .card-text p {
   font-family: 'Open Sans';
   font-weight: lighter;
-  font-size: 14px; /* Adjust font size as needed */
-  color: black; /* Your desired text color */
+  font-size: 18px;
+  color: black;
   text-align: left;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
-/* Style for the link to original post */
 .card-text a {
   font-family: 'Open Sans';
-  font-weight: bold;
-  font-size: 14px; /* Adjust font size as needed */
-  color: blue; /* Your desired link color */
-  text-decoration: none; /* Remove underline */
+  font-weight: lighter;
+  font-size: 18px;
+  color: blue;
+  text-decoration: underline;
   text-align: left;
 }
 
@@ -190,10 +193,6 @@ li a:hover {
 .card-text {
   display: flex;
   flex-direction: column;
-}
-
-.card-text > * {
-  margin-bottom: 10px;
 }
 
 /* Style for the logo image */

@@ -438,10 +438,10 @@ document.addEventListener('DOMContentLoaded', function()
                 selected: 0 // Index of the button to be selected by default
             },            
             title: {
-                text: 'Stock Price ' + data['Ticker'] + ' (' + getTodayDate() + ')'
+                text: 'Stock Price ' + stock_ticker  + ' ' + getTodayDate()
             },
             subtitle: {
-                text: 'Source: <a href="https://polygon.io/">Polygon.io</a>',
+                text: '<a href="https://polygon.io/">Source: Polygon.io</a>',
                 useHTML: true
             },
             xAxis: {
