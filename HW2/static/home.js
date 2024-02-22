@@ -229,121 +229,161 @@ document.addEventListener('DOMContentLoaded', function()
     function displayStockData(data) {
         var stockInfo = document.getElementById('companystocks');
         stockInfo.innerHTML = '';
-    
+
         // Create and append the logo image
         var logoImg = document.createElement('img');
         logoImg.src = data['Company Logo'];
         logoImg.alt = 'Company Logo';
         stockInfo.appendChild(logoImg);
-    
-        // Append a horizontal rule after each paragraph
+
+        // Append a horizontal rule after the logo
         stockInfo.appendChild(document.createElement('hr'));
-    
+
         // Create and append other data
         var keys = ['Company Name', 'Stock Ticker Symbol', 'Stock Exchange Code', 'Company Start Date', 'Category'];
         for (var i = 0; i < keys.length; i++) {
             var p = document.createElement('p');
-            var strong = document.createElement('strong'); // Create strong element
-            strong.textContent = keys[i] + ': '; // Set the key text content
-            p.appendChild(strong); // Append the strong element to the paragraph
-            p.textContent += data[keys[i]]; // Append the value to the paragraph
+
+            var keySpan = document.createElement('span'); // Create span for key
+            keySpan.textContent = keys[i] + ': '; // Set the key text content
+            keySpan.style.fontWeight = 'bold'; // Make keys bolder
+            keySpan.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Add font for keys
+            p.appendChild(keySpan); // Append the key to the paragraph
+
+            var valueSpan = document.createElement('span'); // Create span for value
+            valueSpan.textContent = data[keys[i]]; // Set the value text content
+            valueSpan.style.fontWeight = 'lighter'; // Make values lighter
+            valueSpan.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Add font for keys
+            p.appendChild(valueSpan); // Append the value to the paragraph
+
             stockInfo.appendChild(p);
-    
+
             // Append a horizontal rule after each paragraph  
             stockInfo.appendChild(document.createElement('hr'));  
         }
-    }    
+    }
 
 
     // displays company stock summary data
-    function displayStockSummary(data) 
-    {
+    function displayStockSummary(data) {
         var stockInfo = document.getElementById('stocksummary');
         stockInfo.innerHTML = '';
-
+    
         stockInfo.appendChild(document.createElement('hr'));
-
+    
         // Display only the latest recommendation trends
         var latestTrend = data.recommendation_trends[data.recommendation_trends.length - 1];
         var trendElement = document.createElement('p');
-        trendElement.textContent = `Stock Ticker Symbol: ${latestTrend.symbol}`;
+        trendElement.innerHTML = `<span style="font-weight: bold; font-family: 'Nimbus Sans Novus Std T Medium SC', Arial, sans-serif;">Stock Ticker Symbol:</span> <span style="font-weight: lighter; font-family: 'Nimbus Sans Novus Std T Medium SC', Arial, sans-serif;">${latestTrend.symbol}</span>`;
         stockInfo.appendChild(trendElement);
-
+    
         stockInfo.appendChild(document.createElement('hr'));
     
         // Create and append other data
         var keys = ['Trading Day', 'Previous Closing Price', 'Opening Price', 'High Price', 'Low Price', 'Change', 'Change Percent'];
         for (var i = 0; i < keys.length; i++) {
             var p = document.createElement('p');
-            var text = keys[i] + ': ' + data[keys[i]];
-        
-            // Check if the key is "Change" or "Change Percent"
+            var key = keys[i];
+            var value = data[key];       
+
+            var keySpan = document.createElement('span'); // Create span for key
+            keySpan.textContent = key + ': '; // Set the key text content
+            keySpan.style.fontWeight = 'bold'; // Make keys bolder
+            keySpan.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Add font for keys
+            p.appendChild(keySpan); // Append the key to the paragraph
+    
             if (keys[i] === 'Change' || keys[i] === 'Change Percent') {
                 var img = document.createElement('img');
                 img.src = data[keys[i]] < 0 ? '../static/img/RedArrowDown.png' : '../static/img/GreenArrowUp.png';
-                img.style.paddingLeft = '10px';
                 img.style.width = '15px';
                 img.style.height = '15px';
-        
-                // Create a container div for text and image
-                var container = document.createElement('div');
-                container.style.display = 'inline-block'; // Ensure text and image appear in the same line
-                container.appendChild(document.createTextNode(text));
-                container.appendChild(img);
-        
-                // Append container to stockInfo
-                stockInfo.appendChild(container);
-            } else {
-                p.textContent = text;
-                stockInfo.appendChild(p);
+                img.style.verticalAlign = 'middle'; // Align the image vertically with the text
+    
+                var valueSpan = document.createElement('span'); // Create span for value
+                valueSpan.textContent = data[keys[i]]; // Set the value text content
+                valueSpan.style.fontWeight = 'lighter'; // Make values lighter
+                valueSpan.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Add font for values
+    
+                // Create a container div for value and image
+                var valueContainer = document.createElement('div');
+                valueContainer.appendChild(keySpan); // Append the key to the container
+                valueContainer.appendChild(valueSpan); // Append the value to the container
+                valueContainer.appendChild(img); // Append the image to the container
+                p.appendChild(valueContainer); // Append the container to the paragraph
+            } 
+            else 
+            {
+                var valueSpan = document.createElement('span'); // Create span for value
+                if (keys[i] === 'Trading Day') {
+                    var tradingDay = new Date(data[keys[i]] * 1000); // Convert seconds to milliseconds
+                    var options = { day: '2-digit', month: 'long', year: 'numeric' };
+                    var formattedDate = tradingDay.toLocaleDateString('en-US', options);
+                    formattedDate = formattedDate.replace(/(\d+)(?:st|nd|rd|th)/, '$1'); // Remove the ordinal suffix
+                    // Swap day and month position
+                    formattedDate = formattedDate.replace(/(\w+) (\d+), (\d+)/, '$2 $1, $3');
+                    valueSpan.textContent = formattedDate; // Set the formatted date as the text content
+                } else {
+                    valueSpan.textContent = data[keys[i]]; // Set the value text content normally
+                }
+                valueSpan.style.fontWeight = 'lighter'; // Make values lighter
+                valueSpan.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Add font for values
+                p.appendChild(valueSpan); // Append the value to the paragraph
             }
-        
+    
+            stockInfo.appendChild(p);
+    
+            // Append a horizontal rule after each paragraph  
             stockInfo.appendChild(document.createElement('hr'));
-        }        
+        }
     
         // Get the latest trend data
         var latestTrend = data.recommendation_trends[data.recommendation_trends.length - 1];
-
-        // Define an array of trend values and their corresponding colors
+    
         // Define an array of trend values and their corresponding colors
         var trendValues = [
-            { label: 'Strong Sell', color: '#ed2937' },
+            { label: 'Strong Sell', color: '#ed2937'},
             { label: latestTrend.strongSell, color: '#ed2937' },
             { label: latestTrend.sell, color: '#b25f4a' },
             { label: latestTrend.hold, color: '#77945c' },
             { label: latestTrend.buy, color: '#3cca6c' },
             { label: latestTrend.strongBuy, color: '#02ff7f' },
-            { label: 'Strong Buy', color: '#02ff7f' }
+            { label: 'Strong Buy', color: '#02ff7f'}
         ];
-
+    
         var spacer = document.createElement('div');
-        spacer.style.paddingTop = '20px'; // Adjust the top margin as needed
-
+        spacer.style.paddingTop = '15px'; // Adjust the top margin as needed
+    
         // Append the spacer element to the stockInfo container
         stockInfo.appendChild(spacer);
-
+    
         // Loop through each trend value and create a box for it
         trendValues.forEach(function(trend, index) {
             // Create a span element for the trend value
             var trendBox = document.createElement('span');
-
+        
             // Set text content to the trend label
             trendBox.textContent = trend.label;
-
+        
             // Apply styling for the trend box
             trendBox.style.backgroundColor = index === 0 || index === trendValues.length - 1 ? 'white' : trend.color;
             trendBox.style.color = index === 0 ? '#ed2937' : index === trendValues.length - 1 ? '#02ff7f' : 'white';
-            trendBox.style.fontWeight = 'bold';
-            trendBox.style.padding = '15px';
-
+            trendBox.style.fontWeight = 'lighter'; // Apply lighter font weight
+            trendBox.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Apply specified font family
+            trendBox.style.padding = '10px';
+            trendBox.style.fontSize = '18px';
+        
             // Append the trend box to the stockInfo element
             stockInfo.appendChild(trendBox);
-        });
-
+        });        
+    
         var rectrends = document.createElement('h4');
         rectrends.textContent = data['rectrends'];
+        rectrends.style.fontWeight = 'lighter'; // Apply lighter font weight
+        rectrends.style.fontSize = '18px';
+        rectrends.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Apply specified font family
         stockInfo.appendChild(rectrends);
-    }
+    }       
+          
 
     function displayStockCharts(data) {
         // Check if data is empty or undefined

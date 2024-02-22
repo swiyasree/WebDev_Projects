@@ -1,17 +1,19 @@
 body {
   text-align: center;
-  font-family: 'Open Sans';
-  font-weight: lighter;
   background-repeat: no-repeat;
   background-size: 130%;
   background-position: top center; 
 }
 
 h1 {
+  font-family: 'Open Sans';
+  font-weight: lighter;
   color: #233b50;
 }
 
 .container {
+  font-family: 'Open Sans';
+  font-weight: lighter;
   margin-top: 20px;
 }
 
@@ -101,6 +103,8 @@ li {
 }
 
 li a {
+  font-family: 'Open Sans';
+  font-weight: lighter;
   display: block;
   color: #7a898e;
   text-align: center;
@@ -207,9 +211,19 @@ li a:hover {
 }
 
 hr {
-  margin: 10px 0; /* Add margin top and bottom for spacing */
+  width: 60%; 
+  text-align: center;
+  margin: 5px auto; /* Add margin top and bottom for spacing */
   border: 0; /* Remove default border */
-  border-top: 2px solid #f8f8f8; /* Add custom border on top */
+  border-top: 3px solid #f8f8f8; /* Add custom border on top */
+}
+
+.stocksummary hr {
+  width: 60%; 
+  text-align: center;
+  margin: 5px auto; /* Add margin top and bottom for spacing */
+  border: 0; /* Remove default border */
+  border-top: 3px solid #f8f8f8; /* Add custom border on top */
 }
 
 #companystocks,
@@ -239,6 +253,7 @@ hr {
   padding: 15px;
   border-radius: 12px;
   background-color: #ececec;
-  
 }
+
+
 
