@@ -7,6 +7,16 @@ document.addEventListener('DOMContentLoaded', function()
     var stockCharts = document.getElementById('stockCharts');
     var stockNews = document.getElementById('stockNews');
     var clearButton = document.getElementById('clear_text');
+    var links = document.querySelectorAll('div ul li a');
+
+    links.forEach(function(link) {
+        link.addEventListener('click', function() {
+            links.forEach(function(l) {
+                l.classList.remove('linkactive');
+            });
+            link.classList.add('linkactive');
+        });
+    });
 
     function hideAll() {
         hiddenContent.style.display = 'none';
@@ -60,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function()
         event.preventDefault();
         stock_ticker = document.getElementById('stock_ticker').value;
         getStockTicker(stock_ticker);
+
+        links.forEach(function(l) 
+        {
+            l.classList.remove('linkactive');
+        });
+        document.getElementById("companydata").classList.add('linkactive');
     });
 
     clearButton.addEventListener('click', function(event) {
@@ -219,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function()
         logoImg.src = data['Company Logo'];
         logoImg.alt = 'Company Logo';
         stockInfo.appendChild(logoImg);
-
+    
         // Append a horizontal rule after each paragraph
         stockInfo.appendChild(document.createElement('hr'));
     
@@ -233,12 +249,12 @@ document.addEventListener('DOMContentLoaded', function()
             p.textContent += data[keys[i]]; // Append the value to the paragraph
             stockInfo.appendChild(p);
     
-            // Append a horizontal rule after each paragraph
-            stockInfo.appendChild(document.createElement('hr'));
+            // Append a horizontal rule after each paragraph  
+            stockInfo.appendChild(document.createElement('hr'));  
         }
-    }
-    
-    
+    }    
+
+
     // displays company stock summary data
     function displayStockSummary(data) 
     {
