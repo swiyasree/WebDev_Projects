@@ -3,9 +3,8 @@ body {
   font-family: 'Open Sans';
   font-weight: lighter;
   background-repeat: no-repeat;
-  background-position:center;
-  background-size: cover;
-  height: 25vh;
+  background-size: 130%;
+  background-position: top center; 
 }
 
 h1 {
@@ -17,11 +16,12 @@ h1 {
 }
 
 .content-display {
-  position: relative;
-  top: 55%;
-  margin: 0 auto; /* Center horizontally */
-  width: 800px; /* Match the width of the input wrapper */
-  overflow-y: auto; /* Add scrollbar if content exceeds height */
+  position: relative; 
+  z-index: 1;
+  margin: 0 auto; 
+  width: 800px; 
+  overflow-y: auto; 
+  margin-top: 150px;
 }
 
 #inputWrapper {

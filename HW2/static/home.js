@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function()
     var stockSummary = document.getElementById('stocksummary');
     var stockCharts = document.getElementById('stockCharts');
     var stockNews = document.getElementById('stockNews');
+    var clearButton = document.getElementById('clear_text');
 
     function hideAll() {
         hiddenContent.style.display = 'none';
@@ -39,22 +40,22 @@ document.addEventListener('DOMContentLoaded', function()
         stockNews.style.display = 'block';
     }
 
-    document.getElementById('clear_text').addEventListener('click', function(event) {
-        event.preventDefault();
-        console.log("Clear button clicked!"); // Check if the event listener is triggered
-        document.getElementById("stockform").reset();
-        // Clear the content of each search result container
-        document.getElementById('companystocks').innerHTML = '';
-        document.getElementById('stocksummary').innerHTML = '';
-        document.getElementById('stockCharts').innerHTML = '';
-        document.getElementById('stockNews').innerHTML = '';
-    });    
+    function clearPreviousSearchResults() {
+        hideAll();
+    }    
 
     document.getElementById('stockform').addEventListener('submit', function(event) {
         event.preventDefault();
         showCompanyStocks();
         stock_ticker = document.getElementById('stock_ticker').value;
         getStockTicker(stock_ticker);
+    });
+
+    clearButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        var inputElement = document.getElementById('stock_ticker');
+        inputElement.value = '';
+        clearPreviousSearchResults();
     });
 
     document.getElementById("companydata").addEventListener("click", function(event) {
