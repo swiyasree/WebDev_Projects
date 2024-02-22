@@ -41,12 +41,23 @@ document.addEventListener('DOMContentLoaded', function()
     }
 
     function clearPreviousSearchResults() {
+        var errorMessage = document.querySelector('.error-message');
+        if (errorMessage) {
+            errorMessage.remove();
+        }
         hideAll();
-    }    
-
+    }   
+    
+    function clearError() 
+    {
+        var errorMessage = document.querySelector('.error-message');
+        if (errorMessage) {
+            errorMessage.remove();
+        }
+    }
+       
     document.getElementById('stockform').addEventListener('submit', function(event) {
         event.preventDefault();
-        showCompanyStocks();
         stock_ticker = document.getElementById('stock_ticker').value;
         getStockTicker(stock_ticker);
     });
@@ -84,32 +95,32 @@ document.addEventListener('DOMContentLoaded', function()
 
     //  call python function 'get_stock_data()' with input stock ticker as an argument
     //  and call displayStockData() method with response as an argument.
-    function getStockTicker(stock_ticker) 
-    {
+    function getStockTicker(stock_ticker) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/get_stock_data?stock_ticker=' + encodeURIComponent(stock_ticker));
-        xhr.onload = function() 
-        {
-            if (xhr.status === 200) 
-            {
+        xhr.onload = function () {
+            if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
-                if (response.error) 
-                {
-                    console.log("Error:", response.error); 
-                    displayError(response.error);
-                } 
-                else 
-                {
+                if (response.error || !response) {
+                    displayError('Failed to fetch stock data or invalid stock ticker'); // Display error message
+                    // Hide content display when error occurs
+                    document.querySelector('.content-display').style.display = 'none';
+                } else {
+                    // Clear error message when input is correct
+                    clearError();
+                    // Show content display when input is correct
+                    document.querySelector('.content-display').style.display = 'block';
+                    showCompanyStocks();
                     displayStockData(response);
                 }
-            } 
-            else 
-            {
-                displayError('Failed to fetch stock data or invalid stock ticker');
+            } else {
+                displayError('Failed to fetch stock data or invalid stock ticker'); // Display error message
+                // Hide content display when error occurs
+                document.querySelector('.content-display').style.display = 'none';
             }
         };
         xhr.send();
-    }
+    }    
 
     // call python function 'get_stock_summary()' with input stock ticker as an argument
     // and call displayStockSummary() method with response as an argument
@@ -462,8 +473,6 @@ document.addEventListener('DOMContentLoaded', function()
         return yyyy + '-' + mm + '-' + dd;
     }    
     
-
-    // displays company stock news data
     function displayStockNews(data) 
     {
         var stockInfo = document.getElementById('stockNews');
@@ -510,15 +519,18 @@ document.addEventListener('DOMContentLoaded', function()
             stockInfo.appendChild(card);
         });
     }
-    
-    // display error message if anything fails
-    function displayError(errorMsg) 
-    {
-        var stockInfo = document.getElementById('companystocks');
-        stockInfo.innerHTML = '';
 
-        var errorText = document.createElement('p');
-        errorText.textContent = errorMsg;
-        stockInfo.appendChild(errorText);
-    }
+    // displays company stock news data
+    function displayError(errorMsg) {
+        // Hide the content display element
+        var contentDisplay = document.querySelector('.content-display');
+        contentDisplay.style.display = 'none';
+    
+        // Display the error message
+        var errorMessage = document.createElement('div');
+        errorMessage.textContent = errorMsg;
+        errorMessage.classList.add('error-message');
+        document.body.appendChild(errorMessage);
+    }    
+    
 });

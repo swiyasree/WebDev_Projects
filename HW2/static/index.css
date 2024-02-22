@@ -223,3 +223,20 @@ hr {
   object-fit:cover;
 }
 
+.error-message {
+  position: relative; 
+  z-index: 1;
+  margin: 0 auto; 
+  width: 700px; 
+  overflow-y: auto; 
+  margin-top: 150px;
+  font-family: 'Open Sans';
+  font-weight: lighter;
+  font-size: 18px; /* Adjust font size as needed */
+  color: black; /* Your desired text color */
+  padding: 15px;
+  border-radius: 12px;
+  background-color: #ececec;
+  
+}
+

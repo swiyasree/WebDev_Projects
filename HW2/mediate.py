@@ -10,6 +10,8 @@ app = Flask(__name__)
 def home():
     return render_template('HW2.html')
 
+from flask import jsonify
+
 @app.route('/get_stock_data')
 def get_stock_data():
     stock_ticker = request.args.get('stock_ticker')
@@ -21,15 +23,19 @@ def get_stock_data():
     if c_response.status_code == 200:
         c_data = c_response.json()  # Convert c_response to JSON
 
-        new_c_data = {
-            "Company Logo": c_data.get("logo"),
-            "Company Name": c_data.get("name"),
-            "Stock Ticker Symbol": c_data.get("ticker"),
-            "Stock Exchange Code": c_data.get("exchange"),
-            "Company Start Date": c_data.get("ipo"),
-            "Category": c_data.get("finnhubIndustry")
-        }
-        return jsonify(new_c_data)  # Return JSON c_response
+        # Check if essential data is present in the response
+        if 'logo' in c_data and 'name' in c_data and 'ticker' in c_data and 'exchange' in c_data and 'ipo' in c_data and 'finnhubIndustry' in c_data:
+            new_c_data = {
+                "Company Logo": c_data.get("logo"),
+                "Company Name": c_data.get("name"),
+                "Stock Ticker Symbol": c_data.get("ticker"),
+                "Stock Exchange Code": c_data.get("exchange"),
+                "Company Start Date": c_data.get("ipo"),
+                "Category": c_data.get("finnhubIndustry")
+            }
+            return jsonify(new_c_data)  # Return JSON response
+        else:
+            return jsonify({'error': 'Failed to fetch complete stock data'})
     else:
         return jsonify({'error': 'Failed to fetch stock data or invalid stock ticker'})
 
