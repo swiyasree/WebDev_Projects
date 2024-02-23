@@ -118,70 +118,115 @@ document.addEventListener('DOMContentLoaded', function()
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
                 if (response.error || !response) {
-                    displayError('Failed to fetch stock data or invalid stock ticker'); // Display error message
-                    // Hide content display when error occurs
+                    displayError('Failed to fetch stock data or invalid stock ticker');
                     document.querySelector('.content-display').style.display = 'none';
                 } else {
-                    // Clear error message when input is correct
                     clearError();
-                    // Show content display when input is correct
                     document.querySelector('.content-display').style.display = 'block';
                     showCompanyStocks();
-                    displayStockData(response);
+                    // Parsing the response
+                    var new_response = {
+                        "Company Logo": response.logo,
+                        "Company Name": response.name,
+                        "Stock Ticker Symbol": response.ticker,
+                        "Stock Exchange Code": response.exchange,
+                        "Company Start Date": response.ipo,
+                        "Category": response.finnhubIndustry
+                    };
+                    displayStockData(new_response);
                 }
             } else {
-                displayError('Failed to fetch stock data or invalid stock ticker'); // Display error message
-                // Hide content display when error occurs
+                displayError('Failed to fetch stock data or invalid stock ticker');
                 document.querySelector('.content-display').style.display = 'none';
+            }
+        };
+        xhr.send();
+    }        
+
+    // call python function 'get_stock_summary()' with input stock ticker as an argument
+    // and call displayStockSummary() method with response as an argument
+    function getStockSummary(stock_ticker) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/get_stock_summary?stock_ticker=' + encodeURIComponent(stock_ticker));
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.error) {
+                    console.log("Error:", response.error); 
+                    displayError(response.error);
+                } else {
+                    var ss_data = response.ss_data;
+                    var rt_data = response.rt_data;
+    
+                    // Parse ss_data if needed
+                    var new_ss_data = {
+                        "Trading Day": ss_data.t,
+                        "Previous Closing Price": ss_data.pc,
+                        "Opening Price": ss_data.o,
+                        "High Price": ss_data.h,
+                        "Low Price": ss_data.l,
+                        "Change": ss_data.d,
+                        "Change Percent": ss_data.dp,
+                        "recommendation_trends": [],
+                        "rectrends": "Recommendation Trends"
+                    };
+    
+                    // Parse rt_data
+                    rt_data.forEach(function(trend) {
+                        new_ss_data.recommendation_trends.push({
+                            "symbol": trend.symbol,
+                            "period": trend.period,
+                            "strongSell": trend.strongSell,
+                            "sell": trend.sell,
+                            "hold": trend.hold,
+                            "buy": trend.buy,
+                            "strongBuy": trend.strongBuy
+                        });
+                    });
+    
+                    displayStockSummary(new_ss_data);
+                }
+            } else {
+                displayError('Failed to fetch stock data or invalid stock ticker');
             }
         };
         xhr.send();
     }    
 
-    // call python function 'get_stock_summary()' with input stock ticker as an argument
-    // and call displayStockSummary() method with response as an argument
-    function getStockSummary(stock_ticker) 
-    {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/get_stock_summary?stock_ticker=' + encodeURIComponent(stock_ticker));
-        xhr.onload = function() 
-        {
-            if (xhr.status === 200) 
-            {
-                var response = JSON.parse(xhr.responseText);
-                if (response.error) 
-                {
-                    console.log("Error:", response.error); 
-                    displayError(response.error);
-                } 
-                else 
-                {
-                    displayStockSummary(response);
-                }
-            } 
-            else 
-            {
-                displayError('Failed to fetch stock data or invalid stock ticker');
-            }
-        };
-        xhr.send();
-    }
-
     //  call python function 'get_stock_charts()' with input stock ticker as an argument
     //  and call displayStockCharts() method with response as an argument.
-    function getStockCharts(stock_ticker) 
-    {
+    function getStockCharts(stock_ticker) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/get_stock_charts?stock_ticker=' + encodeURIComponent(stock_ticker));
         xhr.onload = function() {
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
-
+    
                 if (response.error) {
                     console.log("Error:", response.error); 
                     displayError(response.error);
                 } else {
-                    displayStockCharts(response);
+                    // Extracting necessary fields from the response
+                    var data = response.results;
+                    var dates = [];
+                    var prices = [];
+                    var volumes = [];
+                    
+                    data.forEach(function(entry) {
+                        dates.push(entry.t);
+                        prices.push(entry.c);
+                        volumes.push(entry.v);
+                    });
+    
+                    // Constructing the data object to be returned
+                    var stock_data = {
+                        "Date": dates,
+                        "Stock Price": prices,
+                        "Volume": volumes
+                    };
+    
+                    // Pass the parsed data to displayStockCharts for rendering
+                    displayStockCharts(stock_data);
                 }
             } else {
                 console.log('Error:', xhr.status, xhr.statusText); // Log any HTTP errors
@@ -193,37 +238,50 @@ document.addEventListener('DOMContentLoaded', function()
             displayError('Failed to send request');
         };
         xhr.send();
-    }
+    }     
 
     // call python function 'get_news()' with input stock ticker as an argument
     // and call displayStockNews() method with response as an argument
-    function getStockNews(stock_ticker) 
-    {
+    function getStockNews(stock_ticker) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/get_news?stock_ticker=' + encodeURIComponent(stock_ticker));
-        xhr.onload = function() 
-        {
-            if (xhr.status === 200) 
-            {
+        xhr.onload = function() {
+            if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
-
-                if (response.error) 
-                {
+    
+                if (response.error) {
                     console.log("Error:", response.error); 
                     displayError(response.error);
-                } 
-                else 
-                {
-                    displayStockNews(response);
+                } else {
+                    var parsedNews = [];
+                    var count = 0;
+    
+                    for (var i = 0; i < response.length; i++) {
+                        var newsItem = response[i];
+                        if (newsItem['image'] && newsItem['headline'] && newsItem['datetime'] && newsItem['url']) {
+                            var parsedItem = {
+                                'Image': newsItem['image'],
+                                'Title': newsItem['headline'],
+                                'Date': new Date(newsItem['datetime'] * 1000).toISOString().slice(0, 19).replace('T', ' '), // Convert UNIX timestamp to date string
+                                'Link to Original Post': newsItem['url']
+                            };
+                            parsedNews.push(parsedItem);
+                            count++;
+                            if (count === 5) {
+                                break; // Exit the loop once 5 news items are parsed
+                            }
+                        }
+                    }
+    
+                    displayStockNews(parsedNews);
                 }
-            } 
-            else 
-            {
+            } else {
                 displayError('Failed to fetch stock data or invalid stock ticker');
             }
         };
         xhr.send();
     }
+       
 
     // displays company stocks data 
     function displayStockData(data) {
@@ -632,3 +690,5 @@ document.addEventListener('DOMContentLoaded', function()
     }    
     
 });
+
+
