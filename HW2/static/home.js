@@ -81,28 +81,13 @@ document.addEventListener('DOMContentLoaded', function()
     {
         event.preventDefault();
         stock_ticker = document.getElementById('stock_ticker').value;
-    
-        // Call getStockTicker method to fetch stock data
         getStockTicker(stock_ticker);
-    
-        // Activate the appropriate link
+
         links.forEach(function(l) 
         {
             l.classList.remove('linkactive');
         });
         document.getElementById("companydata").classList.add('linkactive');
-        
-        // Make an AJAX request to the server to fetch data
-        fetch('/search?stock_ticker=' + encodeURIComponent(stock_ticker))
-            .then(response => response.json())
-            .then(data => 
-                {
-                // Handle the response data here
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
     });    
 
     clearButton.addEventListener('click', function(event) 
