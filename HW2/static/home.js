@@ -9,16 +9,20 @@ document.addEventListener('DOMContentLoaded', function()
     var clearButton = document.getElementById('clear_text');
     var links = document.querySelectorAll('div ul li a');
 
-    links.forEach(function(link) {
-        link.addEventListener('click', function() {
-            links.forEach(function(l) {
+    links.forEach(function(link) 
+    {
+        link.addEventListener('click', function() 
+        {
+            links.forEach(function(l) 
+            {
                 l.classList.remove('linkactive');
             });
             link.classList.add('linkactive');
         });
     });
 
-    function hideAll() {
+    function hideAll() 
+    {
         hiddenContent.style.display = 'none';
         companyStocks.style.display = 'none';
         stockSummary.style.display = 'none';
@@ -26,33 +30,39 @@ document.addEventListener('DOMContentLoaded', function()
         stockNews.style.display = 'none';
     }
 
-    function showCompanyStocks() {
+    function showCompanyStocks() 
+    {
         hideAll();
         hiddenContent.style.display = 'block';
         companyStocks.style.display = 'block';
     }
 
-    function showStockSummary() {
+    function showStockSummary() 
+    {
         hideAll();
         hiddenContent.style.display = 'block';
         stockSummary.style.display = 'block';
     }
 
-    function showStockCharts() {
+    function showStockCharts() 
+    {
         hideAll();
         hiddenContent.style.display = 'block';
         stockCharts.style.display = 'block';
     }
 
-    function showStockNews() {
+    function showStockNews() 
+    {
         hideAll();
         hiddenContent.style.display = 'block';
         stockNews.style.display = 'block';
     }
 
-    function clearPreviousSearchResults() {
+    function clearPreviousSearchResults() 
+    {
         var errorMessage = document.querySelector('.error-message');
-        if (errorMessage) {
+        if (errorMessage) 
+        {
             errorMessage.remove();
         }
         hideAll();
@@ -61,12 +71,14 @@ document.addEventListener('DOMContentLoaded', function()
     function clearError() 
     {
         var errorMessage = document.querySelector('.error-message');
-        if (errorMessage) {
+        if (errorMessage) 
+        {
             errorMessage.remove();
         }
     }
        
-    document.getElementById('stockform').addEventListener('submit', function(event) {
+    document.getElementById('stockform').addEventListener('submit', function(event) 
+    {
         event.preventDefault();
         stock_ticker = document.getElementById('stock_ticker').value;
         getStockTicker(stock_ticker);
@@ -78,32 +90,37 @@ document.addEventListener('DOMContentLoaded', function()
         document.getElementById("companydata").classList.add('linkactive');
     });
 
-    clearButton.addEventListener('click', function(event) {
+    clearButton.addEventListener('click', function(event) 
+    {
         event.preventDefault();
         var inputElement = document.getElementById('stock_ticker');
         inputElement.value = '';
         clearPreviousSearchResults();
     });
 
-    document.getElementById("companydata").addEventListener("click", function(event) {
+    document.getElementById("companydata").addEventListener("click", function(event) 
+    {
         event.preventDefault();
         showCompanyStocks();
         getStockTicker(stock_ticker);
     });
 
-    document.getElementById("stockSummary").addEventListener("click", function(event) {
+    document.getElementById("stockSummary").addEventListener("click", function(event) 
+    {
         event.preventDefault();
         showStockSummary();
         getStockSummary(stock_ticker);
     });
 
-    document.getElementById("stockcharts").addEventListener("click", function(event) {
+    document.getElementById("stockcharts").addEventListener("click", function(event) 
+    {
         event.preventDefault();
         showStockCharts();
         getStockCharts(stock_ticker);
     });
 
-    document.getElementById("stocknews").addEventListener("click", function(event) {
+    document.getElementById("stocknews").addEventListener("click", function(event) 
+    {
         event.preventDefault();
         showStockNews();
         getStockNews(stock_ticker);
@@ -111,55 +128,85 @@ document.addEventListener('DOMContentLoaded', function()
 
     //  call python function 'get_stock_data()' with input stock ticker as an argument
     //  and call displayStockData() method with response as an argument.
-    function getStockTicker(stock_ticker) {
+    function getStockTicker(stock_ticker) 
+    {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/get_stock_data?stock_ticker=' + encodeURIComponent(stock_ticker));
-        xhr.onload = function () {
-            if (xhr.status === 200) {
+        xhr.onload = function () 
+        {
+            if (xhr.status === 200) 
+            {
                 var response = JSON.parse(xhr.responseText);
-                if (response.error || !response) {
-                    displayError('Failed to fetch stock data or invalid stock ticker');
+                if (response.error || !response) 
+                {
+                    displayError(response.error);
                     document.querySelector('.content-display').style.display = 'none';
-                } else {
-                    clearError();
-                    document.querySelector('.content-display').style.display = 'block';
-                    showCompanyStocks();
-                    // Parsing the response
-                    var new_response = {
-                        "Company Logo": response.logo,
-                        "Company Name": response.name,
-                        "Stock Ticker Symbol": response.ticker,
-                        "Stock Exchange Code": response.exchange,
-                        "Company Start Date": response.ipo,
-                        "Category": response.finnhubIndustry
-                    };
-                    displayStockData(new_response);
+                } 
+                else 
+                {
+                    if ('logo' in response && 'name' in response && 'ticker' in response && 'exchange' in response && 'ipo' in response && 'finnhubIndustry' in response)
+                    {
+                        var new_response = 
+                        {
+                            "Company Logo": response.logo,
+                            "Company Name": response.name,
+                            "Stock Ticker Symbol": response.ticker,
+                            "Stock Exchange Code": response.exchange,
+                            "Company Start Date": response.ipo,
+                            "Category": response.finnhubIndustry
+                        };
+                        console.log("in else 1 to not display error and parse");
+                        clearError();
+                        document.querySelector('.content-display').style.display = 'block';
+                        showCompanyStocks();
+                        displayStockData(new_response);
+                    }
+                    
+                    else 
+                    {
+                        displayError('Error: No record has been found, please enter a valid symbol');
+                    }
+                    
                 }
-            } else {
-                displayError('Failed to fetch stock data or invalid stock ticker');
+            } 
+            else 
+            {
+                displayError('Error: No record has been found, please enter a valid symbol');
                 document.querySelector('.content-display').style.display = 'none';
             }
         };
+
+        xhr.onerror = function() 
+        {
+            displayError('Failed to send request');
+        };
+
         xhr.send();
     }        
 
     // call python function 'get_stock_summary()' with input stock ticker as an argument
     // and call displayStockSummary() method with response as an argument
-    function getStockSummary(stock_ticker) {
+    function getStockSummary(stock_ticker) 
+    {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/get_stock_summary?stock_ticker=' + encodeURIComponent(stock_ticker));
-        xhr.onload = function() {
-            if (xhr.status === 200) {
+        xhr.onload = function() 
+        {
+            if (xhr.status === 200) 
+            {
                 var response = JSON.parse(xhr.responseText);
-                if (response.error) {
-                    console.log("Error:", response.error); 
+                if (response.error) 
+                {
                     displayError(response.error);
-                } else {
+                } 
+                else 
+                {
                     var ss_data = response.ss_data;
                     var rt_data = response.rt_data;
     
                     // Parse ss_data if needed
-                    var new_ss_data = {
+                    var new_ss_data = 
+                    {
                         "Trading Day": ss_data.t,
                         "Previous Closing Price": ss_data.pc,
                         "Opening Price": ss_data.o,
@@ -172,7 +219,8 @@ document.addEventListener('DOMContentLoaded', function()
                     };
     
                     // Parse rt_data
-                    rt_data.forEach(function(trend) {
+                    rt_data.forEach(function(trend) 
+                    {
                         new_ss_data.recommendation_trends.push({
                             "symbol": trend.symbol,
                             "period": trend.period,
@@ -186,26 +234,39 @@ document.addEventListener('DOMContentLoaded', function()
     
                     displayStockSummary(new_ss_data);
                 }
-            } else {
-                displayError('Failed to fetch stock data or invalid stock ticker');
+            } 
+            else 
+            {
+                displayError('Error: No record has been found, please enter a valid symbol');
             }
         };
+        
+        xhr.onerror = function() 
+        {
+            displayError('Failed to send request');
+        };
+
         xhr.send();
     }    
 
     //  call python function 'get_stock_charts()' with input stock ticker as an argument
     //  and call displayStockCharts() method with response as an argument.
-    function getStockCharts(stock_ticker) {
+    function getStockCharts(stock_ticker) 
+    {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/get_stock_charts?stock_ticker=' + encodeURIComponent(stock_ticker));
-        xhr.onload = function() {
-            if (xhr.status === 200) {
+        xhr.onload = function() 
+        {
+            if (xhr.status === 200) 
+            {
                 var response = JSON.parse(xhr.responseText);
     
-                if (response.error) {
-                    console.log("Error:", response.error); 
+                if (response.error) 
+                {
                     displayError(response.error);
-                } else {
+                } 
+                else 
+                {
                     // Extracting necessary fields from the response
                     var data = response.results;
                     var dates = [];
@@ -228,38 +289,48 @@ document.addEventListener('DOMContentLoaded', function()
                     // Pass the parsed data to displayStockCharts for rendering
                     displayStockCharts(stock_data);
                 }
-            } else {
-                console.log('Error:', xhr.status, xhr.statusText); // Log any HTTP errors
-                displayError('Failed to fetch stock data or invalid stock ticker');
+            } 
+            else 
+            {
+                displayError('Error: No record has been found, please enter a valid symbol');
             }
         };
-        xhr.onerror = function() {
-            console.log('Request failed'); // Log if the request failed
+        
+        xhr.onerror = function() 
+        {
             displayError('Failed to send request');
         };
+
         xhr.send();
     }     
 
     // call python function 'get_news()' with input stock ticker as an argument
     // and call displayStockNews() method with response as an argument
-    function getStockNews(stock_ticker) {
+    function getStockNews(stock_ticker) 
+    {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/get_news?stock_ticker=' + encodeURIComponent(stock_ticker));
-        xhr.onload = function() {
-            if (xhr.status === 200) {
+        xhr.onload = function() 
+        {
+            if (xhr.status === 200) 
+            {
                 var response = JSON.parse(xhr.responseText);
-    
-                if (response.error) {
-                    console.log("Error:", response.error); 
+                if (response.error) 
+                {
                     displayError(response.error);
-                } else {
+                } 
+                else 
+                {
                     var parsedNews = [];
                     var count = 0;
     
-                    for (var i = 0; i < response.length; i++) {
+                    for (var i = 0; i < response.length; i++) 
+                    {
                         var newsItem = response[i];
-                        if (newsItem['image'] && newsItem['headline'] && newsItem['datetime'] && newsItem['url']) {
-                            var parsedItem = {
+                        if (newsItem['image'] && newsItem['headline'] && newsItem['datetime'] && newsItem['url']) 
+                        {
+                            var parsedItem = 
+                            {
                                 'Image': newsItem['image'],
                                 'Title': newsItem['headline'],
                                 'Date': new Date(newsItem['datetime'] * 1000).toISOString().slice(0, 19).replace('T', ' '), // Convert UNIX timestamp to date string
@@ -267,7 +338,8 @@ document.addEventListener('DOMContentLoaded', function()
                             };
                             parsedNews.push(parsedItem);
                             count++;
-                            if (count === 5) {
+                            if (count === 5) 
+                            {
                                 break; // Exit the loop once 5 news items are parsed
                             }
                         }
@@ -275,16 +347,24 @@ document.addEventListener('DOMContentLoaded', function()
     
                     displayStockNews(parsedNews);
                 }
-            } else {
-                displayError('Failed to fetch stock data or invalid stock ticker');
+            } 
+            else 
+            {
+                displayError('Error: No record has been found, please enter a valid symbol');
             }
         };
+
+        xhr.onerror = function() {
+            displayError('Failed to send request');
+        };
+
         xhr.send();
     }
        
 
     // displays company stocks data 
-    function displayStockData(data) {
+    function displayStockData(data) 
+    {
         var stockInfo = document.getElementById('companystocks');
         stockInfo.innerHTML = '';
 
@@ -299,7 +379,8 @@ document.addEventListener('DOMContentLoaded', function()
 
         // Create and append other data
         var keys = ['Company Name', 'Stock Ticker Symbol', 'Stock Exchange Code', 'Company Start Date', 'Category'];
-        for (var i = 0; i < keys.length; i++) {
+        for (var i = 0; i < keys.length; i++) 
+        {
             var p = document.createElement('p');
 
             var keySpan = document.createElement('span'); // Create span for key
@@ -321,9 +402,9 @@ document.addEventListener('DOMContentLoaded', function()
         }
     }
 
-
     // displays company stock summary data
-    function displayStockSummary(data) {
+    function displayStockSummary(data) 
+    {
         var stockInfo = document.getElementById('stocksummary');
         stockInfo.innerHTML = '';
     
@@ -339,7 +420,8 @@ document.addEventListener('DOMContentLoaded', function()
     
         // Create and append other data
         var keys = ['Trading Day', 'Previous Closing Price', 'Opening Price', 'High Price', 'Low Price', 'Change', 'Change Percent'];
-        for (var i = 0; i < keys.length; i++) {
+        for (var i = 0; i < keys.length; i++) 
+        {
             var p = document.createElement('p');
             var key = keys[i];
             var value = data[key];       
@@ -350,7 +432,8 @@ document.addEventListener('DOMContentLoaded', function()
             keySpan.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Add font for keys
             p.appendChild(keySpan); // Append the key to the paragraph
     
-            if (keys[i] === 'Change' || keys[i] === 'Change Percent') {
+            if (keys[i] === 'Change' || keys[i] === 'Change Percent') 
+            {
                 var img = document.createElement('img');
                 img.src = data[keys[i]] < 0 ? '../static/img/RedArrowDown.png' : '../static/img/GreenArrowUp.png';
                 img.style.width = '15px';
@@ -372,7 +455,8 @@ document.addEventListener('DOMContentLoaded', function()
             else 
             {
                 var valueSpan = document.createElement('span'); // Create span for value
-                if (keys[i] === 'Trading Day') {
+                if (keys[i] === 'Trading Day') 
+                {
                     var tradingDay = new Date(data[keys[i]] * 1000); // Convert seconds to milliseconds
                     var options = { day: '2-digit', month: 'long', year: 'numeric' };
                     var formattedDate = tradingDay.toLocaleDateString('en-US', options);
@@ -380,7 +464,9 @@ document.addEventListener('DOMContentLoaded', function()
                     // Swap day and month position
                     formattedDate = formattedDate.replace(/(\w+) (\d+), (\d+)/, '$2 $1, $3');
                     valueSpan.textContent = formattedDate; // Set the formatted date as the text content
-                } else {
+                } 
+                else 
+                {
                     valueSpan.textContent = data[keys[i]]; // Set the value text content normally
                 }
                 valueSpan.style.fontWeight = 'lighter'; // Make values lighter
@@ -398,7 +484,8 @@ document.addEventListener('DOMContentLoaded', function()
         var latestTrend = data.recommendation_trends[data.recommendation_trends.length - 1];
     
         // Define an array of trend values and their corresponding colors
-        var trendValues = [
+        var trendValues = 
+        [
             { label: 'Strong Sell', color: '#ed2937'},
             { label: latestTrend.strongSell, color: '#ed2937' },
             { label: latestTrend.sell, color: '#b25f4a' },
@@ -415,7 +502,8 @@ document.addEventListener('DOMContentLoaded', function()
         stockInfo.appendChild(spacer);
     
         // Loop through each trend value and create a box for it
-        trendValues.forEach(function(trend, index) {
+        trendValues.forEach(function(trend, index) 
+        {
             // Create a span element for the trend value
             var trendBox = document.createElement('span');
         
@@ -442,33 +530,39 @@ document.addEventListener('DOMContentLoaded', function()
         stockInfo.appendChild(rectrends);
     }       
           
-
+    // displays company stock charts data
     function displayStockCharts(data) {
         // Check if data is empty or undefined
-        if (!data || !data['Date'] || !data['Stock Price'] || !data['Volume'] || data['Date'].length === 0) {
-            displayError('----No stock chart data available-----');
+        if (!data || !data['Date'] || !data['Stock Price'] || !data['Volume'] || data['Date'].length === 0) 
+        {
+            displayError('Error: No record has been found, please enter a valid symbol');
             return;
         }
     
         // Extracting data from the response
-        var dates = data['Date'].map(function(timestamp) {
+        var dates = data['Date'].map(function(timestamp) 
+        {
             return new Date(timestamp).getTime();
         });
         var prices = data['Stock Price'];
         var volumes = data['Volume'];
     
         // Constructing data series for HighCharts
-        var stockPriceData = dates.map(function(date, index) {
+        var stockPriceData = dates.map(function(date, index) 
+        {
             return [date, prices[index]];
         });
     
-        var volumeData = dates.map(function(date, index) {
+        var volumeData = dates.map(function(date, index) 
+        {
             return [date, volumes[index]];
         });
     
         // Display HighCharts code
-        Highcharts.stockChart('stockCharts', {
-            rangeSelector: {
+        Highcharts.stockChart('stockCharts', 
+        {
+            rangeSelector: 
+            {
                 buttons: [{
                     type: 'all',
                     text: 'All'
@@ -498,30 +592,37 @@ document.addEventListener('DOMContentLoaded', function()
                 inputEditDateFormat: '', // Remove to date label
                 inputDateParser: null
             },            
-            title: {
+            title: 
+            {
                 text: 'Stock Price ' + stock_ticker  + ' ' + getTodayDate()
             },
-            subtitle: {
+            subtitle: 
+            {
                 text: '<a href="https://polygon.io/">Source: Polygon.io</a>',
                 useHTML: true
             },
-            xAxis: {
+            xAxis: 
+            {
                 type: 'datetime',
                 title: {
                     text: 'Date'
                 },
             },
             yAxis: [{
-                title: {
+                title: 
+                {
                     text: 'Stock Price'
                 },
-                labels: {
+                labels: 
+                {
                     format: '{value:.2f}'
                 },
                 tickAmount: 6,
                 opposite: false, // Align this yAxis on the left
-                events: {
-                    setExtremes: function (e) {
+                events: 
+                {
+                    setExtremes: function (e) 
+                    {
                         var min = e.min,
                             max = e.max,
                             dataMin = this.dataMin,
@@ -533,7 +634,8 @@ document.addEventListener('DOMContentLoaded', function()
                         tickInterval = (max - min) / 4; // Adjusted to get 5 ticks including max and min
     
                         // Generate tick positions
-                        for (var i = min; i <= max; i += tickInterval) {
+                        for (var i = min; i <= max; i += tickInterval) 
+                        {
                             tickPositions.push(i);
                         }
     
@@ -544,12 +646,16 @@ document.addEventListener('DOMContentLoaded', function()
                     }
                 }
             }, {
-                title: {
+                title: 
+                {
                     text: 'Volume'
                 },
-                labels: {
-                    formatter: function () {
-                        switch (this.value) {
+                labels: 
+                {
+                    formatter: function () 
+                    {
+                        switch (this.value) 
+                        {
                             case 0:
                                 return '0';
                             case 80000000:
@@ -575,29 +681,34 @@ document.addEventListener('DOMContentLoaded', function()
                 type: 'area',
                 color: '#1e90ff', // Adjust the color of the stock price line
                 fillColor: {
-                    linearGradient: {
+                    linearGradient: 
+                    {
                         x1: 0,
                         y1: 0,
                         x2: 0,
                         y2: 1
                     },
-                    stops: [
+                    stops: 
+                    [
                         [0, Highcharts.getOptions().colors[0]],
                         [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                     ]
                 },
                 data: stockPriceData,
-                tooltip: {
+                tooltip: 
+                {
                     valueDecimals: 2
                 }
-            }, {
+            }, 
+            {
                 name: 'Volume',
                 type: 'column',
                 color: 'black', // Change the color of the volume bars to black
                 fillColor: 'black', // Fill the volume bars with black color
                 yAxis: 1, // Use the second yAxis for this series
                 data: volumeData,
-                tooltip: {
+                tooltip: 
+                {
                     valueDecimals: 0
                 },
                 pointWidth: 4
@@ -605,27 +716,22 @@ document.addEventListener('DOMContentLoaded', function()
         });
     }
     
-    function getTodayDate() {
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-        var yyyy = today.getFullYear();
-        return yyyy + '-' + mm + '-' + dd;
-    }    
-    
+    // displays company stock news data
     function displayStockNews(data) 
     {
         var stockInfo = document.getElementById('stockNews');
         stockInfo.innerHTML = '';
     
         // Iterate through the data array
-        data.forEach(function(article) {
+        data.forEach(function(article) 
+        {
             // Create a div element for each article
             var card = document.createElement('div');
             card.classList.add('card');
     
             // Add the article image if available
-            if (article['Image']) {
+            if (article['Image']) 
+            {
                 var image = document.createElement('img');
                 image.src = article['Image'];
                 card.appendChild(image);
@@ -644,7 +750,8 @@ document.addEventListener('DOMContentLoaded', function()
             var dateString = article['Date'];
 
             // Custom function to format the date
-            function formatDate(dateString) {
+            function formatDate(dateString) 
+            {
                 var date = new Date(dateString);
                 var day = date.getDate();
                 var month = date.toLocaleString('en-US', { month: 'long' });
@@ -676,8 +783,19 @@ document.addEventListener('DOMContentLoaded', function()
         });
     }
 
+    function getTodayDate() 
+    {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+        return yyyy + '-' + mm + '-' + dd;
+    }    
+
     // displays company stock news data
-    function displayError(errorMsg) {
+    function displayError(errorMsg) 
+    {
+        console.log("in else to display error function");
         // Hide the content display element
         var contentDisplay = document.querySelector('.content-display');
         contentDisplay.style.display = 'none';

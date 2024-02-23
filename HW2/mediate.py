@@ -23,7 +23,7 @@ def get_stock_data():
     if c_response.status_code == 200:
         return c_response.json()
     else:
-        return jsonify({'error': 'Failed to fetch stock data or invalid stock ticker'})
+        return jsonify({'Error': 'No record has been found, please enter a valid symbol'})
 
 @app.route('/get_stock_summary')
 def get_stock_summary():
@@ -44,7 +44,7 @@ def get_stock_summary():
             "rt_data": rt_data
         })
     else:
-        return jsonify({'error': 'Failed to fetch stock SUMMARY data or invalid stock ticker'})
+        return jsonify({'Error': 'No record has been found, please enter a valid symbol'})
     
 @app.route('/get_stock_charts')
 def get_stock_charts():
@@ -62,7 +62,7 @@ def get_stock_charts():
     if response.status_code == 200:
         return jsonify(response.json())
     else:
-        return jsonify({'error': 'Failed to fetch stock charts or invalid stock ticker'})
+        return jsonify({'Error': 'No record has been found, please enter a valid symbol'})
 
 
 @app.route('/get_news')
@@ -79,7 +79,7 @@ def get_news():
     if response.status_code == 200:
         return response.content
     else:
-        return jsonify({'error': 'Failed to fetch stock news or invalid stock ticker'})
+        return jsonify({'Error': 'No record has been found, please enter a valid symbol'})
     
 if __name__ == '__main__':
     app.run(debug=True)
