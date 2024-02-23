@@ -10,24 +10,6 @@ app = Flask(__name__)
 def home():
     return render_template('HW2.html')
 
-from flask import jsonify
-
-@app.route('/search')
-def search():
-    stock_ticker = request.args.get('stock_ticker')
-
-    news_data = get_news(stock_ticker)
-    charts_data = get_stock_charts(stock_ticker)
-    company_data = get_stock_data(stock_ticker)
-    summary_data = get_stock_summary(stock_ticker)
-
-    return jsonify({
-        "news": news_data,
-        "charts": charts_data,
-        "company": company_data,
-        "summary": summary_data
-    })
-
 @app.route('/get_stock_data')
 def get_stock_data():
     stock_ticker = request.args.get('stock_ticker')
