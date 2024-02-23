@@ -795,8 +795,13 @@ document.addEventListener('DOMContentLoaded', function()
     // displays company stock news data
     function displayError(errorMsg) 
     {
-        console.log("in else to display error function");
-        // Hide the content display element
+        // Remove any existing error messages
+        var existingErrorMessages = document.querySelectorAll('.error-message');
+        existingErrorMessages.forEach(function(element) 
+        {
+            element.remove();
+        });
+    
         var contentDisplay = document.querySelector('.content-display');
         contentDisplay.style.display = 'none';
     
@@ -805,7 +810,8 @@ document.addEventListener('DOMContentLoaded', function()
         errorMessage.textContent = errorMsg;
         errorMessage.classList.add('error-message');
         document.body.appendChild(errorMessage);
-    }    
+    }
+       
     
 });
 
