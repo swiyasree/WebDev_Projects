@@ -435,7 +435,10 @@ document.addEventListener('DOMContentLoaded', function()
                     count: 6,
                     text: '6m'
                 }],
-                selected: 0 // Index of the button to be selected by default
+                selected: 0, // Index of the button to be selected by default
+                inputDateFormat: '', // Remove from date label
+                inputEditDateFormat: '', // Remove to date label
+                inputDateParser: null
             },            
             title: {
                 text: 'Stock Price ' + stock_ticker  + ' ' + getTodayDate()
@@ -448,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function()
                 type: 'datetime',
                 title: {
                     text: 'Date'
-                }
+                },
             },
             yAxis: [{
                 title: {
@@ -457,8 +460,31 @@ document.addEventListener('DOMContentLoaded', function()
                 labels: {
                     format: '{value:.2f}'
                 },
-                tickPositions: [180, 200, 220, 240, 260, 280], // Set custom tick positions for stock price
-                opposite: false // Align this yAxis on the left
+                tickAmount: 6,
+                opposite: false, // Align this yAxis on the left
+                events: {
+                    setExtremes: function (e) {
+                        var min = e.min,
+                            max = e.max,
+                            dataMin = this.dataMin,
+                            dataMax = this.dataMax,
+                            tickPositions = [],
+                            tickInterval;
+    
+                        // Calculate tick interval based on data range
+                        tickInterval = (max - min) / 4; // Adjusted to get 5 ticks including max and min
+    
+                        // Generate tick positions
+                        for (var i = min; i <= max; i += tickInterval) {
+                            tickPositions.push(i);
+                        }
+    
+                        // Update tick positions
+                        this.update({
+                            tickPositions: tickPositions
+                        });
+                    }
+                }
             }, {
                 title: {
                     text: 'Volume'
@@ -557,10 +583,26 @@ document.addEventListener('DOMContentLoaded', function()
             cardText.appendChild(title);
     
             // Add the article date
-            var date = document.createElement('p');
-            date.textContent = article['Date'];
-            cardText.appendChild(date);
-    
+            var dateString = article['Date'];
+
+            // Custom function to format the date
+            function formatDate(dateString) {
+                var date = new Date(dateString);
+                var day = date.getDate();
+                var month = date.toLocaleString('en-US', { month: 'long' });
+                var year = date.getFullYear();
+                return day + ' ' + month + ', ' + year;
+            }
+
+            // Create a paragraph element
+            var dateElement = document.createElement('p');
+
+            // Set its text content to the formatted date
+            dateElement.textContent = formatDate(dateString);
+
+            // Append the paragraph element to the cardText element
+            cardText.appendChild(dateElement);
+
             // Add a link to the original post
             var link = document.createElement('a');
             link.href = article['Link to Original Post'];
