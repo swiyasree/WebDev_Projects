@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, make_response
 import requests
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -9,6 +9,29 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template('HW2.html')
+
+@app.route('/search')
+def search():
+    stock_ticker = request.args.get('stock_ticker')
+    
+    company_data = dict(get_stock_data())  
+    summary_bytes = get_stock_summary().data
+    charts_bytes = get_stock_charts().data
+    news_bytes = get_news()
+
+    summary_data = json.loads(summary_bytes.decode('utf-8'))
+    charts_data = json.loads(charts_bytes.decode('utf-8'))
+    news_data = json.loads(news_bytes.decode('utf-8'))
+ 
+    # Building the data dictionary
+    data_combined = {
+        "company_data": company_data,
+        "summary_data": summary_data,
+        "charts_data": charts_data,
+        "news_data": news_data
+    }
+    
+    return jsonify(data_combined)
 
 @app.route('/get_stock_data')
 def get_stock_data():
@@ -36,7 +59,6 @@ def get_stock_summary():
     if ss_response.status_code == 200 and rt_response.status_code == 200:
         ss_data = ss_response.json() 
         rt_data = rt_response.json()
-
         return jsonify({
             "ss_data": ss_data,
             "rt_data": rt_data
