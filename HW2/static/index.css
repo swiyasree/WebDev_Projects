@@ -1,4 +1,6 @@
 body {
+  font-family: 'Open Sans';
+  font-size: 18px;
   text-align: center;
   background-repeat: no-repeat;
   background-size: 130%;
@@ -76,8 +78,8 @@ button {
   display: flex;
   align-items: center; /* Center vertically */
   justify-content: center; /* Center horizontally */
-  height: 40px;
-  width: 40px;
+  height: 35px;
+  width: 35px;
   margin-left: 10px; /* Add left padding */
   margin-top: 10px; /* Add top padding */
 }

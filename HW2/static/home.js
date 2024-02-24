@@ -514,7 +514,6 @@ document.addEventListener('DOMContentLoaded', function()
             trendBox.style.backgroundColor = index === 0 || index === trendValues.length - 1 ? 'white' : trend.color;
             trendBox.style.color = index === 0 ? '#ed2937' : index === trendValues.length - 1 ? '#02ff7f' : 'white';
             trendBox.style.fontWeight = 'lighter'; // Apply lighter font weight
-            trendBox.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Apply specified font family
             trendBox.style.padding = '10px';
             trendBox.style.fontSize = '18px';
         
@@ -526,7 +525,6 @@ document.addEventListener('DOMContentLoaded', function()
         rectrends.textContent = data['rectrends'];
         rectrends.style.fontWeight = 'lighter'; // Apply lighter font weight
         rectrends.style.fontSize = '18px';
-        rectrends.style.fontFamily = 'Nimbus Sans Novus Std T Medium SC, Arial, sans-serif'; // Apply specified font family
         stockInfo.appendChild(rectrends);
     }       
           
