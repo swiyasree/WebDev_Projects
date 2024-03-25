@@ -1,0 +1,26 @@
+<div class="modal">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <button class="close-button" (click)="closeModal()">Close Modal</button>
+    <p>Source: {{ data.source }}</p>
+    <p>Date: {{ data.datetime }}</p>
+    <hr>
+    <h2>{{ data.headline }}</h2>
+    <p>Summary: {{ data.summary }}</p>
+    <p>For more details click here <a href="{{ data.url }}" target="_blank">Read more</a></p>
+<div>
+    <!-- Twitter Share Button -->
+    <a class="twitter-share-button"
+      href="https://twitter.com/intent/tweet?url={{ data.url }}&text={{ data.headline }}"
+      target="_blank">
+      Twitter
+    </a>
+    <!-- Facebook Share Button -->
+    <a class="facebook-share-button"
+      href="https://www.facebook.com/sharer/sharer.php?u={{ data.url }}"
+      target="_blank">
+      Facebook
+    </a>
+</div>
+  </div>
+</div>

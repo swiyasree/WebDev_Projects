@@ -1,0 +1,219 @@
+<form
+  id="stockform"
+  (ngSubmit)="search_results()"
+  method="get"
+  #stockForm="ngForm"
+>
+  <div id="inputWrapper">
+    <div class="title-for-form">STOCK SEARCH</div>
+    <div class="input-container">
+      <input
+        matInput
+        type="text"
+        id="stock_ticker"
+        name="stock_ticker"
+        [matAutocomplete]="auto"
+        [(ngModel)]="tickerValue"
+        (input)="onInput()"
+        placeholder="Enter Stock Ticker Symbol"
+        required
+        #tickerInput="ngModel"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        [panelWidth]="autocompleteWidth"
+      >
+        <mat-option
+          *ngFor="let option of autocompleteOptions"
+          [value]="option.symbol"
+        >
+          {{ option.symbol }} | {{ option.description }}
+        </mat-option>
+      </mat-autocomplete>
+      <button type="submit" class="search-icon button">
+        <i class="material-icons">search</i>
+      </button>
+      <button type="button" class="clear-icon button" (click)="clear_results()">
+        <i class="material-icons">clear</i>
+      </button>
+    </div>
+  </div>
+  <div *ngIf="stockForm.submitted && tickerInput.invalid">
+    <p>
+      Please enter a valid sticker.
+      <button (click)="clearInvalidTicker()">Close</button>
+    </p>
+  </div>
+  <div *ngIf="showNoDataMessage">
+    <p>
+      No data found. Please enter a valid Ticker.
+      <button (click)="clearWrongInput()">Close</button>
+    </p>
+  </div>
+</form>
+<div *ngIf="boughtSymbol">
+  <p>
+    {{ boughtSymbol }} bought successfully.
+    <button (click)="closeboughtMessage()">Close</button>
+  </p>
+</div>
+<div *ngIf="soldSymbol">
+  <p>
+    {{ soldSymbol }} sold successfully.
+    <button (click)="closesoldMessage()">Close</button>
+  </p>
+</div>
+<div class="center-container">
+<div class="search_data">
+<div *ngIf="submitted && combinedData" class="combined-data">
+  <div *ngFor="let searchItem of combinedData.search_result">
+    <h3>Description: {{ searchItem.description }}</h3>
+    <ul>
+      <li>Count: {{ searchItem.count }}</li>
+      <li>Display Symbol: {{ searchItem.displaySymbol }}</li>
+      <li>Symbol: {{ searchItem.symbol }}</li>
+      <li>Type: {{ searchItem.type }}</li>
+    </ul>
+  </div>
+  <div class="profile-info">
+    <div class="profile-data">
+      <h1 class="header-with-star">
+        {{ combinedData.profile_data.symbol }}
+        <span class="star-container" (click)="toggleStar()">
+          <i class="bi bi-star star" [ngClass]="{ filled: isStarFilled }"></i>
+        </span>
+      </h1>
+      <p>{{ combinedData.profile_data.company_name }}</p>
+      <p>{{ combinedData.profile_data.exchange }}</p>
+      <div class="button-container">
+        <button (click)="buystock()" id="buy" mat-flat-button>Buy</button>
+        <button (click)="sellstock()" id="sell" mat-flat-button>Sell</button>
+      </div>
+    </div>
+    <div class="logo-data">
+      <div class="logo-container">
+        <img src="{{ combinedData.profile_data.logo }}" alt="Company Logo" />
+      </div>
+      <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
+        {{ isMarketOpen() }}
+      </p>
+    </div>
+    <div class="quote-data">
+      <div class="quote-info">
+        <h1
+          [ngClass]="{
+            negative: combinedData.quote_data.change < 0,
+            positive: combinedData.quote_data.change > 0
+          }"
+        >
+          {{ combinedData.quote_data.last_price }}
+        </h1>
+        <h2
+          [ngClass]="{
+            negative: combinedData.quote_data.change < 0,
+            positive: combinedData.quote_data.change > 0
+          }"
+        >
+          {{ combinedData.quote_data.change }} (
+          {{ combinedData.quote_data.percent_change }}%)
+        </h2>
+        <p>{{ formattedDateTime }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="stockForm.submitted || tickerValue">
+  <mat-tab-group #tabGroup [selectedIndex]="0" (selectedTabChange)="handleTabChange($event)">
+    <mat-tab label="Summary">
+      <ng-template matTabContent>
+        <div *ngIf="summaryData" class="tab-content">
+            <p>High Price: {{ summaryData.high_price }}</p>
+            <p>Low Price: {{ summaryData.low_price }}</p>
+            <p>Open Price: {{ summaryData.open_price }}</p>
+            <p>Previous Close Price: {{ summaryData.previous_close_price }}</p>
+            <div class="about">
+              <h3>About the company</h3>
+              <p>Company Start Date: {{ summaryData.company_start_date }}</p>
+              <p>Company Website URL: {{ summaryData.company_website_url }}</p>
+              <p>Company Industry: {{ summaryData.company_industry }}</p>
+              <h3>Peers:</h3>
+              <ul>
+                <li *ngFor="let peer of summaryData.peers">{{ peer }}</li>
+              </ul>
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Top News">
+      <ng-template matTabContent>
+        <div *ngIf="topNewsData" class="tab-content">
+    <div class="card-container">
+      <div
+        class="card"
+        *ngFor="let newsItem of topNewsData"
+        (click)="openNewsModal(newsItem)"
+      >
+        <img
+          class="card-image"
+          src="{{ newsItem.thumbnail }}"
+          alt="Thumbnail"
+        />
+        <h3 class="card-title">{{ newsItem.headline }}</h3>
+      </div>
+    </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Charts">
+      <ng-template matTabContent>
+        <div class="tab-content">
+          <div id="charts-container"></div>
+        </div>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Insights">
+      <ng-template matTabContent>
+        <div *ngIf="insightsData" class="tab-content">
+          <div *ngIf="insightsData" class="insights">
+            <table>
+              <tr>
+                <th>{{  combinedData.profile_data.company_name }}</th>
+                <th>MSPR</th>
+                <th>Change</th>
+              </tr>
+              <tr>
+                <td style="font-weight: bold;">Total</td>
+                <td>{{ insightsData.Total_MSPR }}</td>
+                <td>{{ insightsData.Total_Change }}</td>
+              </tr>
+              <tr>
+                <td style="font-weight: bold;">Positive</td>
+                <td>{{ insightsData.Positive_MSPR }}</td>
+                <td>{{ insightsData.Positive_Change }}</td>
+              </tr>
+              <tr>
+                <td style="font-weight: bold;">Negative</td>
+                <td>{{ insightsData.Negative_MSPR }}</td>
+                <td>{{ insightsData.Negative_Change }}</td>
+              </tr>
+            </table>
+            <div style="display: flex;">
+              <highcharts-chart
+                  [Highcharts]="highcharts" 
+                  [options]="chartOptions" 
+                  style="width: 50%; height: 400px; display: block;">
+              </highcharts-chart>
+              <highcharts-chart
+                  [Highcharts]="highcharts" 
+                  [options]="historicalChartOptions" 
+                  style="width: 50%; height: 400px; display: block;">
+              </highcharts-chart>
+          </div>          
+          </div>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+</div>
+</div>

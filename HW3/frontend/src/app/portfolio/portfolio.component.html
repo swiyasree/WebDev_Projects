@@ -1,0 +1,26 @@
+<div *ngIf="boughtSymbol">
+  <p>{{ boughtSymbol }} bought successfully. <button (click)="closeboughtMessage()">Close</button></p>
+</div>
+<div *ngIf="soldSymbol">
+  <p>{{ soldSymbol }} sold successfully. <button (click)="closesoldMessage()">Close</button></p>
+</div>
+<div *ngIf="portfolioData && portfolioData.length > 0">
+  <h1>My Portfolio</h1>
+  <h2>Money in Wallet: {{ currentAmount }}</h2>
+  <div *ngFor="let item of portfolioData">
+    <div *ngIf="item.quantity > 1">
+      <p>Symbol: {{ item.symbol }}</p>
+      <p>Company: {{ item.company }}</p>
+      <p>Quantity: {{ item.quantity }}</p>
+      <p>Avg. Cost/ Share: {{ item.avgPrice }}</p>
+      <p>Total Cost: {{ item.totalPrice }}</p>
+      <p>Change: {{ item.change }}</p>
+      <p>Current Price: {{ item.currentPrice }}</p>
+      <p>Market Value: {{ item.marketPrice }}</p>
+      <button (click)="buyStock(item.symbol)">Buy</button>
+      <button (click)="sellStock(item.symbol)">Sell</button>
+      <hr>
+    </div>
+  </div>
+  <p *ngIf="isAllStocksQuantityOneOrLess()">Currently you don't have any stock.</p>
+</div>

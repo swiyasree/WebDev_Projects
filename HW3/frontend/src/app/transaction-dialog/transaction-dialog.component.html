@@ -1,0 +1,19 @@
+<div class="dialog-container">
+  <h2 class="dialog-title">{{ data.title }}</h2>
+  <p class="symbol-label">Symbol: {{ data.symbol }}</p>
+  <p class="current-price-label">Current Price: {{ data.currentPrice }}</p>
+  <h3>Money in Wallet: {{ data.balance }}</h3>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Quantity</mat-label>
+    <input matInput type="number" placeholder="Enter quantity" [(ngModel)]="quantity" (input)="checkTotal()">
+  </mat-form-field>
+  
+  <p>Total: {{ getTotal() }}</p>
+<button *ngIf="data.action === 'buy'" [disabled]="quantity <= 0 || totalExceedsBalance" (click)="buy()">Buy</button>
+
+
+<!-- Display "Sell" button if action is 'sell' -->
+<button *ngIf="data.action === 'sell'" [disabled]="quantity <= 0" (click)="sell()">Sell</button>
+  <p *ngIf="totalExceedsBalance">Not enough money in wallet!</p>
+</div>

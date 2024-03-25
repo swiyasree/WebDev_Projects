@@ -1,0 +1,25 @@
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .card-item {
+    margin: 20px;
+    width: 300px;
+  }
+  
+  mat-card {
+    border: 1px solid #e0e0e0; /* Optional: Add a border to the cards */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow effect */
+  }
+  
+  mat-card-content {
+    padding: 15px;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  

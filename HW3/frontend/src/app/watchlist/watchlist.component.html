@@ -1,0 +1,22 @@
+<h2>My Watchlist</h2>
+
+<div *ngIf="watchlistData && watchlistData.length > 0; else noDataMessage">
+  <div *ngFor="let item of watchlistData">
+    <button type="button" class="clear-icon button" (click)="removeFromWatchlist(item._id)"><i class="material-icons">clear</i></button>
+    <div>
+      <h2>{{ item.profile_data.company_name }}</h2>
+      <p>Symbol: {{ item.profile_data.symbol }}</p>
+      <p>Exchange: {{ item.profile_data.exchange }}</p>
+    </div>
+    <div>
+      <p>Last Price: {{ item.quote_data.last_price }}</p>
+      <p>Change: {{ item.quote_data.change }}</p>
+      <p>Percent Change: {{ item.quote_data.percent_change }}</p>
+      <p>Timestamp: {{ item.quote_data.timestamp | date }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #noDataMessage>
+  <p>Currently you don't have any stock in your watchlist.</p>
+</ng-template>
