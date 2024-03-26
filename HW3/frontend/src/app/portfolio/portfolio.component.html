@@ -1,26 +1,58 @@
-<div *ngIf="boughtSymbol">
-  <p>{{ boughtSymbol }} bought successfully. <button (click)="closeboughtMessage()">Close</button></p>
-</div>
-<div *ngIf="soldSymbol">
-  <p>{{ soldSymbol }} sold successfully. <button (click)="closesoldMessage()">Close</button></p>
-</div>
-<div *ngIf="portfolioData && portfolioData.length > 0">
-  <h1>My Portfolio</h1>
-  <h2>Money in Wallet: {{ currentAmount }}</h2>
-  <div *ngFor="let item of portfolioData">
-    <div *ngIf="item.quantity > 1">
-      <p>Symbol: {{ item.symbol }}</p>
-      <p>Company: {{ item.company }}</p>
-      <p>Quantity: {{ item.quantity }}</p>
-      <p>Avg. Cost/ Share: {{ item.avgPrice }}</p>
-      <p>Total Cost: {{ item.totalPrice }}</p>
-      <p>Change: {{ item.change }}</p>
-      <p>Current Price: {{ item.currentPrice }}</p>
-      <p>Market Value: {{ item.marketPrice }}</p>
-      <button (click)="buyStock(item.symbol)">Buy</button>
-      <button (click)="sellStock(item.symbol)">Sell</button>
-      <hr>
+<div class="container">
+  <div *ngIf="boughtSymbol" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+    <strong>{{ boughtSymbol }}</strong> bought successfully.
+    <button type="button" class="close" aria-label="Close" (click)="closeboughtMessage()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div *ngIf="soldSymbol" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+    <strong>{{ soldSymbol }}</strong> sold successfully.
+    <button type="button" class="close" aria-label="Close" (click)="closesoldMessage()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  
+  <div *ngIf="portfolioData && portfolioData.length > 0">
+    <h1>My Portfolio</h1>
+    <h2>Money in Wallet: ${{ currentAmount }}</h2>
+    <div *ngFor="let item of portfolioData" class="card mb-3">
+      <div class="card-header">
+        <p class="card-title inline">{{ item.symbol }}</p>
+        <p class="card-subtitle inline">{{ item.company }}</p>
+      </div>      
+      <div class="card-body grid-container">
+        <div class="grid-item">
+          <p>Quantity:</p>
+          <p>Avg. Cost/ Share:</p>
+          <p>Total Cost:</p>
+        </div>
+        <div class="grid-item">
+          <p>{{ item.quantity }}</p>
+          <p>{{ item.avgPrice }}</p>
+          <p>{{ item.totalPrice }}</p>
+        </div>
+        <div class="grid-item">
+          <p>Change:</p>
+          <p>Current Price:</p>
+          <p>Market Value:</p>
+        </div>
+        <div class="grid-item">
+          <p>{{ item.change }}</p>
+          <p>{{ item.currentPrice }}</p>
+          <p>{{ item.marketPrice }}</p>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button (click)="buyStock(item.symbol)" class="btn btn-primary">Buy</button>
+        <button (click)="sellStock(item.symbol)" class="btn btn-danger">Sell</button>
+      </div>
+    </div>
+    <div *ngIf="isAllStocksQuantityOneOrLess()" class="card mb-3">
+      <div class="card-body">
+        <p>Currently you don't have any stock.</p>
+      </div>
     </div>
   </div>
-  <p *ngIf="isAllStocksQuantityOneOrLess()">Currently you don't have any stock.</p>
 </div>

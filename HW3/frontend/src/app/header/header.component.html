@@ -86,8 +86,8 @@
       <p>{{ combinedData.profile_data.company_name }}</p>
       <p>{{ combinedData.profile_data.exchange }}</p>
       <div class="button-container">
-        <button (click)="buystock()" id="buy" mat-flat-button>Buy</button>
-        <button (click)="sellstock()" id="sell" mat-flat-button>Sell</button>
+        <button (click)="buystock()" class="btn btn-success" style="margin-right: 15px;">Buy</button>
+        <button (click)="sellstock()" class="btn btn-danger">Sell</button>
       </div>
     </div>
     <div class="logo-data">
@@ -117,7 +117,7 @@
           {{ combinedData.quote_data.change }} (
           {{ combinedData.quote_data.percent_change }}%)
         </h2>
-        <p>{{ formattedDateTime }}</p>
+        <p>{{ dateAndtime }}</p>
       </div>
     </div>
   </div>
@@ -127,43 +127,50 @@
     <mat-tab label="Summary">
       <ng-template matTabContent>
         <div *ngIf="summaryData" class="tab-content">
+          <div class="pricesContainer">
             <p>High Price: {{ summaryData.high_price }}</p>
             <p>Low Price: {{ summaryData.low_price }}</p>
             <p>Open Price: {{ summaryData.open_price }}</p>
-            <p>Previous Close Price: {{ summaryData.previous_close_price }}</p>
-            <div class="about">
+            <p>Prev. Price: {{ summaryData.previous_close_price }}</p>
+          </div>
+            <div class="aboutCaontainer">
               <h3>About the company</h3>
-              <p>Company Start Date: {{ summaryData.company_start_date }}</p>
-              <p>Company Website URL: {{ summaryData.company_website_url }}</p>
-              <p>Company Industry: {{ summaryData.company_industry }}</p>
-              <h3>Peers:</h3>
-              <ul>
-                <li *ngFor="let peer of summaryData.peers">{{ peer }}</li>
-              </ul>
+              <p>IPO Start Date: {{ summaryData.company_start_date }}</p>
+              <p>Industry: {{ summaryData.company_industry }}</p>
+              <p>Company Website URL: <a href="{{ summaryData.company_website_url }}" target="_blank">{{ summaryData.company_website_url }}</a></p>
+              <div class="peers-container">
+                <h3>Company Peers:</h3>
+                <ul>
+                  <ng-container *ngFor="let peer of summaryData.peers; let last = last">
+                    <li style="display: inline;">{{ peer }}</li>
+                    <span *ngIf="!last">, </span>
+                  </ng-container>
+                </ul>
+              </div>                           
+          </div>
+          <div class="hourlychartContainer">
           </div>
         </div>
       </ng-template>
     </mat-tab>
     <mat-tab label="Top News">
       <ng-template matTabContent>
-        <div *ngIf="topNewsData" class="tab-content">
-    <div class="card-container">
-      <div
-        class="card"
-        *ngFor="let newsItem of topNewsData"
-        (click)="openNewsModal(newsItem)"
-      >
-        <img
-          class="card-image"
-          src="{{ newsItem.thumbnail }}"
-          alt="Thumbnail"
-        />
-        <h3 class="card-title">{{ newsItem.headline }}</h3>
-      </div>
-    </div>
+        <div *ngIf="topNewsData" class="card-container">
+          <div class="row">
+            <div class="col-md-6 mb-4" *ngFor="let newsItem of topNewsData">
+              <div class="card" (click)="openNewsModal(newsItem)">
+                <div class="image-container">
+                  <img class="card-img-top" [src]="newsItem.thumbnail" alt="Thumbnail">
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">{{ newsItem.headline }}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </ng-template>
-    </mat-tab>
+    </mat-tab>          
     <mat-tab label="Charts">
       <ng-template matTabContent>
         <div class="tab-content">

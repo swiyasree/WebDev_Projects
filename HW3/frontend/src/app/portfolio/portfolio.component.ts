@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { TransactionDialogComponent } from '../transaction-dialog/transaction-dialog.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Fallback implementation of sessionStorage
 const sessionStorage = typeof window !== 'undefined' ? window.sessionStorage : {
@@ -16,7 +17,7 @@ const sessionStorage = typeof window !== 'undefined' ? window.sessionStorage : {
 @Component({
   selector: 'app-portfolio',
   standalone: true, 
-  imports: [NgClass, ReactiveFormsModule, FormsModule, NgIf, HttpClientModule, CommonModule, TransactionDialogComponent],
+  imports: [NgClass, ReactiveFormsModule, FormsModule, NgIf, HttpClientModule, CommonModule, TransactionDialogComponent, NgbModule],
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.css']
 })

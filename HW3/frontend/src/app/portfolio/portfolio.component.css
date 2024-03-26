@@ -1,25 +1,75 @@
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-  
-  .card-item {
-    margin: 20px;
-    width: 300px;
-  }
-  
-  mat-card {
-    border: 1px solid #e0e0e0; /* Optional: Add a border to the cards */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow effect */
-  }
-  
-  mat-card-content {
-    padding: 15px;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
+.container {
+  width: 60%;
+  margin: 0 auto; /* Center the container */
+}
+
+h1, h2 {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin-top: 30px;
+}
+
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+}
+
+.card-header .inline {
+  display: inline; /* Make p tags inline */
+  margin-right: 10px; /* Add margin between p tags */
+}
+
+.card-body {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+}
+
+.grid-item {
+  padding: 10px;
+  text-align: left;
+}
+
+.grid-item p {
+  margin: 5px 0;
+}
+
+.left-column,
+.right-column {
+  flex: 1;
+}
+
+.left-column p,
+.right-column p {
+  margin: 0;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  text-align: left;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 5px;
+}
+
+.card-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-top: -5px;
+}
+
+.btn {
+  margin-right: 10px;
+}

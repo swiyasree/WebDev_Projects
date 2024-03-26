@@ -71,7 +71,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   private inputSubject = new Subject<string>();
   chartOptions: any;
   historicalChartOptions: any;
-  formattedDateTime: any;
+  dateAndtime: any;
   
   constructor(private http: HttpClient, private dialog: MatDialog) {
     this.inputSubject.pipe(
@@ -93,8 +93,11 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit() {
+    this.loadInitialData();
 
-    this.loadData();
+    interval(15000).subscribe(() => {
+      this.getCurrentDateTime();
+    });
 
     this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
       (data) => {
@@ -106,6 +109,12 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       }
     );
 
+    const marketState = this.isMarketOpen();
+
+    if (marketState === 'Market is Open') {
+      this.startAutoUpdate();
+    }
+
     // Retrieve data from sessionStorage if available
     const storedData = sessionStorage.getItem('headerComponentData');
     if (storedData) {
@@ -116,7 +125,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.summaryData = parsedData.summaryData;
       this.topNewsData = parsedData.topNewsData;
       this.insightsData = parsedData.insightsData;
-      this.formattedTimestamp = this.formatTimestamp(this.combinedData.quote_data.timestamp);
+      this.formattedTimestamp = (this.combinedData.quote_data.timestamp * 1000).toLocaleString();
     }
 
     setTimeout(() => 
@@ -132,8 +141,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   }
 
-  ngOnDestroy() {
-    // Unsubscribe from the refresh interval when component is destroyed
+
+   ngOnDestroy() {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
@@ -144,18 +153,42 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.initializeHighcharts();
   }
 
-  loadData() 
-  {
-    if(this.isMarketOpen() === 'Market is Open') 
-    {
-      this.search_results(); 
-      this.summary();
-    }
-    else 
-    {
-      this.getCurrentDateTime();
+  loadInitialData() {
+    // Load initial data such as dateAndtime, balance, and search results
+    this.getCurrentDateTime();
+    this.loadData();
+  }
+
+  loadData() {
+    if (this.isMarketOpen() === 'Market is Open') {
+      this.search_results(); // Load search results
+      this.summary(); // Load summary data
     }
   }
+
+  startAutoUpdate() {
+    // Start auto-update interval for search_results and summary
+    this.refreshSubscription = interval(15000).subscribe(() => {
+      this.loadData();
+    });
+  }
+
+  loadFormattedTimestamp() {
+    // Make HTTP request to fetch the formatted timestamp
+    this.http.get<any>('http://localhost:5172/?ticker=' + this.tickerValue).subscribe(
+        (data) => {
+            this.combinedData = data;
+            const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
+            this.formattedTimestamp = timestamp.toLocaleString(); // Format as YYYY-MM-DD HH:mm:ss
+
+            // After setting the timestamp, you may proceed with other initialization logic
+            this.selectSummaryTab();
+        },
+        (error) => {
+            console.error("Error fetching formatted timestamp:", error);
+        }
+    );
+}
 
   private async initializeHighcharts(): Promise<void> {
     await import('highcharts/highstock'); // Import Highcharts core
@@ -175,8 +208,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   getCurrentDateTime() 
   {
-    this.formattedDateTime = moment().format('YYYY-MM-DD HH:mm:ss');
-    console.log('Current date and time is:', this.formattedDateTime);
+    this.dateAndtime = moment().format('YYYY-MM-DD HH:mm:ss');
   }
 
   handleTabChange(event: MatTabChangeEvent): void {
@@ -260,9 +292,10 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     });
   }
 
-  selectSummaryTab(): void {
-    console.log('displaying summary data once again');
-    if (this.tabGroup) {
+  selectSummaryTab(): void 
+  {
+    if (this.tabGroup) 
+    {
       this.tabGroup.selectedIndex = 0; // Index of the summary tab
       const fakeEvent = { index: 0 } as MatTabChangeEvent;
       this.handleTabChange(fakeEvent); // Call handleTabChange method with a simulated event
@@ -279,10 +312,14 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     this.http.get<any>(`http://localhost:5172/?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.combinedData = data;
+        // const timestamp = 1711374485; // Unix timestamp in seconds
+        // const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
 
+        // console.log(`Local Time: ${date.toLocaleString()}`);
+        console.log('time closed or open', this.combinedData.quote_data.timestamp);
         // Extract and format the timestamp
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
-        this.formattedTimestamp = timestamp.toISOString().slice(0, 19).replace('T', ' '); // Format as YYYY-MM-DD HH:mm:ss
+        this.formattedTimestamp = timestamp.toLocaleString(); // Format as YYYY-MM-DD HH:mm:ss
 
         if (!this.combinedData.profile_data || Object.keys(this.combinedData.profile_data).length === 0) {
           this.handleEmptyData();
@@ -691,30 +728,36 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     });
   }
 
-  formatTimestamp(timestamp: number): string {
-    const date = new Date(timestamp * 1000);
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    const hours = ('0' + date.getHours()).slice(-2);
-    const minutes = ('0' + date.getMinutes()).slice(-2);
-    const seconds = ('0' + date.getSeconds()).slice(-2);
-    return `${year}:${month}:${day} ${hours}:${minutes}:${seconds}`;
-  }
-
   isMarketOpen() {
-    // Get the current timestamp
-    const currentTimestamp = new Date().getTime();
+    let timeClosedOrOpen: string;
+    const fiveMinutesInMillis = 5 * 60 * 1000;
+    const currentTimestamp = Date.now();
 
-    // Parse the formatted timestamp and convert it to a timestamp
-    const formattedTimestamp = new Date(this.formattedTimestamp).getTime();
-
-    // Check if the current time is the same as the formatted timestamp
-    if (currentTimestamp === formattedTimestamp) {
-      return 'Market is Open';
+    if (typeof this.formattedTimestamp === 'string') {
+        const isNumericString = /^\d{1,3}(,\d{3})*$/.test(this.formattedTimestamp);
+        if (isNumericString) {
+            const numericTimestamp = parseFloat(this.formattedTimestamp.replace(/,/g, ''));
+            timeClosedOrOpen = new Date(numericTimestamp).toLocaleString();
+            console.log('convert num to time:', timeClosedOrOpen);
+        } else {
+            timeClosedOrOpen = this.formattedTimestamp;
+            console.log('no conversion:', timeClosedOrOpen);
+        }
+    } else if (typeof this.formattedTimestamp === 'number') {
+        timeClosedOrOpen = new Date(this.formattedTimestamp).toLocaleString();
+        console.log('convert num to time:', timeClosedOrOpen);
     } else {
-      return 'Market Closed on ' + this.formattedTimestamp;
+        throw new Error('Invalid timestamp format');
     }
-  }
+
+    if (Math.abs(currentTimestamp - new Date(this.formattedTimestamp).getTime()) <= fiveMinutesInMillis) {
+        return 'Market is Open';
+    } else {
+        return 'Market Closed on ' + timeClosedOrOpen;
+    }
+}
+
+
+
 
 }

@@ -185,15 +185,59 @@ input[type="text"] {
     justify-content: space-between;
   }
   
-  .card {
-    width: calc(50% - 20px); /* 50% width minus margin */
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    box-sizing: border-box;
-  }
+/* Card styles */
+.card {
+  display: flex; /* Use flexbox to align items */
+  flex-direction: row; /* Align items horizontally */
+  border: 1px solid #dee2e6; /* Add border for better visual separation */
+}
+
+.image-container {
+  width: 150px; /* Set fixed width for the image container */
+  height: 100px; /* Set fixed height for the image container */
+  background-color: #f6f6f6;
+}
+
+.card-img-top {
+  width: 110px; /* Ensure the image fills the container horizontally */
+  height: 60px; /* Ensure the image fills the container vertically */
+  object-fit: fill; /* Cover the entire area */
+  margin-left: 15%;
+  margin-top: 15%;
+  border-radius: 5px;
+}
+
+.card-body {
+  flex-grow: 1;
+  background-color: #f6f6f6;
+}
+
+.card-title {
+  text-align: center;
+  font-size: 12px; /* Adjust font size as needed */
+  margin-left: 10px; /* Remove default margin */
+}
+
+.card-container {
+  margin-top: 20px;
+}
+/* Container styles */
+.container {
+  padding: 20px; /* Add padding around the cards */
+}
+
+/* Row styles */
+.row {
+  margin-left: -15px; /* Offset negative margin added by Bootstrap */
+  margin-right: -15px; /* Offset negative margin added by Bootstrap */
+}
+
+/* Column styles */
+.col-md-6 {
+  padding-left: 15px; /* Offset the padding added by Bootstrap */
+  padding-right: 15px; /* Offset the padding added by Bootstrap */
+}
+
   
   @media (max-width: 768px) {
     .card {
