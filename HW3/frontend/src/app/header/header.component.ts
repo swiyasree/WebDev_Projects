@@ -99,7 +99,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.getCurrentDateTime();
     });
 
-    this.http.get<any>('/currentBalance').subscribe(
+    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
       (data) => {
         this.balanceAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -175,7 +175,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   loadFormattedTimestamp() {
     // Make HTTP request to fetch the formatted timestamp
-    this.http.get<any>('/?ticker=' + this.tickerValue).subscribe(
+    this.http.get<any>('http://localhost:5172/?ticker=' + this.tickerValue).subscribe(
         (data) => {
             this.combinedData = data;
             const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
@@ -237,7 +237,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   fetchAutocompleteOptions(input: string) {
-    return this.http.get<any>(`/autocomplete?input=${input}`);
+    return this.http.get<any>(`http://localhost:5172/autocomplete?input=${input}`);
   }
 
   clear_results() {
@@ -309,7 +309,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     }
 
     this.submitted = true;
-    this.http.get<any>(`/?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.combinedData = data;
         // const timestamp = 1711374485; // Unix timestamp in seconds
@@ -351,7 +351,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       return;
     }
 
-    this.http.get<any>(`/summary?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/summary?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.summaryData = data; // Store summary data in the variable
         console.log('summarydata;: ', this.summaryData);
@@ -367,7 +367,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`/topnews?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/topnews?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.topNewsData = data; // Assign response data to topNewsData property
       },
@@ -382,7 +382,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`/charts?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/charts?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.createChart(data);
 
@@ -505,7 +505,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`/insights?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/insights?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.insightsData = data;
 
@@ -672,7 +672,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   sendDataToBackend() {
     // Send the combinedData to the backend with route '/watchlist'
-    this.http.post<any>('/watchlist', this.combinedData).subscribe(
+    this.http.post<any>('http://localhost:5172/watchlist', this.combinedData).subscribe(
       (response) => {
         console.log("Data sent to backend successfully:", response);
       },

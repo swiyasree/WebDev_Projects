@@ -51,7 +51,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   fetchPortfolioData() {
-    this.http.get<any>('/portfolio').subscribe(
+    this.http.get<any>('http://localhost:5172/portfolio').subscribe(
       (data) => {
         this.portfolioData = data;
       },
@@ -62,7 +62,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   fetchCurrentBalance() {
-    this.http.get<any>('/currentBalance').subscribe(
+    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
       (data) => {
         this.currentAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -80,7 +80,7 @@ export class PortfolioComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`/?ticker=${symbol}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/?ticker=${symbol}`).subscribe(
       (data) => {
         this.combinedData = data;
         // Store the search results in sessionStorage
@@ -122,7 +122,7 @@ export class PortfolioComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`/?ticker=${symbol}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/?ticker=${symbol}`).subscribe(
       (data) => {
         this.combinedData = data;
         // Store the search results in sessionStorage

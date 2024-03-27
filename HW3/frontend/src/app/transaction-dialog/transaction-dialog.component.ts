@@ -65,7 +65,7 @@ export class TransactionDialogComponent {
       symbol: this.data.symbol
     };
     // Call backend API to buy
-    this.http.post<any>('/portfolio', requestData)
+    this.http.post<any>('http://localhost:5172/portfolio', requestData)
       .subscribe({
         next: () => {
           this.dialogRef.close();
@@ -97,7 +97,7 @@ export class TransactionDialogComponent {
     };
   
     // Call backend API to sell
-    this.http.post<any>('/portfolio', requestData)
+    this.http.post<any>('http://localhost:5172/portfolio', requestData)
       .subscribe({
         next: () => {
           this.dialogRef.close();

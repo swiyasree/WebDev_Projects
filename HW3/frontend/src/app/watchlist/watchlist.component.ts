@@ -19,7 +19,7 @@ export class WatchlistComponent implements OnInit {
 
   ngOnInit(): void {
     // Fetch watchlist data from the backend
-    this.http.get<any[]>('/watchlist')
+    this.http.get<any[]>('http://localhost:5172/watchlist')
       .subscribe(data => 
         {
           this.watchlistData = data;
@@ -28,7 +28,7 @@ export class WatchlistComponent implements OnInit {
 
   removeFromWatchlist(id: string) {
     // Make a DELETE request to remove the entry from the watchlist
-    this.http.delete<any>(`/watchlist/${id}`)
+    this.http.delete<any>(`http://localhost:5172/watchlist/${id}`)
       .subscribe(response => {
         console.log("Entry removed successfully:", response);
         // Remove the deleted entry from the watchlistData array

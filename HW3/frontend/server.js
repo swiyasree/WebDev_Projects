@@ -8,12 +8,10 @@ const moment = require('moment');
 
 const hApi = '7dEn5T3jjmb21Ef1NDWKedyMsaycmj4Z';
 const fApi = 'cn18egpr01qvjam1s380cn18egpr01qvjam1s38g';
-const port = process.env.PORT;
 let lastTickerValue = '';
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
 
 var CONNECTION_STRING = "mongodb+srv://brundaminampally:2136919183@sree.dpmn3m3.mongodb.net/?retryWrites=true&w=majority&appName=Sree";
 var DatabaseName = "Stock_data";
@@ -21,7 +19,7 @@ var database;
 
 app.use(bodyParser.json()); 
 
-app.listen(process.env.PORT, () => {
+app.listen(5172, () => {
   MongoClient.connect(CONNECTION_STRING, (error, client) => {
     if (error) {
       console.error("Error connecting to MongoDB:", error);
