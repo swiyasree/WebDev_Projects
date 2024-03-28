@@ -51,7 +51,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   fetchPortfolioData() {
-    this.http.get<any>('http://localhost:5172/portfolio').subscribe(
+    this.http.get<any>('stocksearchon.azurewebsites.net/portfolio').subscribe(
       (data) => {
         this.portfolioData = data;
       },
@@ -62,7 +62,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   fetchCurrentBalance() {
-    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
+    this.http.get<any>('stocksearchon.azurewebsites.net/currentBalance').subscribe(
       (data) => {
         this.currentAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -80,7 +80,7 @@ export class PortfolioComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:5172/?ticker=${symbol}`).subscribe(
+    this.http.get<any>(`stocksearchon.azurewebsites.net/?ticker=${symbol}`).subscribe(
       (data) => {
         this.combinedData = data;
         // Store the search results in sessionStorage
@@ -104,9 +104,11 @@ export class PortfolioComponent implements OnInit {
         });
       
         dialogRef.afterClosed().subscribe(result => {
+
           console.log('The dialog was closed');
           this.boughtSymbol = symbol;
-          this.ngOnInit()
+          this.fetchPortfolioData();
+          this.ngOnInit();
         });
       },
       (error) => {
@@ -122,7 +124,7 @@ export class PortfolioComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:5172/?ticker=${symbol}`).subscribe(
+    this.http.get<any>(`stocksearchon.azurewebsites.net/?ticker=${symbol}`).subscribe(
       (data) => {
         this.combinedData = data;
         // Store the search results in sessionStorage
@@ -148,7 +150,8 @@ export class PortfolioComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
           console.log('The dialog was closed');
           this.soldSymbol = symbol;
-          this.ngOnInit()
+          this.fetchPortfolioData();
+          this.ngOnInit();
         });
       },
       (error) => {

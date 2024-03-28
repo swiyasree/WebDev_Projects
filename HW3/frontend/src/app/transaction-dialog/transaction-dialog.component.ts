@@ -4,6 +4,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { MatInputModule } from '@angular/material/input';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import 'bootstrap';
 
 @Component({
   standalone: true,
@@ -13,7 +16,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     MatFormFieldModule,
     HttpClientModule,
     NgClass,
-    NgIf
+    NgIf,
+    MatInputModule,
+    NgbModule
   ],
   templateUrl: './transaction-dialog.component.html',
 })
@@ -65,7 +70,7 @@ export class TransactionDialogComponent {
       symbol: this.data.symbol
     };
     // Call backend API to buy
-    this.http.post<any>('http://localhost:5172/portfolio', requestData)
+    this.http.post<any>('stocksearchon.azurewebsites.net/portfolio', requestData)
       .subscribe({
         next: () => {
           this.dialogRef.close();
@@ -76,6 +81,14 @@ export class TransactionDialogComponent {
           // You can show an error message to the user
         }
       });
+}
+
+performAction(): void {
+  if (this.data.action === 'buy') {
+    this.buy();
+  } else if (this.data.action === 'sell') {
+    this.sell();
+  }
 }
 
   
@@ -97,7 +110,7 @@ export class TransactionDialogComponent {
     };
   
     // Call backend API to sell
-    this.http.post<any>('http://localhost:5172/portfolio', requestData)
+    this.http.post<any>('stocksearchon.azurewebsites.net/portfolio', requestData)
       .subscribe({
         next: () => {
           this.dialogRef.close();

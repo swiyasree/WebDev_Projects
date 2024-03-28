@@ -3,13 +3,19 @@
   margin: 0 auto; /* Center the container */
 }
 
-h1, h2 {
+.heading, .subheading {
   text-align: left;
-  margin-bottom: 20px;
 }
 
-h1 {
-  margin-top: 30px;
+.subheading {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.heading {
+  margin-top: 50px;
+  font-size: 32px;
+  margin-bottom: 20px;
 }
 
 .card {
@@ -35,7 +41,6 @@ h1 {
 }
 
 .grid-item {
-  padding: 10px;
   text-align: left;
 }
 
@@ -55,7 +60,6 @@ h1 {
 
 .card-footer {
   background-color: #f8f9fa;
-  padding: 10px 20px;
   text-align: left;
 }
 
@@ -73,3 +77,41 @@ h1 {
 .btn {
   margin-right: 10px;
 }
+
+.stock-message {
+  height: 20px;
+  background-color: #fef1c9;
+  border: 1px solid #ffe6a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stock-message p {
+  font-size: 12px;
+  margin: 0; /* Remove any default margin */
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.75rem 1.25rem;
+  color: inherit;
+  background-color: transparent;
+  border: 0;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.close:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+.alert {
+  margin-top: 50px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+

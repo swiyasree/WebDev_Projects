@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, NgModule, OnInit, ViewChild, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -25,7 +25,8 @@ import HC_dragPanes from 'highcharts/modules/drag-panes';
 import HC_exporting from 'highcharts/modules/exporting';
 import HC_accessibility from 'highcharts/modules/accessibility';
 import moment from 'moment';
-
+import 'bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Fallback implementation of sessionStorage
 const sessionStorage = typeof window !== 'undefined' ? window.sessionStorage : {
   getItem: () => null,
@@ -38,9 +39,10 @@ const sessionStorage = typeof window !== 'undefined' ? window.sessionStorage : {
   standalone: true,
   imports: [NgClass, ReactiveFormsModule, FormsModule, NgIf, HttpClientModule, CommonModule,
     MatInputModule, MatFormFieldModule, MatAutocompleteModule, MatTabsModule,
-    HighchartsChartModule,],
+    HighchartsChartModule,NgbModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
 })
 
 export class HeaderComponent implements AfterViewInit, OnInit {
@@ -72,7 +74,12 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   chartOptions: any;
   historicalChartOptions: any;
   dateAndtime: any;
-  
+  hpdata: any;
+  HPchartOptions: any;
+  marketIsOpen: boolean = false;
+  watchlistData: any;
+isStarYellow: any;
+
   constructor(private http: HttpClient, private dialog: MatDialog) {
     this.inputSubject.pipe(
       debounceTime(300), // wait for 300ms after the last keystroke
@@ -95,11 +102,13 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     this.loadInitialData();
 
+    console.log('NGONINT is star yellow? ', this.isStarYellow);
+
     interval(15000).subscribe(() => {
       this.getCurrentDateTime();
     });
 
-    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
+    this.http.get<any>('stocksearchon.azurewebsites.net/currentBalance').subscribe(
       (data) => {
         this.balanceAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -108,13 +117,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         console.error('Error fetching current balance:', error);
       }
     );
-
-    const marketState = this.isMarketOpen();
-
-    if (marketState === 'Market is Open') {
-      this.startAutoUpdate();
-    }
-
+    
     // Retrieve data from sessionStorage if available
     const storedData = sessionStorage.getItem('headerComponentData');
     if (storedData) {
@@ -128,21 +131,42 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.formattedTimestamp = (this.combinedData.quote_data.timestamp * 1000).toLocaleString();
     }
 
-    setTimeout(() => 
-    {
+    setTimeout(() => {
       this.selectSummaryTab();
+      const marketState = this.isMarketOpen();
+
+      if (marketState === 'Market is Open') {
+        console.log('market open');
+        this.startAutoUpdate();
+      }
     }, 50);
 
-      this.refreshSubscription = interval(15000) 
-          .subscribe(() => 
-          {
-              this.loadData(); 
-          });
+    this.refreshSubscription = interval(15000)
+      .subscribe(() => 
+      {
+        this.loadData();
+      });
 
   }
 
+  fetchWatchlistData() 
+  {
+    this.http.get<any[]>('stocksearchon.azurewebsites.net/watchlist')
+      .subscribe(data => 
+        {
+          this.watchlistData = data;
+        });
+        if (this.watchlistData.profile_data.symbol === this.tickerValue) {
+          this.isStarYellow = true; // Set a boolean variable to true when the condition is met
+        } else {
+          this.isStarYellow = false; // Set it to false otherwise
+        }
+        console.log('FETCHWATCHLISTDATA is star yellow? ', this.isStarYellow);
+        this.ngOnInit();
+  }
 
-   ngOnDestroy() {
+
+  ngOnDestroy() {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
@@ -162,7 +186,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   loadData() {
     if (this.isMarketOpen() === 'Market is Open') {
       this.search_results(); // Load search results
-      this.summary(); // Load summary data
     }
   }
 
@@ -175,20 +198,20 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   loadFormattedTimestamp() {
     // Make HTTP request to fetch the formatted timestamp
-    this.http.get<any>('http://localhost:5172/?ticker=' + this.tickerValue).subscribe(
-        (data) => {
-            this.combinedData = data;
-            const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
-            this.formattedTimestamp = timestamp.toLocaleString(); // Format as YYYY-MM-DD HH:mm:ss
+    this.http.get<any>('stocksearchon.azurewebsites.net/?ticker=' + this.tickerValue).subscribe(
+      (data) => {
+        this.combinedData = data;
+        const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
+        this.formattedTimestamp = timestamp.toLocaleString(); // Format as YYYY-MM-DD HH:mm:ss
 
-            // After setting the timestamp, you may proceed with other initialization logic
-            this.selectSummaryTab();
-        },
-        (error) => {
-            console.error("Error fetching formatted timestamp:", error);
-        }
+        // After setting the timestamp, you may proceed with other initialization logic
+        this.selectSummaryTab();
+      },
+      (error) => {
+        console.error("Error fetching formatted timestamp:", error);
+      }
     );
-}
+  }
 
   private async initializeHighcharts(): Promise<void> {
     await import('highcharts/highstock'); // Import Highcharts core
@@ -206,8 +229,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     HC_accessibility(Highstockcharts);
   }
 
-  getCurrentDateTime() 
-  {
+  getCurrentDateTime() {
     this.dateAndtime = moment().format('YYYY-MM-DD HH:mm:ss');
   }
 
@@ -237,7 +259,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   fetchAutocompleteOptions(input: string) {
-    return this.http.get<any>(`http://localhost:5172/autocomplete?input=${input}`);
+    return this.http.get<any>(`stocksearchon.azurewebsites.net/autocomplete?input=${input}`);
   }
 
   clear_results() {
@@ -292,10 +314,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     });
   }
 
-  selectSummaryTab(): void 
-  {
-    if (this.tabGroup) 
-    {
+  selectSummaryTab(): void {
+    if (this.tabGroup) {
       this.tabGroup.selectedIndex = 0; // Index of the summary tab
       const fakeEvent = { index: 0 } as MatTabChangeEvent;
       this.handleTabChange(fakeEvent); // Call handleTabChange method with a simulated event
@@ -309,15 +329,9 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     }
 
     this.submitted = true;
-    this.http.get<any>(`http://localhost:5172/?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`stocksearchon.azurewebsites.net/?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.combinedData = data;
-        // const timestamp = 1711374485; // Unix timestamp in seconds
-        // const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
-
-        // console.log(`Local Time: ${date.toLocaleString()}`);
-        console.log('time closed or open', this.combinedData.quote_data.timestamp);
-        // Extract and format the timestamp
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
         this.formattedTimestamp = timestamp.toLocaleString(); // Format as YYYY-MM-DD HH:mm:ss
 
@@ -351,10 +365,59 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:5172/summary?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`stocksearchon.azurewebsites.net/summary?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.summaryData = data; // Store summary data in the variable
-        console.log('summarydata;: ', this.summaryData);
+        this.hpdata = this.summaryData.hourlyPrices;
+        // Select every other closing price for plotting
+        const plotData = [];
+        for (let i = 0; i < this.hpdata.length; i += 2) {
+          plotData.push(this.hpdata[i].c);
+        }
+
+        // Select 5 equally spaced closing prices for y-axis ticks
+        const yStep = Math.ceil(plotData.length / 5);
+        const yAxisValues = [];
+        for (let i = 0; i < 5; i++) {
+          yAxisValues.push(plotData[i * yStep]);
+        }
+
+        // Select 6 equally spaced timestamps for x-axis
+        const xStep = Math.ceil(this.hpdata.length / 6);
+        const xAxisCategories = this.hpdata.filter((_: any, index: number) => index % xStep === 0).map((dataPoint: { t: string | number | Date; }) => new Date(dataPoint.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+
+        // Highcharts configuration
+        this.HPchartOptions = {
+          title: {
+            text: 'Hourly Price Variation',
+            align: 'center'
+          },
+          yAxis: {
+            title: {
+              text: 'Closing Price (c)'
+            },
+            categories: yAxisValues,
+            tickInterval: Math.ceil(yAxisValues.length / 5), // Limit the number of tick positions on the y-axis
+            showLine: true // Ensure the y-axis line is displayed
+          },
+          xAxis: {
+            categories: xAxisCategories,
+            tickInterval: Math.ceil(xAxisCategories.length / 6) // Limit the number of tick positions on the x-axis
+          },
+          plotOptions: {
+            series: {
+              marker: {
+                enabled: false // Disable markers
+              }
+            }
+          },
+          series: [{
+            name: 'Closing Price',
+            data: plotData
+          }]
+        };
+
+
       },
       (error) => {
         console.error("Error fetching summary data:", error);
@@ -367,7 +430,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/topnews?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`stocksearchon.azurewebsites.net/topnews?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.topNewsData = data; // Assign response data to topNewsData property
       },
@@ -382,7 +445,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/charts?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`stocksearchon.azurewebsites.net/charts?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.createChart(data);
 
@@ -415,11 +478,14 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
     // Create the chart
     Highstockcharts.stockChart('charts-container', {
+      chart: {
+        backgroundColor: '#f6f6f6' // Set background color here
+    },
       rangeSelector: {
         selected: 2
       },
       title: {
-        text: 'AAPL Historical'
+        text: this.tickerValue + ' Historical'
       },
       subtitle: {
         text: 'With SMA and Volume by Price technical indicators'
@@ -467,8 +533,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       },
       series: [{
         type: 'candlestick',
-        name: 'AAPL',
-        id: 'aapl',
+        name: this.tickerValue,
+        id: this.tickerValue,
         zIndex: 2,
         data: ohlc
       }, {
@@ -479,7 +545,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         yAxis: 1
       }, {
         type: 'vbp',
-        linkedTo: 'aapl',
+        linkedTo: this.tickerValue,
         params: {
           volumeSeriesID: 'volume'
         },
@@ -491,41 +557,31 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         }
       }, {
         type: 'sma',
-        linkedTo: 'aapl',
+        linkedTo: this.tickerValue,
         zIndex: 1,
         marker: {
           enabled: false
         }
       }]
     });
-  }  
+  }
 
   insights() {
     if (!this.tickerValue) {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/insights?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`stocksearchon.azurewebsites.net/insights?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.insightsData = data;
 
         this.chartOptions = {
           chart: {
-            type: 'column'
+            type: 'column',
+            backgroundColor: '#f6f6f6'
           },
           title: {
             text: 'Recommendation Trends'
-          },
-          legend: {
-            layout: 'vertical',
-            align: 'left',
-            verticalAlign: 'top',
-            x: 250,
-            y: 100,
-            floating: true,
-            borderWidth: 1,
-            backgroundColor: '#f6f6f6',
-            shadow: true
           },
           xAxis: {
             categories: [this.insightsData.Recent_Four_Months_Trends[0].period,
@@ -603,58 +659,59 @@ export class HeaderComponent implements AfterViewInit, OnInit {
           ]
         };
 
-        this.historicalChartOptions = {         
-          chart : {
-             type: 'spline',
-             marginRight: 10
+        this.historicalChartOptions = {
+          chart: {
+            type: 'spline',
+            marginRight: 10,
+            backgroundColor: '#f6f6f6'
           },
-          title : {
-             text: 'Historical EPS Surprises'   
-          },   
-          xAxis : {
-             categories: [this.insightsData.HistoricalData[0].period + '<br>' + 'Surprise: ' + this.insightsData.HistoricalData[0].surprise, 
-                          this.insightsData.HistoricalData[1].period + '<br>' + 'Surprise: ' + this.insightsData.HistoricalData[1].surprise, 
-                          this.insightsData.HistoricalData[2].period + '<br>' + 'Surprise: ' + this.insightsData.HistoricalData[2].surprise, 
-                          this.insightsData.HistoricalData[3].period + '<br>' + 'Surprise: ' +this.insightsData.HistoricalData[3].surprise]
+          title: {
+            text: 'Historical EPS Surprises'
           },
-          yAxis : {
-             title: {
-                text: 'Quarterly EPS'
-             },
-             min: 1,
-             max: 2.25,
-             tickInterval: 0.25
+          xAxis: {
+            categories: [this.insightsData.HistoricalData[0].period + '<br>' + 'Surprise: ' + this.insightsData.HistoricalData[0].surprise,
+            this.insightsData.HistoricalData[1].period + '<br>' + 'Surprise: ' + this.insightsData.HistoricalData[1].surprise,
+            this.insightsData.HistoricalData[2].period + '<br>' + 'Surprise: ' + this.insightsData.HistoricalData[2].surprise,
+            this.insightsData.HistoricalData[3].period + '<br>' + 'Surprise: ' + this.insightsData.HistoricalData[3].surprise]
+          },
+          yAxis: {
+            title: {
+              text: 'Quarterly EPS'
+            },
+            min: 1,
+            max: 2.25,
+            tickInterval: 0.25
           },
           plotOptions: {
-             spline: {
-                marker: {
-                   enabled: true
-                }
-             }
+            spline: {
+              marker: {
+                enabled: true
+              }
+            }
           },
           legend: {
-             enabled: true
+            enabled: true
           },
-          exporting : {
-             enabled: false
+          exporting: {
+            enabled: false
           },
-          series : [
-             {
-                name: 'Actual',
-                data: [this.insightsData.HistoricalData[0].actual, 
-                       this.insightsData.HistoricalData[1].actual, 
-                       this.insightsData.HistoricalData[2].actual, 
-                       this.insightsData.HistoricalData[3].actual]
-             },
-             {
-                name: 'Estimate',
-                data: [this.insightsData.HistoricalData[0].estimate, 
-                       this.insightsData.HistoricalData[1].estimate, 
-                       this.insightsData.HistoricalData[2].estimate, 
-                       this.insightsData.HistoricalData[3].estimate]
-             }
+          series: [
+            {
+              name: 'Actual',
+              data: [this.insightsData.HistoricalData[0].actual,
+              this.insightsData.HistoricalData[1].actual,
+              this.insightsData.HistoricalData[2].actual,
+              this.insightsData.HistoricalData[3].actual]
+            },
+            {
+              name: 'Estimate',
+              data: [this.insightsData.HistoricalData[0].estimate,
+              this.insightsData.HistoricalData[1].estimate,
+              this.insightsData.HistoricalData[2].estimate,
+              this.insightsData.HistoricalData[3].estimate]
+            }
           ]
-       };
+        };
       },
       (error) => {
         console.error("Error fetching insights data:", error);
@@ -664,6 +721,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   toggleStar() {
     this.isStarFilled = !this.isStarFilled;
+    this.isStarYellow = !this.isStarYellow;
+    console.log('TOGGLESTAR is star yellow? ', this.isStarYellow);
 
     if (this.isStarFilled && this.combinedData) {
       this.sendDataToBackend();
@@ -672,14 +731,15 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   sendDataToBackend() {
     // Send the combinedData to the backend with route '/watchlist'
-    this.http.post<any>('http://localhost:5172/watchlist', this.combinedData).subscribe(
+    this.http.post<any>('stocksearchon.azurewebsites.net/watchlist', this.combinedData).subscribe(
       (response) => {
-        console.log("Data sent to backend successfully:", response);
       },
       (error) => {
         console.error("Error sending data to backend:", error);
       }
     );
+    console.log('SENDDATATOBACKEND is star yellow? ', this.isStarYellow);
+    this.fetchWatchlistData();
   }
 
   buystock() {
@@ -687,7 +747,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Data not available to perform buy transaction");
       return;
     }
-    console.log('combineddata: ', this.combinedData);
     const dialogRef = this.dialog.open(TransactionDialogComponent, {
       data: {
         balance: this.balanceAmount,
@@ -700,7 +759,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       this.boughtSymbol = this.combinedData.profile_data.symbol;
     });
   }
@@ -723,41 +781,38 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       this.soldSymbol = this.combinedData.profile_data.symbol;
     });
   }
 
   isMarketOpen() {
-    let timeClosedOrOpen: string;
-    const fiveMinutesInMillis = 5 * 60 * 1000;
-    const currentTimestamp = Date.now();
+    const currentTimestamp = Date.now(); // Get current timestamp
 
-    if (typeof this.formattedTimestamp === 'string') {
-        const isNumericString = /^\d{1,3}(,\d{3})*$/.test(this.formattedTimestamp);
-        if (isNumericString) {
-            const numericTimestamp = parseFloat(this.formattedTimestamp.replace(/,/g, ''));
-            timeClosedOrOpen = new Date(numericTimestamp).toLocaleString();
-            console.log('convert num to time:', timeClosedOrOpen);
-        } else {
-            timeClosedOrOpen = this.formattedTimestamp;
-            console.log('no conversion:', timeClosedOrOpen);
-        }
-    } else if (typeof this.formattedTimestamp === 'number') {
-        timeClosedOrOpen = new Date(this.formattedTimestamp).toLocaleString();
-        console.log('convert num to time:', timeClosedOrOpen);
-    } else {
-        throw new Error('Invalid timestamp format');
+    // Get the timestamp from combinedData or default to null
+    const quoteTimestamp = this.combinedData?.quote_data?.timestamp || null;
+
+    // If quoteTimestamp is null or undefined, return "Market is Closed"
+    if (!quoteTimestamp) {
+        return 'Market is Closed';
     }
 
-    if (Math.abs(currentTimestamp - new Date(this.formattedTimestamp).getTime()) <= fiveMinutesInMillis) {
+    // Calculate the time difference between current time and the timestamp from combinedData
+    const timeDifference = currentTimestamp - (quoteTimestamp * 1000);
+
+    // Define the threshold for considering the market open (in milliseconds)
+    const marketOpenThreshold = 5 * 60 * 1000; // 5 minutes
+
+    if (timeDifference <= marketOpenThreshold) {
+        // Market is open if the time difference is less than or equal to the threshold
         return 'Market is Open';
     } else {
-        return 'Market Closed on ' + timeClosedOrOpen;
+        // Market is closed if the time difference exceeds the threshold
+        // Format the timestamp to display
+        const formattedTimestamp = new Date(quoteTimestamp * 1000).toLocaleString();
+        return 'Market Closed on ' + formattedTimestamp;
     }
 }
-
-
-
-
 }
+
+
+
