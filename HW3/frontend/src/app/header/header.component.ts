@@ -131,7 +131,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.getCurrentDateTime();
     });
 
-    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/currentBalance').subscribe(
       (data) => {
         this.balanceAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -174,7 +174,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   fetchWatchlistData() {
-    this.http.get<any[]>('http://localhost:5172/watchlist')
+    this.http.get<any[]>('https://stocksearchon.azurewebsites.net/watchlist')
       .subscribe(data => {
         this.watchlistData = data;
       });
@@ -220,7 +220,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   loadFormattedTimestamp() {
     // Make HTTP request to fetch the formatted timestamp
-    this.http.get<any>('http://localhost:5172/?ticker=' + this.tickerValue).subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/?ticker=' + this.tickerValue).subscribe(
       (data) => {
         this.combinedData = data;
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
@@ -281,7 +281,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   fetchAutocompleteOptions(input: string) {
-    return this.http.get<any>(`http://localhost:5172/autocomplete?input=${input}`);
+    return this.http.get<any>(`https://stocksearchon.azurewebsites.net/autocomplete?input=${input}`);
   }
 
   clear_results() {
@@ -329,7 +329,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
     console.log('requestdata', requestData);
   
-    this.http.post<any>('http://localhost:5172/portfolio', requestData)
+    this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
       .subscribe({
         next: () => {
         },
@@ -364,7 +364,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   
         console.log('requestdata', requestData);
         
-        this.http.post<any>('http://localhost:5172/portfolio', requestData)
+        this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
           .subscribe({
             next: () => {
             },
@@ -434,7 +434,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     }
 
     this.submitted = true;
-    this.http.get<any>(`http://localhost:5172/?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.combinedData = data;
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
@@ -462,7 +462,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         console.error("Error fetching data:", error);
       }
     );
-    this.http.get<any>('http://localhost:5172/portfolio').subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/portfolio').subscribe(
       (data) => {
         this.portfolioData = data;
         if (Array.isArray(this.portfolioData) && this.portfolioData.length > 0) 
@@ -497,7 +497,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     }
 
 
-    this.http.get<any>(`http://localhost:5172/summary?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/summary?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.summaryData = data;
 
@@ -557,7 +557,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/topnews?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/topnews?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.topNewsData = data; // Assign response data to topNewsData property
       },
@@ -572,7 +572,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/charts?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/charts?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.createChart(data);
 
@@ -698,7 +698,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/insights?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/insights?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.insightsData = data;
 
@@ -891,7 +891,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   sendDataToBackend() {
     // Send the combinedData to the backend with route '/watchlist'
-    this.http.post<any>('http://localhost:5172/watchlist', this.combinedData).subscribe(
+    this.http.post<any>('https://stocksearchon.azurewebsites.net/watchlist', this.combinedData).subscribe(
       (response) => {
       },
       (error) => {

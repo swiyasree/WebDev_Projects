@@ -21,7 +21,7 @@ export class WatchlistComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkMobileView();
-    this.http.get<any[]>('http://localhost:5172/watchlist')
+    this.http.get<any[]>('https://stocksearchon.azurewebsites.net/watchlist')
       .subscribe(data => {
         this.watchlistData = data;
         this.loading = false; // Set loading to false once data is received
@@ -35,7 +35,7 @@ export class WatchlistComponent implements OnInit {
 
   removeFromWatchlist(id: string) {
     // Make a DELETE request to remove the entry from the watchlist
-    this.http.delete<any>(`http://localhost:5172/watchlist/${id}`)
+    this.http.delete<any>(`https://stocksearchon.azurewebsites.net/watchlist/${id}`)
       .subscribe(response => {
         console.log("Entry removed successfully:", response);
         // Remove the deleted entry from the watchlistData array

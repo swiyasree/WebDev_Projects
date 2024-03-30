@@ -19,7 +19,7 @@ var database;
 
 app.use(bodyParser.json()); 
 
-app.listen(5172, () => {
+app.listen(process.env.PORT, () => {
   MongoClient.connect(CONNECTION_STRING, (error, client) => {
     if (error) {
       console.error("Error connecting to MongoDB:", error);
