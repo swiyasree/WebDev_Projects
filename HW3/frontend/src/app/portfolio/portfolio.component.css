@@ -1,3 +1,4 @@
+@media screen and (min-width: 767px) {
 .container {
   width: 60%;
   margin: 0 auto; /* Center the container */
@@ -79,9 +80,14 @@
 }
 
 .stock-message {
+  width: 60%;
+  margin-left: 21%;
+  padding: 15px;
+  box-sizing: border-box; 
   height: 20px;
   background-color: #fef1c9;
   border: 1px solid #ffe6a6;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,3 +121,186 @@
   text-align: center;
 }
 
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalclose {
+  color: #2276f3;
+  font-size: 24px;
+  text-decoration: underline;
+  border: none;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.modal-header p {
+  text-align: left;
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+/* Modal Body */
+.modal-body {
+  font-size: 14px;
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+}
+
+.form-container p {
+  margin-right: 10px;
+  margin-top: 8px;
+}
+
+.input-quant {
+  width: calc(100% - 160px); 
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer p {
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+.modal-footer button {
+  font-size: 16px; /* Adjust font size */
+}
+
+}
+
+@media (max-width: 767px) { 
+  .container {
+    width: 90vw;
+    padding-left: 5vw;
+  }
+
+  .heading {
+    margin-top: 50px;
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .subheading {
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  
+  .card {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+  }
+  
+  .card-header {
+    background-color: #f8f9fa;
+    padding: 10px 20px;
+  }
+  
+  .card-header .inline {
+    display: inline; /* Make p tags inline */
+    margin-right: 10px; /* Add margin between p tags */
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-item {
+    display: flex;
+  }
+  
+  .left,
+  .right {
+    flex: 1;
+  }  
+
+  .left {
+    width: 60vw;
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  .right {
+    align-items: right;
+  }
+  
+  .card-footer {
+    background-color: #f8f9fa;
+    text-align: left;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    margin-bottom: 5px;
+  }
+  
+  .card-subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-top: -5px;
+  }
+  
+  .btn {
+    margin-right: 10px;
+  }
+  
+  .stock-message {
+    width: 80vw;
+    margin-left: 10vw;
+    height: 20px;
+    background-color: #fef1c9;
+    border: 1px solid #ffe6a6;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Ensure border-box sizing */
+  }
+  
+  .stock-message p {
+    font-size: 12px;
+    margin: 0; /* Remove default margin */
+  }  
+  
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.75rem 1.25rem;
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .close:focus {
+    outline: 0;
+    box-shadow: none;
+  }
+  
+  .alert {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .inline {
+    display: inline;
+  }
+}

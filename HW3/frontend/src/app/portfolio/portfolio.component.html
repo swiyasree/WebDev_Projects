@@ -17,7 +17,7 @@
     <p class="heading">My Portfolio</p>
     <p class="subheading">Money in Wallet: ${{ currentAmount | number:'1.2-2' }}</p>
     <div *ngFor="let item of portfolioData">
-      <div *ngIf="item.quantity > 0" class="card mb-3">
+      <div *ngIf="item.quantity > 0 && !isMobileView" class="card mb-3">
         <div class="card-header">
           <p class="card-title inline">{{ item.symbol }}</p>
           <p class="card-subtitle inline">{{ item.company }}</p>
@@ -45,15 +45,86 @@
           </div>
         </div>
         <div class="card-footer">
-          <button (click)="buyStock(item.symbol)" class="btn btn-primary">Buy</button>
-          <button (click)="sellStock(item.symbol)" class="btn btn-danger">Sell</button>
+          <button (click)="buyStock(item.symbol, 'buy')" class="btn btn-primary" data-toggle="modal" data-target="#buysellModal">Buy</button>
+          <button (click)="sellStock(item.symbol, 'sell')" class="btn btn-danger" data-toggle="modal" data-target="#buysellModal">Sell</button>
+        </div>
+      </div>
+      <div *ngIf="item.quantity > 0 && isMobileView" class="card mb-3">
+        <div class="card-header">
+          <p class="card-title inline">{{ item.symbol }}</p>
+          <p class="card-subtitle inline">{{ item.company }}</p>
+        </div>      
+        <div class="card-body card-container">
+          <div class="card-item row1">
+            <div class="left"><p>Quantity:</p></div>
+            <div class="right"><p>{{ item.quantity | number:'1.2-2' }}</p></div>
+          </div>
+          <div class="card-item row2">
+            <div class="left"><p>Avg. Cost/ Share:</p></div>
+            <div class="right"><p>{{ item.avgPrice | number:'1.2-2' }}</p></div>
+          </div>
+          <div class="card-item row3">
+            <div class="left"><p>Total Cost:</p></div>
+            <div class="right"><p>{{ item.totalPrice | number:'1.2-2' }}</p></div>
+          </div>
+          <div class="card-item row4">
+            <div class="left"><p>Change:</p></div>
+            <div class="right"><p>{{ item.change | number:'1.2-2' }}</p></div>
+          </div>
+          <div class="card-item row5">
+            <div class="left"><p>Current Price:</p></div>
+            <div class="right"><p>{{ item.currentPrice | number:'1.2-2' }}</p></div>
+          </div>
+          <div class="card-item row6">
+            <div class="left"><p>Market Value:</p></div>
+            <div class="right"><p>{{ item.marketPrice | number:'1.2-2' }}</p></div>
+          </div>
+        </div>
+        
+          <div class="card-footer">
+            <button type="button" (click)="buyStock(item.symbol, 'buy')" class="btn btn-primary" data-toggle="modal" data-target="#buysellModal">Buy</button>
+            <button type="button" (click)="sellStock(item.symbol, 'sell')" class="btn btn-danger" data-toggle="modal" data-target="#buysellModal">Sell</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="isAllStocksQuantityOneOrLess()" class="card mb-3">
-    <div class="card-body stock-message">
+
+<div *ngIf="isAllStocksQuantityOneOrLess() && !isMobileView">
+    <div class="stock-message">
       <p>Currently you don't have any stock.</p>
+    </div>
+</div>
+
+<div *ngIf="isAllStocksQuantityOneOrLess() && isMobileView">
+  <div class="stock-message">
+    <p>Currently you don't have any stock.</p>
+  </div>
+</div>
+
+<div class="modal fade" data-backdrop="false" id="buysellModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="ticker">{{ ticker }}</p>
+        <button type="button" class="close-button modalclose" aria-label="Close"data-dismiss="modal">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="current-price-label">Current Price: {{ currentPrice }}</p>
+        <p>Money in Wallet: {{ this.currentAmount | number:'1.2-2' }}</p>
+        <div class="form-container">
+          <p>Quantity: </p>
+          <input type="number" class="input-quant" placeholder="Enter quantity" [(ngModel)]="quantity" (input)="checkTotal(ticker)">
+        </div>        
+        <p *ngIf="totalExceedsBalance">Not enough money in wallet!</p>
+        </div>
+      <div class="modal-footer">
+         <p>Total: {{ getTotal() | number:'1.2-2' }}</p>
+        <button *ngIf="buysellaction == 'buy'" class="btn btn-success" [disabled]="quantity <= 0 || totalExceedsBalance" (click)="buy(ticker)">Buy</button>
+        <button *ngIf="buysellaction == 'sell'" class="btn btn-danger" [disabled]="quantity <= 0" (click)="sell(ticker)">Sell</button>
+        </div>
     </div>
   </div>
 </div>

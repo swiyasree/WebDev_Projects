@@ -1,6 +1,5 @@
 <main>
-<header>
-    <div class="container">
+<header *ngIf="!isMobileView" style="padding: 0;">
         <a routerLink="/" [ngClass]="[stockStyle]" routerLinkActive="activebutton" class="button logo" (click)="StockSearch()">Stock Search</a>
         <nav>
             <ul>
@@ -15,10 +14,33 @@
                 </li>
             </ul>
         </nav>
-    </div>
 </header>
+<header *ngIf="isMobileView">
+    <nav class="navbar">
+        <div class="container">
+            <a routerLink="/" [ngClass]="[stockStyle]" routerLinkActive="activebutton" class="navbar-brand" (click)="StockSearch()">Stock Search</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link button" [ngClass]="[searchStyle]" routerLink="/header" routerLinkActive="activebutton" (click)="Search()">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link button" [ngClass]="[wlStyle]" routerLink="/watchlist" routerLinkActive="activebutton" (click)="Watchlist()">Watchlist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link button" [ngClass]="[pfStyle]" routerLink="/portfolio" routerLinkActive="activebutton" (click)="Portfolio()">Portfolio</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="content-container">
 <router-outlet></router-outlet>
-</main>
+</div>
 <div class="footer-container">Powered by <a href="https://finnhub.io">Finhub.io</a></div>
-
+</main>
 

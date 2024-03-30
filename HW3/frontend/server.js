@@ -106,6 +106,24 @@ app.get('/summary', async (request, response) => {
     const peersResponse = await axios.get(`https://finnhub.io/api/v1/stock/peers?symbol=${ticker}&token=${fApi}`);
     const peersData = peersResponse.data;
 
+    console.log('timestamp ------ ', quoteData.t);
+
+    const toDate = moment(quoteData.t * 1000).valueOf();
+    const fromDate = moment(toDate).subtract(24, 'hours').valueOf();
+
+    const multiplier = "1";
+    const timespan = "hour";
+
+    console.log('to ', toDate, 'from ', fromDate);
+
+    // Fetch HPV data
+    const HPResponse = await axios.get(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${timespan}/${fromDate}/${toDate}?adjusted=true&sort=asc&limit=5000&apiKey=${hApi}`);
+    const HPData = HPResponse.data;
+
+    console.log('hp data: ', HPData);
+
+
+
     // Organize summary data
     const summaryData = {
       high_price: quoteData.h,
@@ -115,7 +133,8 @@ app.get('/summary', async (request, response) => {
       company_start_date: profileData.ipo,
       company_website_url: profileData.weburl,
       company_industry: profileData.finnhubIndustry,
-      peers: peersData
+      peers: peersData,
+      hourlyPrices: HPData.results
     };
 
     response.json(summaryData);
@@ -123,6 +142,7 @@ app.get('/summary', async (request, response) => {
     console.error("Error fetching summary data:", error);
     response.status(500).json({ error: "Internal server error" });
   }
+
 });
 
 app.get('/topnews', async (request, response) => {
@@ -170,7 +190,7 @@ app.get('/charts', async (request, response) => {
 
   try {
     const toDate = moment().format('YYYY-MM-DD'); // Current date
-    const fromDate = moment(toDate).subtract(6, 'months').format('YYYY-MM-DD'); // 6 months before toDate
+    const fromDate = moment(toDate).subtract(12, 'months').format('YYYY-MM-DD'); // 6 months before toDate
     const multiplier = "1";
     const timespan = "day";
 

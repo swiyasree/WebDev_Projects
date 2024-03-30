@@ -23,6 +23,11 @@ import 'bootstrap';
   templateUrl: './transaction-dialog.component.html',
 })
 export class TransactionDialogComponent {
+
+  closeBuySellModal() 
+  {
+    this.dialogRef.close();
+  }
   quantity: number = 0;
   total: number = 0;
   balanceAmount = 0;
@@ -70,7 +75,7 @@ export class TransactionDialogComponent {
       symbol: this.data.symbol
     };
     // Call backend API to buy
-    this.http.post<any>('stocksearchon.azurewebsites.net/portfolio', requestData)
+    this.http.post<any>('http://localhost:5172/portfolio', requestData)
       .subscribe({
         next: () => {
           this.dialogRef.close();
@@ -110,7 +115,7 @@ performAction(): void {
     };
   
     // Call backend API to sell
-    this.http.post<any>('stocksearchon.azurewebsites.net/portfolio', requestData)
+    this.http.post<any>('http://localhost:5172/portfolio', requestData)
       .subscribe({
         next: () => {
           this.dialogRef.close();

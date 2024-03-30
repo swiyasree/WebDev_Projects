@@ -1,36 +1,37 @@
-/* watchlist.component.css */
-
+@media screen and (min-width: 767px) {
 .container {
     margin-top: 30px;
   }
 
   .heading {
     width: 60%; /* 60% of the container width */
-    margin: 30px auto; 
+    margin-left:200px; 
+    margin-top: 70px;
+  }
+
+  .cardscontainer {
+    width: 60%; /* 60% of the container width */
+    margin: 10px auto; 
+  }
+
+  .row {
+    width: 100vw;
   }
 
   .card {
+    width: 60vw;
     margin-bottom: 10px;
   }
-  
+
   .col-md-6 {
-    width: 60%; /* 60% of the container width */
-    margin: 0 auto; /* Center align the cards */
+    margin: 0px 200px; 
   }
   
   .card-body {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 2fr);
     grid-gap: 10px;
-  }
-  
-  .grid-item {
-    padding: 5px;
-    text-align: left;
-  }
-  
-  .grid-item p {
-    margin: 5px 0;
   }
   
   .left-column,
@@ -45,7 +46,9 @@
 
   .stock-message {
     width: 60%; /* 60% of the container width */
-    margin: 30px auto; 
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 200px;
     height: 20px;
     background-color: #fef1c9;
     border: 1px solid #ffe6a6;
@@ -90,5 +93,93 @@
 .positive {
   color: green;
 }
+}
 
+@media screen and (max-width: 767px) {
+  .container {
+      margin-top: 30px;
+    }
   
+    .heading {
+      width: 80vw;
+      margin-left: 10vw;
+    }
+  
+    .card {
+      margin-bottom: 10px;
+    }
+    
+    .col-md-6 {
+      width: 80vw;
+      margin-left: 10vw;
+    }
+    
+    .card-body {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+    }
+    
+    .grid-item {
+      text-align: left;
+    }
+    
+    .grid-item p {
+      margin: 5px 0;
+    }
+    
+    .left-column,
+    .right-column {
+      flex: 1;
+    }
+    
+    .left-column p,
+    .right-column p {
+      margin: 0;
+    }
+  
+    .stock-message {
+      width: 80vw;
+      margin-left: 10vw;
+      height: 20px;
+      background-color: #fef1c9;
+      border: 1px solid #ffe6a6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .stock-message p {
+      font-size: 10px;
+      padding-top: 10px;
+    }
+  
+    .close-button {
+      color: black;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+  }
+  
+  .left-colm {
+    padding-top: 20px;
+  }
+  
+  .right-colm {
+    padding-top: 20px;
+  }
+  
+  .negative {
+    color: red;
+  }
+  
+  .positive {
+    color: green;
+  }
+  }
+    

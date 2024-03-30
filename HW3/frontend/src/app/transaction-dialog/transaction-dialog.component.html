@@ -1,15 +1,24 @@
-<div class="dialog-container">
-  <p class="symbol-label">Symbol: {{ data.symbol }}</p>
-
-  <p class="current-price-label">Current Price: {{ data.currentPrice }}</p>
-  <h3>Money in Wallet: {{ data.balance }}</h3>
-  <mat-form-field appearance="fill">
-    <mat-label>Quantity</mat-label>
-    <input matInput type="number" placeholder="Enter quantity" [(ngModel)]="quantity" (input)="checkTotal()">
-  </mat-form-field>
-  <p *ngIf="totalExceedsBalance">Not enough money in wallet!</p>
-  
-  <p>Total: {{ getTotal() }}</p>
-<button *ngIf="data.action === 'buy'" [disabled]="quantity <= 0 || totalExceedsBalance" (click)="buy()">Buy</button>
-<button *ngIf="data.action === 'sell'" [disabled]="quantity <= 0" (click)="sell()">Sell</button>
+<div class="modal fade" data-backdrop="false" id="newsModal" tabindex="-1" role="dialog" aria-labelledby="newsModalLabel" aria-hidden="true" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeBuySellModal()">&times;</button>
+        <p class="symbol-label">Symbol: {{ data.symbol }}</p>
+      </div>
+      <div class="modal-body">
+        <p class="current-price-label">Current Price: {{ data.currentPrice }}</p>
+        <h3>Money in Wallet: {{ data.balance }}</h3>
+        <mat-form-field appearance="fill">
+          <mat-label>Quantity</mat-label>
+          <input matInput type="number" placeholder="Enter quantity" [(ngModel)]="quantity" (input)="checkTotal()">
+        </mat-form-field>
+        <p *ngIf="totalExceedsBalance">Not enough money in wallet!</p>
+      </div>
+      <div class="modal-footer">
+        <p>Total: {{ getTotal() }}</p>
+        <button *ngIf="data.action === 'buy'" [disabled]="quantity <= 0 || totalExceedsBalance" (click)="buy()">Buy</button>
+        <button *ngIf="data.action === 'sell'" [disabled]="quantity <= 0" (click)="sell()">Sell</button>
+      </div>
+    </div>
+  </div>
 </div>

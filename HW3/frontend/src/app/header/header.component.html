@@ -53,95 +53,145 @@
           <li>Type: {{ searchItem.type }}</li>
         </ul>
       </div>
-      <div class="profile-info">
+      <div class="profile-info" *ngIf="!isMobileView">
         <div class="container">
           <div class="row">
-            <div class="col-md-2 profile-data">
+            <div class="col-md-4 profile-data">
               <h1 class="header-with-star">
                 {{ combinedData.profile_data.symbol }}
                 <span class="star-container" (click)="toggleStar()">
                   <i class="bi bi-star star" [ngClass]="{ filled: isStarFilled, yellow: isStarYellow, black: !isStarYellow }"></i>
                 </span>                
               </h1>
-              <p>{{ combinedData.profile_data.company_name }}</p>
-              <p>{{ combinedData.profile_data.exchange }}</p>
+              <p class="company-name">{{ combinedData.profile_data.company_name }}</p>
+              <p class="exchange">{{ combinedData.profile_data.exchange }}</p>
               <div class="button-container">
-                <button (click)="buystock()" class="btn btn-success" style="margin-right: 15px;">Buy</button>
-                <button (click)="sellstock()" class="btn btn-danger">Sell</button>
+                <button (click)="buystock('buy')" class="btn btn-success buy" data-toggle="modal" data-target="#buysellModal">Buy</button>
+                <button (click)="sellstock('sell')" class="btn btn-danger" data-toggle="modal" data-target="#buysellModal">Sell</button>
               </div>
             </div>
-            <div class="col-md-8 logo-data">
+            <div class="col-md-4 logo-data">
               <div class="logo-container">
                 <img src="{{ combinedData.profile_data.logo }}" alt="Company Logo" />
               </div>
-              <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
-                {{ isMarketOpen() }}
-              </p>
             </div>
-            <div class="col-md-2 quote-data">
+            <div class="col-md-4 quote-data">
               <div class="quote-info">
                 <h1 [ngClass]="{
                 negative: combinedData.quote_data.change < 0,
                 positive: combinedData.quote_data.change > 0
               }">
-                  {{ combinedData.quote_data.last_price }}
-                </h1>
+                  {{ combinedData.quote_data.last_price | number:'1.2-2' }}
+            </h1>
                 <h2 [ngClass]="{
                 negative: combinedData.quote_data.change < 0,
                 positive: combinedData.quote_data.change > 0
               }">
                   <i class="bi bi-caret-up-fill" *ngIf="combinedData.quote_data.change > 0"></i>
                   <i class="bi bi-caret-down-fill" *ngIf="combinedData.quote_data.change < 0"></i>
-                  {{ combinedData.quote_data.change }} ({{ combinedData.quote_data.percent_change }}%)
-                </h2>
-                <p>{{ dateAndtime }}</p>
+                  {{ combinedData.quote_data.change | number:'1.2-2' }} ({{ combinedData.quote_data.percent_change | number:'1.2-2' }}%)
+            </h2>
+                <p class="dateTime">{{ dateAndtime }}</p>
               </div>
             </div>
           </div>
+        <div class="row">
+          <div class="col-md-12 marketStatus">
+            <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
+              {{ isMarketOpen() }}
+            </p>
+          </div>
         </div>
       </div>
+      </div>
+      <div class="profile-info" *ngIf="isMobileView">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4 profile-data">
+              <h1 class="header-with-star">
+                {{ combinedData.profile_data.symbol }}
+                <span class="star-container" (click)="toggleStar()">
+                  <i class="bi bi-star star" [ngClass]="{ filled: isStarFilled, yellow: isStarYellow, black: !isStarYellow }"></i>
+                </span>                
+              </h1>
+              <p class="company-name">{{ combinedData.profile_data.company_name }}</p>
+              <p class="exchange">{{ combinedData.profile_data.exchange }}</p>
+              <div class="button-container">
+                <button (click)="buystock('buy')" class="btn btn-success buy" data-toggle="modal" data-target="#buysellModal">Buy</button>
+                <button (click)="sellstock('sell')" *ngIf="sellButtonActive" class="btn btn-danger" data-toggle="modal" data-target="#buysellModal">Sell</button>
+              </div>
+            </div>
+            <div class="col-md-4 logo-data">
+              <div class="logo-container">
+                <img src="{{ combinedData.profile_data.logo }}" alt="Company Logo" />
+              </div>
+            </div>
+            <div class="col-md-4 quote-data">
+              <div class="quote-info">
+                <h1 [ngClass]="{
+                negative: combinedData.quote_data.change < 0,
+                positive: combinedData.quote_data.change > 0
+              }">
+                  {{ combinedData.quote_data.last_price | number:'1.2-2' }}
+            </h1>
+            <h2 [ngClass]="{
+              negative: combinedData.quote_data.change < 0,
+              positive: combinedData.quote_data.change > 0
+            }">
+              <i class="bi bi-caret-up-fill" *ngIf="combinedData.quote_data.change > 0"></i>
+              <i class="bi bi-caret-down-fill" *ngIf="combinedData.quote_data.change < 0"></i>
+              {{ combinedData.quote_data.change | number:'1.2-2' }} ({{ combinedData.quote_data.percent_change | number:'1.2-2'}}%)
+            </h2>            
+                <p class="dateTime">{{ dateAndtime }}</p>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 marketStatus">
+          <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
+            {{ isMarketOpen() }}
+          </p>
+        </div>
+      </div>
+      </div>
     </div>
-    <div *ngIf="stockForm.submitted || tickerValue">
+    <div *ngIf="stockForm.submitted || submitted">
       <mat-tab-group #tabGroup [selectedIndex]="0" (selectedTabChange)="handleTabChange($event)">
         <mat-tab label="Summary">
           <ng-template matTabContent>
             <div *ngIf="summaryData" class="tab-content">
-              <div class="pricesContainer">
-                <p>High Price: {{ summaryData.high_price }}</p>
-                <p>Low Price: {{ summaryData.low_price }}</p>
-                <p>Open Price: {{ summaryData.open_price }}</p>
-                <p>Prev. Price: {{ summaryData.previous_close_price }}</p>
-              </div>
-              <div class="aboutCaontainer">
-                <h3>About the company</h3>
-                <p>IPO Start Date: {{ summaryData.company_start_date }}</p>
-                <p>Industry: {{ summaryData.company_industry }}</p>
-                <p>Company Website URL: <a href="{{ summaryData.company_website_url }}" target="_blank">{{
-                    summaryData.company_website_url }}</a></p>
-                <div class="peers-container">
-                  <h3>Company Peers:</h3>
+              <div class="summarygridcontainer">
+                <div class="pricesContainer">
+                  <p><strong>High Price:</strong> {{ summaryData.high_price }}</p>
+                  <p><strong>Low Price:</strong> {{ summaryData.low_price }}</p>
+                  <p><strong>Open Price:</strong> {{ summaryData.open_price }}</p>
+                  <p><strong>Prev. Close:</strong> {{ summaryData.previous_close_price }}</p>
+                </div>
+                <div class="aboutPeersContainer">
+                  <h2 class="titleAbout">About the company</h2>
+                  <p><strong>IPO Start Date: </strong> {{ summaryData.company_start_date }}</p>
+                  <p><strong>Industry: </strong> {{ summaryData.company_industry }}</p>
+                  <p><strong>Webpage: </strong> <a href="{{ summaryData.company_website_url }}" target="_blank">{{ summaryData.company_website_url }}</a></p>
+                  <p><strong>Company Peers: </strong></p>
                   <ul>
                     <ng-container *ngFor="let peer of summaryData.peers; let last = last">
                       <li style="display: inline;">{{ peer }}</li>
                       <span *ngIf="!last">, </span>
                     </ng-container>
                   </ul>
-                </div>
-              </div>
-              <div class="hourlychartContainer">
-                <highcharts-chart [Highcharts]="highcharts" [options]="HPchartOptions"
-                  style="width: 50%; height: 400px; display: block;">
-                </highcharts-chart>
+                </div>                
+                <div id="hourlychartContainer"></div>
               </div>
             </div>
           </ng-template>
-        </mat-tab>
+        </mat-tab>        
         <mat-tab label="Top News">
           <ng-template matTabContent>
             <div *ngIf="topNewsData" class="card-container">
               <div class="row">
-                <div class="col-md-6 mb-4" *ngFor="let newsItem of topNewsData">
-                  <div class="card" (click)="openNewsModal(newsItem)">
+                <div class="col-md-6 mb-4 card-box" *ngFor="let newsItem of topNewsData">
+                  <div type="button" class="card" (click)="openNewsModal(newsItem)" data-toggle="modal" data-target="#newsModal">
                     <div class="image-container">
                       <img class="card-img-top" [src]="newsItem.thumbnail" alt="Thumbnail">
                     </div>
@@ -165,7 +215,8 @@
           <ng-template matTabContent>
             <div *ngIf="insightsData" class="tab-content">
               <div *ngIf="insightsData" class="insights">
-                <table>
+                <table class="insights-table">
+                  <caption style="caption-side: top;">Insider Sentiments</caption>
                   <tr>
                     <th>{{ combinedData.profile_data.company_name }}</th>
                     <th>MSPR</th>
@@ -173,27 +224,23 @@
                   </tr>
                   <tr>
                     <td style="font-weight: bold;">Total</td>
-                    <td>{{ insightsData.Total_MSPR }}</td>
+                    <td>{{ insightsData.Total_MSPR | number:'1.2-2' }}</td>
                     <td>{{ insightsData.Total_Change }}</td>
                   </tr>
                   <tr>
                     <td style="font-weight: bold;">Positive</td>
-                    <td>{{ insightsData.Positive_MSPR }}</td>
+                    <td>{{ insightsData.Positive_MSPR | number:'1.2-2' }}</td>
                     <td>{{ insightsData.Positive_Change }}</td>
                   </tr>
                   <tr>
                     <td style="font-weight: bold;">Negative</td>
-                    <td>{{ insightsData.Negative_MSPR }}</td>
+                    <td>{{ insightsData.Negative_MSPR | number:'1.2-2' }}</td>
                     <td>{{ insightsData.Negative_Change }}</td>
                   </tr>
                 </table>
-                <div style="display: flex;">
-                  <highcharts-chart [Highcharts]="highcharts" [options]="chartOptions"
-                    style="width: 50%; height: auto; margin: 10px; display: block;">
-                  </highcharts-chart>
-                  <highcharts-chart [Highcharts]="highcharts" [options]="historicalChartOptions"
-                    style="width: 50%; height: auto; margin: 10px; display: block;">
-                  </highcharts-chart>
+                <div style="display: flex;" class="insight-charts">
+                  <highcharts-chart [Highcharts]="highcharts" [options]="chartOptions" class="custom-chart trends"></highcharts-chart>
+                  <highcharts-chart [Highcharts]="highcharts" [options]="historicalChartOptions" class="custom-chart history"></highcharts-chart>
                 </div>
               </div>
             </div>
@@ -203,3 +250,61 @@
     </div>
   </div>
 </div>
+
+<ng-template #newsModal>
+  <div class="modal fade newsmodal" data-backdrop="false" id="newsModal" tabindex="-1" role="dialog" aria-labelledby="newsModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="newsmodal modal-header">
+          <button type="button" class="close" data-dismiss="modal" (click)="closeNewsModal()">&times;</button>
+          <div class="source">{{ newsmodal.source }}</div>
+          <div class="datetime">{{ formattedDateAndTime }}</div>
+        </div>        
+        <div class="modal-body">
+          <p class="headline">{{ newsmodal.headline }}</p>
+          <p class="summary">{{ newsmodal.summary }} For more details click here <a href="{{ newsmodal.url }}" target="_blank">Read more</a></p>
+        </div>
+        <div class="modalFooter">
+          <div>
+            <p style="font-weight: bold;">Share</p>
+          </div>
+          <div class="share-buttons">
+            <a class="twitter-share-button" href="https://twitter.com/intent/tweet?url={{ newsmodal.url }}&text={{ newsmodal.headline }}" target="_blank" data-show-count="false">
+            Tweet</a>
+            <a class="facebook-share-button" href="https://www.facebook.com/sharer/sharer.php?u={{ newsmodal.url }}" target="_blank">
+            Facebook</a>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<div class="modal fade" data-backdrop="false" id="buysellModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p *ngIf="combinedData?.profile_data?.symbol">{{ this.combinedData.profile_data.symbol }}</p>
+        <button type="button" class="close-button modalclose" aria-label="Close" data-dismiss="modal">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="current-price-label">Current Price: {{ this.combinedData?.quote_data?.last_price }}</p>
+        <p *ngIf="balanceAmount">Money in Wallet: {{ this.balanceAmount | number:'1.2-2' }}</p>
+        <div class="form-container">
+          <p>Quantity: </p>
+          <input type="number" class="input-quant" placeholder="Enter quantity" [(ngModel)]="quantity" (input)="checkTotal()">
+        </div> 
+        <p *ngIf="totalExceedsBalance">Not enough money in wallet!</p>
+      </div>
+      <div class="modal-footer">
+        <p *ngIf="getTotal() !== undefined">Total: {{ getTotal() | number:'1.2-2' }}</p>
+        <button *ngIf="buysellaction == 'buy'" class="btn btn-success" [disabled]="quantity <= 0 || totalExceedsBalance" (click)="buy()">Buy</button>
+        <button *ngIf="buysellaction == 'sell'" class="btn btn-danger" [disabled]="quantity <= 0" (click)="sell()">Sell</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  

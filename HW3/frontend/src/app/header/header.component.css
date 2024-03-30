@@ -1,3 +1,4 @@
+@media screen and (min-width: 767px) {
 .title-for-form {
     padding-top: 30px;
     padding-bottom: 30px;
@@ -136,6 +137,10 @@ input[type="text"] {
   .positive {
     color: green;
   }
+
+  .buy {
+    margin-right: 15px;
+  }
   
   #buy {
     background-color:green;
@@ -173,8 +178,8 @@ input[type="text"] {
   }
 
   img {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 80px;
   }
 
   .card-container {
@@ -182,6 +187,14 @@ input[type="text"] {
     flex-wrap: wrap;
     justify-content: space-between;
   }
+
+  .custom-chart {
+    width: 50%; /* Set width to 50% */
+    height: auto; /* Allow height to adjust based on content */
+    margin: 10px; /* Add margin */
+    display: block; /* Ensure the chart is displayed as a block element */
+  }
+  
   
 /* Card styles */
 .card {
@@ -197,23 +210,20 @@ input[type="text"] {
 }
 
 .card-img-top {
-  width: 110px; /* Ensure the image fills the container horizontally */
-  height: 60px; /* Ensure the image fills the container vertically */
   object-fit: fill; /* Cover the entire area */
-  margin-left: 15%;
-  margin-top: 15%;
+  margin-left: 10px;
+  margin-top: 10px;
   border-radius: 5px;
 }
 
 .card-body {
   flex-grow: 1;
   background-color: #f6f6f6;
+  text-align: center;
 }
 
 .card-title {
-  text-align: center;
-  font-size: 12px; /* Adjust font size as needed */
-  margin-left: 10px; /* Remove default margin */
+  font-size: 12px;
 }
 
 .card-container {
@@ -235,13 +245,6 @@ input[type="text"] {
   padding-left: 15px; /* Offset the padding added by Bootstrap */
   padding-right: 15px; /* Offset the padding added by Bootstrap */
 }
-
-  
-  @media (max-width: 768px) {
-    .card {
-      width: calc(100% - 20px); /* Full width on smaller screens */
-    }
-  }
 
   .center-container {
     display: flex;
@@ -279,7 +282,7 @@ input[type="text"] {
   #charts-container {
     background-color: #f6f6f6;
     width: 100%;
-    height: 500px;
+    height: 600px;
   }
 
   .alert {
@@ -316,6 +319,567 @@ input[type="text"] {
     color: black;
   }
 
-  .hourlychartContainer {
-    
+  .summarygridcontainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
   }
+  
+  .pricesContainer {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  .aboutPeersContainer {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    font-size: 12px;
+  }
+
+  .aboutPeersContainer .titleAbout {
+    text-decoration: underline;
+  }
+  .pricesContainer p strong,
+.aboutPeersContainer p strong {
+  font-weight: bold; /* Apply bold font to <strong> elements within p tags */
+}
+
+#hourlychartContainer {
+  grid-column: 2;
+    grid-row: 1 / span 2; /* Spanning two rows */
+  background-color: #f6f6f6;
+  width: 100%;
+}
+.marketStatus {
+  margin-top: 0px;
+  text-align: center;
+  font-weight:bolder;
+}
+
+.insights-table {
+  caption-side: top; /* Position the caption at the top of the table */
+}
+
+.insights-table caption {
+  text-align: center; /* Center-align the caption */
+  font-size: 2em; /* Adjust font size of the caption */
+  font-weight: bold; /* Apply bold font weight to the caption */
+  margin-bottom: 10px; /* Add space below the caption */
+}
+
+.marketStatus {
+  text-align: center;
+  font-weight: bolder;
+  clear: both; /* Ensure that the marketStatus clears both left and right floated elements */
+  margin-top: 20px; /* Adjust margin-top as needed */
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalclose {
+  color: #2276f3;
+  font-size: 24px;
+  text-decoration: underline;
+  border: none;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.modal-header p {
+  text-align: left;
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+/* Modal Body */
+.modal-body {
+  font-size: 14px;
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+}
+
+.form-container p {
+  margin-right: 10px;
+  margin-top: 8px;
+}
+
+.input-quant {
+  width: calc(100% - 160px); 
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer p {
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+.modal-footer button {
+  font-size: 16px; /* Adjust font size */
+}
+
+.newsmodal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.newsmodal .headline {
+  font-size: large;
+  font-weight: 3rem;
+}
+
+.newsmodal .summary {
+  font-size: small;
+  font-weight: 1rem;
+}
+
+/* Modal Body */
+.newsmodal .modal-body {
+  padding: 20px;
+}
+
+.newsmodal .modal-body h2 {
+  margin-top: 0;
+}
+
+.newsmodal .modalFooter {
+  box-sizing: border-box;
+  border: 1px solid gray;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  margin-top: 0;
+  border-radius: 10px;
+}
+
+/* Modal Footer */
+.newsmodal .modalFooter {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.newsmodal .modalFooter a {
+}
+
+.newsmodal .modalFooter {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  align-items: flex-start; /* Align items to the left */
+}
+
+.newsmodal .share-buttons {
+  margin-top: 10px; /* Adjust margin between "Share" text and buttons */
+}
+
+/* Share button box */
+.newsmodal .share-button-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: calc(100% - 40px); /* Adjust width based on padding and borders */
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Twitter and Facebook share buttons */
+.newsmodal .twitter-share-button,
+.facebook-share-button {
+  text-decoration: none;
+  color: #000;
+  margin-right: 10px;
+}
+
+/* Close button */
+.newsmodal .modal-header .close {
+  color: #2276f3;
+  font-size: 24px;
+  text-decoration: underline;
+  border: none;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+/* Align source and datetime on left */
+.newsmodal .modal-header p:nth-child(1),
+.modal-header p:nth-child(2) {
+  order: 0; /* Move source and datetime to the left */
+}
+
+.newsmodal .modal-header p:nth-child(2) {
+  margin-top: 10px; /* Add space between source and datetime */
+}
+
+
+}
+
+@media (max-width: 767px) {
+  .title-for-form {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  #inputWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .input-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  input {
+    width: 300px;
+    padding-right: 60px;
+    border: 3px solid #1d279d;
+    border-radius: 25px;
+    padding: 7px 20px;
+    font-size: 12px;
+  }
+
+  .search-icon,
+  .clear-icon {
+    color: #1d279d;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .search-icon {
+    right: 50px;
+    font-size: 1rem;
+  }
+
+  .clear-icon {
+    right: 20px;
+    font-size: 2rem;
+  }
+
+  .profile-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1rem;
+  }
+
+  .profile-data,
+  .logo-data,
+  .quote-data {
+    flex: 0 0 calc(33.33% - 20px);
+    margin: 5px;
+    text-align: center;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .profile-data,
+  .logo-data,
+  .quote-data {
+    flex: 1;
+    padding: 10px;
+    margin: 5px;
+  }
+
+  .marketStatus {
+    margin-top: 100px;
+    font-size: smaller;
+  }
+
+  .logo-container img {
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  .header-with-star {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+
+  .star-container {
+    margin-left: 5px;
+  }
+
+  .negative {
+    color: red;
+  }
+
+  .positive {
+    color: green;
+  }
+
+  .company-name {
+    font-size: 14px;
+  }
+
+  .exchange {
+    font-size: 10px;
+  }
+
+  .buy {
+    margin-right: 5px;
+  }
+
+  .dateTime {
+    font-size: 10px;
+  }
+
+  .marketStatus {
+    margin-top: 0px;
+    text-align: center;
+    font-weight:bolder;
+  }
+
+  .yellow {
+    color: #FFD43B;
+  }
+
+  .black {
+    color: black;
+  }
+
+  .summarygridcontainer {
+    margin-top: 20px;
+  }
+
+  .pricesContainer {
+    align-items: center;
+    text-align: center;
+  }
+
+  .aboutPeersContainer {
+    margin-top: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .aboutPeersContainer .titleAbout {
+    text-decoration: underline;
+  }
+
+  #hourlychartContainer {
+    margin-top: 20px;
+    background-color: #f6f6f6;
+    width: 90vw;
+    height: 80%;
+    align-items: center;
+    margin-left: 5vw;
+  }
+
+  .pricesContainer p strong,
+.aboutPeersContainer p strong {
+  font-weight: bold; /* Apply bold font to <strong> elements within p tags */
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  margin-left: 5vw;
+}
+
+.card {
+  width: 90vw;
+}
+
+.card .image-container {
+  display: flex;
+  justify-content: center; /* Center-align image */
+  align-items: center; /* Center-align vertically */
+  height: 200px; /* Set fixed height for image container */
+  padding: 10px; /* Add padding around the image */
+  background-color: #f6f6f6;
+}
+
+.card .image-container img {
+  max-width: 100%; /* Ensure image fits inside its container */
+  max-height: 100%; /* Ensure image fits inside its container */
+}
+
+.card .card-body {
+  text-align: center; /* Center-align text content */
+  background-color: #f6f6f6;
+  font-size: large;
+}
+
+.tab-content {
+  margin-top: 20px;
+}
+
+#charts-container {
+  width: 90vw;
+  margin-left: 5vw;
+}
+
+table {
+  width: 80vw;
+  border-collapse: collapse;
+  margin-left: 10vw;
+  margin-bottom: 10px;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+
+tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.insights-table {
+  caption-side: top; /* Position the caption at the top of the table */
+}
+
+.insights-table caption {
+  text-align: center; /* Center-align the caption */
+  font-size: 1rem; /* Adjust font size of the caption */
+  font-weight: bold; /* Apply bold font weight to the caption */
+  margin-bottom: 10px; /* Add space below the caption */
+}
+
+.insight-charts {
+  flex-direction: column;
+}
+
+.custom-chart {
+  width: 90vw; /* Set width to 100% to fill the container */
+  height: auto; /* Allow height to adjust based on content */
+  margin-left: 5vw;
+}
+
+.alert {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 90vw;
+  margin-left: 5vw;
+}
+
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.75rem 1.25rem;
+  color: inherit;
+  background-color: transparent;
+  border: 0;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.close:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalclose {
+  color: #2276f3;
+  font-size: 24px;
+  text-decoration: underline;
+  border: none;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.modal-header p {
+  text-align: left;
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+/* Modal Body */
+.modal-body {
+  font-size: 14px;
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+}
+
+.form-container p {
+  margin-right: 10px;
+  margin-top: 8px;
+}
+
+.input-quant {
+  width: calc(100% - 160px); 
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer p {
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+.modal-footer button {
+  font-size: 16px; /* Adjust font size */
+}
+
+}
+
+
+
+
+
+  
+  

@@ -3,14 +3,16 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { HeaderComponent } from "./header/header.component";
 import { WatchlistComponent } from './watchlist/watchlist.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
+import 'bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-root',
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
-    imports: [NgClass, RouterOutlet, RouterLink, RouterLinkActive, HeaderComponent, WatchlistComponent, PortfolioComponent]
+    imports: [NgClass, NgIf, NgbModule, RouterOutlet, RouterLink, RouterLinkActive, HeaderComponent, WatchlistComponent, PortfolioComponent]
 })
 export class AppComponent 
 {
@@ -19,7 +21,15 @@ export class AppComponent
   searchStyle = 'btn-default'
   wlStyle = 'btn-default'
   pfStyle = 'btn-default'
+  isMobileView: boolean = false;
 
+  constructor() {
+    this.checkMobileView();
+  }
+
+  checkMobileView() {
+    this.isMobileView = window.innerWidth <= 768;
+  }
 
   StockSearch() 
   {
