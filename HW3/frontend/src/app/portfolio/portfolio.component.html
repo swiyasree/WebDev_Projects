@@ -12,10 +12,9 @@
       <i class="bi bi-x"></i>
     </button>
   </div>
-  
-  <div *ngIf="portfolioData && portfolioData.length > 0">
     <p class="heading">My Portfolio</p>
     <p class="subheading">Money in Wallet: ${{ currentAmount | number:'1.2-2' }}</p>
+    <div *ngIf="portfolioData && portfolioData.length > 0">
     <div *ngFor="let item of portfolioData">
       <div *ngIf="item.quantity > 0 && !isMobileView" class="card mb-3">
         <div class="card-header">
@@ -118,7 +117,8 @@
           <p>Quantity: </p>
           <input type="number" class="input-quant" placeholder="Enter quantity" [(ngModel)]="quantity" (input)="checkTotal(ticker)">
         </div>        
-        <p *ngIf="totalExceedsBalance">Not enough money in wallet!</p>
+        <p *ngIf="totalExceedsBalance && buysellaction == 'buy'" style="color: red; font-weight: bold; padding-top: 5px;">Not enough money in wallet!</p>
+        <p *ngIf="buysellaction == 'sell' && notEnoughStocks" style="color: red; font-weight: bold; padding-top: 5px;">You cannot sell the stocks that you don't have!</p>
         </div>
       <div class="modal-footer">
          <p>Total: {{ getTotal() | number:'1.2-2' }}</p>

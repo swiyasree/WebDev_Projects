@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit, ViewChild, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, TemplateRef, Renderer2 } from '@angular/core';
+import { Component, NgModule, OnInit, ViewChild, AfterViewInit, CUSTOM_ELEMENTS_SCHEMA, TemplateRef, Renderer2, Input } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatTabGroup } from '@angular/material/tabs';
@@ -23,16 +23,32 @@ import HC_dragPanes from 'highcharts/modules/drag-panes';
 import HC_exporting from 'highcharts/modules/exporting';
 import HC_accessibility from 'highcharts/modules/accessibility';
 import moment from 'moment';
+import { Router } from '@angular/router';
 import 'bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { ShareIconsModule } from 'ngx-sharebuttons/icons';
+import { HeaderService } from '../headers.service';
+import { WatchlistService } from '../watchlist.service';
+import 'moment-timezone';
+
+HC_indicators(Highstockcharts);
+HC_VBP(Highstockcharts);
+HC_dragPanes(Highstockcharts);
+HC_exporting(Highstockcharts);
+HC_accessibility(Highstockcharts);
 
 const sessionStorage = typeof window !== 'undefined' ? window.sessionStorage : {
   getItem: () => null,
   setItem: () => { },
   removeItem: () => { }
 };
+
+interface DictionaryEntry {
+  id: string;
+  symbol: string;
+}
+
 
 @Component({
   selector: 'app-header',
@@ -41,14 +57,16 @@ const sessionStorage = typeof window !== 'undefined' ? window.sessionStorage : {
     MatInputModule, MatFormFieldModule, MatAutocompleteModule, MatTabsModule,
     HighchartsChartModule, NgbModule, ShareButtonsModule,
     ShareIconsModule],
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
+  providers: [HeaderService],
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
-export class HeaderComponent implements AfterViewInit, OnInit {
-
+export class SearchComponent implements OnInit {
+  @Input() stockData: any;
   totalExceedsBalance: boolean = false;
+  notEnoughStocks: boolean = false;
   refreshSubscription: Subscription | undefined;
   tickerValue: string = '';
   submitted: boolean = false;
@@ -69,17 +87,20 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   autocompleteOptions: any[] = [];
   autocompleteWidth: string = '240px';
   highcharts = Highcharts;
+  symbolDictionary: { [key: string]: string } = {};
+
   sellButtonActive: boolean = false;
   quantity: number = 0;
   total: number = 0;
   totalPrice = 0;
   buysellaction: any;
   DateandTime: any;
+  temp: any;
 
   @ViewChild('stockForm') stockForm!: NgForm;
   @ViewChild('tabGroup') tabGroup!: MatTabGroup;
   @ViewChild('newsModal', { static: true }) newsModalRef!: TemplateRef<any>;
-  
+
   private inputSubject = new Subject<string>();
   chartOptions: any;
   historicalChartOptions: any;
@@ -92,16 +113,18 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   isMobileView: boolean = false;
   percentageChange: any;
   portfolioData: any;
-  newsmodal: any; 
+  newsmodal: any;
   buysellmodal: any;
   formattedDateAndTime: any;
+  cticker: any;
+  hourlyChartOptions: any;
+  quant: any;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {
-    this.checkMobileView();
+  constructor(private http: HttpClient, private dialog: MatDialog, private headerService: HeaderService, private watchlistservice: WatchlistService, private router: Router) {
     this.inputSubject.pipe(
-      debounceTime(300), // wait for 300ms after the last keystroke
-      distinctUntilChanged(), // only emit if the current value is different from the last
-      switchMap(input => this.fetchAutocompleteOptions(input)) // fetch autocomplete options
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(input => this.fetchAutocompleteOptions(input))
     ).subscribe(options => {
       if (options && options.result && Array.isArray(options.result)) {
         this.autocompleteOptions = options.result.slice(0, 5).map((item: any) => ({
@@ -110,10 +133,20 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         }));
       } else {
         console.error('Invalid response format:', options);
-        // Handle the error or empty response here
         this.autocompleteOptions = [];
       }
     });
+    this.watchlistservice.tickerUpdate$.subscribe(ticker => {
+      this.cticker = ticker;
+      this.fetchWatchlistData();
+    });
+
+    this.checkMobileView();
+    
+  }
+
+  saveTosessionStorage() {
+    sessionStorage.setItem('symbolDictionary', JSON.stringify(this.symbolDictionary));
   }
 
   checkMobileView() {
@@ -121,29 +154,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit() {
-    this.loadInitialData();
-    this.submitted = true;
-    this.initializeHighcharts();
 
-    console.log('NGONINT is star yellow? ', this.isStarYellow);
-
-    interval(15000).subscribe(() => {
-      this.getCurrentDateTime();
-    });
-
-    this.http.get<any>('https://stocksearchon.azurewebsites.net/currentBalance').subscribe(
-      (data) => {
-        this.balanceAmount = data.currentAmount;
-        this.quantityOfStock = data.quantity;
-      },
-      (error) => {
-        console.error('Error fetching current balance:', error);
-      }
-    );
-
-
-
-    // Retrieve data from sessionStorage if available
     const storedData = sessionStorage.getItem('headerComponentData');
     if (storedData) {
       const parsedData = JSON.parse(storedData);
@@ -155,13 +166,32 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       this.insightsData = parsedData.insightsData;
       this.formattedTimestamp = (this.combinedData.quote_data.timestamp * 1000).toLocaleString();
     }
+    this.fetchWatchlistData();
+    this.fetchPortFolioData();
+    this.loadInitialData();
+    this.submitted = true;
+    this.summary();
+    
+
+    interval(15000).subscribe(() => {
+      this.getCurrentDateTime();
+    });
+
+    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
+      (data) => {
+        this.balanceAmount = data.currentAmount;
+        this.quantityOfStock = data.quantity;
+      },
+      (error) => {
+        console.error('Error fetching current balance:', error);
+      }
+    );
 
     setTimeout(() => {
-      this.selectSummaryTab();
+      // this.selectSummaryTab();
       const marketState = this.isMarketOpen();
 
       if (marketState === 'Market is Open') {
-        console.log('market open');
         this.startAutoUpdate();
       }
     }, 50);
@@ -173,18 +203,20 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   }
 
-  fetchWatchlistData() {
-    this.http.get<any[]>('https://stocksearchon.azurewebsites.net/watchlist')
-      .subscribe(data => {
-        this.watchlistData = data;
-      });
-    if (this.watchlistData.profile_data.symbol === this.tickerValue) {
-      this.isStarYellow = true; // Set a boolean variable to true when the condition is met
-    } else {
-      this.isStarYellow = false; // Set it to false otherwise
+  async fetchWatchlistData() {
+    try {
+      this.watchlistData = await this.headerService.getwatchlist().toPromise();
+      for (const item of this.watchlistData) {
+        if (item.profile_data.symbol === this.tickerValue) {
+          this.isStarFilled = true;
+          break;
+        }
+        this.isStarFilled = false;
+      }
     }
-    console.log('FETCHWATCHLISTDATA is star yellow? ', this.isStarYellow);
-    this.ngOnInit();
+    catch (error) {
+      console.error('Error fetching movies:', error);
+    }
   }
 
 
@@ -194,10 +226,10 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    // Initialize Highcharts modules after the view has been initialized
-    this.initializeHighcharts();
-  }
+  // ngAfterViewInit(): void {
+  //   // Initialize Highcharts modules after the view has been initialized
+  //   this.initializeHighcharts();
+  // }
 
   loadInitialData() {
     // Load initial data such as dateAndtime, balance, and search results
@@ -208,7 +240,9 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   loadData() {
     if (this.isMarketOpen() === 'Market is Open') {
       this.search_results(); // Load search results
+      this.summary();
     }
+
   }
 
   startAutoUpdate() {
@@ -220,7 +254,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   loadFormattedTimestamp() {
     // Make HTTP request to fetch the formatted timestamp
-    this.http.get<any>('https://stocksearchon.azurewebsites.net/?ticker=' + this.tickerValue).subscribe(
+    this.http.get<any>('http://localhost:5172/?ticker=' + this.tickerValue).subscribe(
       (data) => {
         this.combinedData = data;
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
@@ -233,22 +267,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         console.error("Error fetching formatted timestamp:", error);
       }
     );
-  }
-
-  private async initializeHighcharts(): Promise<void> {
-    await import('highcharts/highstock'); // Import Highcharts core
-    await import('highcharts/indicators/indicators'); // Import Highcharts indicators
-    await import('highcharts/modules/drag-panes'); // Import drag panes module
-    await import('highcharts/modules/exporting'); // Import exporting module
-    await import('highcharts/modules/accessibility'); // Import accessibility module
-    await import('highcharts/indicators/volume-by-price'); // Import Volume by Price indicator
-
-    // Initialize Highcharts after all modules are loaded
-    HC_indicators(Highstockcharts);
-    HC_VBP(Highstockcharts);
-    HC_dragPanes(Highstockcharts);
-    HC_exporting(Highstockcharts);
-    HC_accessibility(Highstockcharts);
   }
 
   getCurrentDateTime() {
@@ -277,11 +295,12 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   onInput() {
+    console.log('input', this.tickerValue);
     this.inputSubject.next(this.tickerValue);
   }
 
   fetchAutocompleteOptions(input: string) {
-    return this.http.get<any>(`https://stocksearchon.azurewebsites.net/autocomplete?input=${input}`);
+    return this.http.get<any>(`http://localhost:5172/autocomplete?input=${input}`);
   }
 
   clear_results() {
@@ -312,24 +331,24 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   sell() {
+    this.soldSymbol = this.tickerValue;
     if (this.quantity <= 0) {
       return;
     }
-  
+
     const requestData = {
       company: this.combinedData.profile_data.company_name,
       quantity: -this.quantity,
-      total: this.total, 
+      total: this.total,
       totalPrice: -this.totalPrice,
-      avgPrice: this.totalPrice/this.quantity,
+      avgPrice: this.totalPrice / this.quantity,
       currentPrice: this.combinedData.quote_data.last_price,
       marketPrice: -(this.combinedData.quote_data.last_price * this.quantity),
       symbol: this.combinedData.profile_data.symbol
     };
 
-    console.log('requestdata', requestData);
-  
-    this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
+
+    this.http.post<any>('http://localhost:5172/portfolio', requestData)
       .subscribe({
         next: () => {
         },
@@ -339,46 +358,46 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       });
   }
 
-    buy() {
-      if (this.quantity <= 0) {
-        // Handle invalid quantity
-        return;
-      }
-        const totalCost = this.combinedData.quote_data.last_price * this.quantity;
-        if (totalCost > this.balanceAmount) {
-          // If total cost exceeds balance, display an error message
-          this.dialog.closeAll();
-          return;
+  buy() {
+    this.boughtSymbol = this.tickerValue;
+    if (this.quantity <= 0) {
+      // Handle invalid quantity
+      return;
+    }
+    const totalCost = this.combinedData.quote_data.last_price * this.quantity;
+    if (totalCost > this.balanceAmount) {
+      // If total cost exceeds balance, display an error message
+      this.dialog.closeAll();
+      return;
+    }
+
+    const requestData = {
+      company: this.combinedData.profile_data.company_name,
+      quantity: this.quantity,
+      total: -totalCost,
+      totalPrice: totalCost,
+      avgPrice: totalCost / this.quantity,
+      currentPrice: this.combinedData.quote_data.last_price,
+      marketPrice: this.combinedData.quote_data.last_price * this.quantity,
+      symbol: this.combinedData.profile_data.symbol
+    };
+
+
+    this.http.post<any>('http://localhost:5172/portfolio', requestData)
+      .subscribe({
+        next: () => {
+        },
+        error: (error) => {
+          console.error('Error buying:', error);
         }
-      
-        const requestData = {
-          company: this.combinedData.profile_data.company_name,
-          quantity: this.quantity,
-          total: -totalCost, 
-          totalPrice: totalCost,
-          avgPrice: totalCost / this.quantity,
-          currentPrice: this.combinedData.quote_data.last_price,
-          marketPrice: this.combinedData.quote_data.last_price * this.quantity,
-          symbol: this.combinedData.profile_data.symbol
-        };
-  
-        console.log('requestdata', requestData);
-        
-        this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
-          .subscribe({
-            next: () => {
-            },
-            error: (error) => {
-              console.error('Error buying:', error);
-            }
-          });
+      });
 
   }
 
   getTotal() {
-      this.total = this.combinedData.quote_data.last_price * this.quantity;
-      this.totalPrice = this.combinedData.quote_data.last_price * this.quantity;
-      return this.total;
+    this.total = this.combinedData.quote_data.last_price * this.quantity;
+    this.totalPrice = this.combinedData.quote_data.last_price * this.quantity;
+    return this.total;
   }
 
   clearInvalidTicker() {
@@ -395,8 +414,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   openNewsModal(newsItem: any) {
-    console.log('triggered');
     this.newsmodal = newsItem;
+    console.log('url ', this.newsmodal.url, 'headline', this.newsmodal.headline);
     this.DateandTime = new Date(this.newsmodal.datetime * 1000); // Convert Unix timestamp to milliseconds
 
     // Get the month, day, and year
@@ -422,23 +441,25 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     if (this.tabGroup) {
       this.tabGroup.selectedIndex = 0; // Index of the summary tab
       const fakeEvent = { index: 0 } as MatTabChangeEvent;
-      console.log('fake event: ', fakeEvent);
       this.handleTabChange(fakeEvent); // Call handleTabChange method with a simulated event
     }
   }
 
   search_results() {
+    this.summary();
     if (!this.tickerValue) {
       console.error("Ticker value is required");
       return;
     }
 
+    this.fetchWatchlistData()
+
     this.submitted = true;
-    this.http.get<any>(`https://stocksearchon.azurewebsites.net/?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/search?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.combinedData = data;
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
-        this.formattedTimestamp = timestamp.toLocaleString(); 
+        this.formattedTimestamp = timestamp.toLocaleString();
 
         if (!this.combinedData.profile_data || Object.keys(this.combinedData.profile_data).length === 0) {
           this.handleEmptyData();
@@ -455,34 +476,46 @@ export class HeaderComponent implements AfterViewInit, OnInit {
           formattedTimestamp: this.formattedTimestamp
         }));
 
-        this.selectSummaryTab();
+        // this.selectSummaryTab();
 
       },
       (error) => {
         console.error("Error fetching data:", error);
       }
     );
-    this.http.get<any>('https://stocksearchon.azurewebsites.net/portfolio').subscribe(
+    this.fetchPortFolioData();
+  }
+
+  fetchPortFolioData() {
+    this.http.get<any>('http://localhost:5172/portfolio').subscribe(
       (data) => {
         this.portfolioData = data;
+        console.log('fetched portfolio data: ', this.portfolioData);
+
         if (Array.isArray(this.portfolioData) && this.portfolioData.length > 0) 
         {
           const foundItem = this.portfolioData.find(item => item.symbol === this.tickerValue);
-          if (foundItem &&foundItem.quantity > 0) 
-          {
-            console.log('sellbutton active');
+          if (foundItem != undefined && foundItem.quantity > 0) {
+            this.quant = foundItem.quantity;
+            console.log('active: ', foundItem.quantity);
             this.sellButtonActive = true;
-              
-          } 
-          else 
+
+          }
+          else if(foundItem != undefined && foundItem.quantity == 0) 
           {
+            console.log('not active: ', foundItem.quantity);
             this.sellButtonActive = false;
           }
-      } 
-      else 
-      {
-          console.log('Portfolio data is either not an array or empty');
-      }
+          else 
+          {
+            console.log('not active: ', foundItem.quantity);
+            this.sellButtonActive = false;
+          }
+        }
+        else {
+          console.log('not active: ');
+          this.sellButtonActive = false;
+        }
       },
       (error) => {
         console.error('Error fetching portfolio data:', error);
@@ -495,15 +528,11 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-
-
-    this.http.get<any>(`https://stocksearchon.azurewebsites.net/summary?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/summary?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.summaryData = data;
 
         if (this.summaryData) {
-          this.initializeHighcharts();
-          console.log('summary data printing before charts method called: ', this.summaryData);
           this.createhourlyChart(this.summaryData);
         }
 
@@ -515,49 +544,79 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   createhourlyChart(summaryData: any) {
-    this.hpdata = summaryData.hourlyPrices
+    console.log('this.hpdata: ', this.hpdata)
+    this.hpdata = summaryData.hourlyPrices;
+    let hourlyData = [];
+    let dataLength = this.hpdata.length;
 
-    const closingPrices = this.hpdata.map((obj: { c: any; }) => obj.c); // Extract closing prices
-    const timestamps = this.hpdata.map((obj: { t: any; }) => obj.t); // Extract timestamps
-    const formattedData = timestamps.map((timestamp: any, index: string | number) => [timestamp, closingPrices[index]]);
+    for (let i = 0; i < dataLength; i++) {
+        let timestamp = this.hpdata[i].t;
+        let closingPrice = this.hpdata[i].c;
+        hourlyData.push([timestamp, closingPrice]);
+    }
 
-    console.log('formattedData', formattedData);
-    Highstockcharts.stockChart({
-      chart: {
-        renderTo: 'hourlychartContainer',
-        backgroundColor: '#f6f6f6'
+    this.hourlyChartOptions = {
+      chart: 
+      {
+        backgroundColor: '#f6f6f6' 
       },
-      rangeSelector: {
-        selected: 1
-      },
-      title: {
-        text: 'Hourly Price Variation'
-      },
-      yAxis: [{
-        opposite: true, // Display y-axis on the right side
-        labels: {
-          align: 'right' // Align labels to the right
+        series: [{
+            name: null,
+            data: hourlyData,
+            color: this.combinedData.quote_data.change > 0 ? '#008000' : '#FF0000',
+            showInNavigator: true,
+            type: 'line',
+            tooltip: {
+                valueDecimals: 2,
+            },
+            marker: {
+                enabled: false // Disable markers
+            }
+        }],
+        title: { text: this.tickerValue + ' Hourly Price Variation' },
+        yAxis: [{
+            opposite: true,
+            labels: {
+                align: 'right'
+            }
+        }],
+        rangeSelector: {
+            enabled: false,
         },
-        tickPixelInterval: 50, // Adjust as needed
-        // Other y-axis options
-      }],
-      series: [{
-        type: 'line',
-        name: 'Closing Price',
-        data: formattedData,
-        tooltip: {
-          valueDecimals: 2
+        navigator: {
+            series: {
+                type: 'area',
+                color: '#f6f6f6',
+                fillOpacity: 1,
+            },
+        },
+        xAxis: {
+            type: 'datetime',
+            labels: {
+              formatter: function (this: any) {
+                if (this.value !== undefined) {
+                    return Highcharts.dateFormat('%H:%M', this.value); // Format timestamp to display hours and minutes
+                }
+                return '';
+            }
+            }
+        },
+        time: {
+            getTimezoneOffset: Addtime,
+        },
+        legend: {
+            enabled: false
         }
-      }]
-    });
-  }
+    };
+}
+
 
   topNews() {
     if (!this.tickerValue) {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`https://stocksearchon.azurewebsites.net/topnews?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/topnews?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.topNewsData = data; // Assign response data to topNewsData property
       },
@@ -572,7 +631,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`https://stocksearchon.azurewebsites.net/charts?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/charts?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.createChart(data);
 
@@ -698,7 +757,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`https://stocksearchon.azurewebsites.net/insights?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`http://localhost:5172/insights?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.insightsData = data;
 
@@ -880,31 +939,51 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   toggleStar() {
+    this.watchlistservice.updateTicker(this.tickerValue);
     this.isStarFilled = !this.isStarFilled;
-    this.isStarYellow = !this.isStarYellow;
-    console.log('TOGGLESTAR is star yellow? ', this.isStarYellow);
 
     if (this.isStarFilled && this.combinedData) {
       this.sendDataToBackend();
     }
+    else {
+      this.deleteDataToBackend();
+    }
   }
 
-  sendDataToBackend() {
-    // Send the combinedData to the backend with route '/watchlist'
-    this.http.post<any>('https://stocksearchon.azurewebsites.net/watchlist', this.combinedData).subscribe(
-      (response) => {
-      },
-      (error) => {
-        console.error("Error sending data to backend:", error);
-      }
-    );
-    console.log('SENDDATATOBACKEND is star yellow? ', this.isStarYellow);
-    this.fetchWatchlistData();
+  async sendDataToBackend() {
+    try {
+
+      const response = await this.http.post<any>('http://localhost:5172/watchlist', this.combinedData).toPromise();
+    }
+    catch (error) {
+      console.error('Error sending data to backend:', error);
+    }
   }
+
+  async deleteDataToBackend() {
+    try {
+
+      let tempId: string | undefined;
+      for (const item of this.watchlistData) {
+        if (item.profile_data.symbol === this.tickerValue) {
+          tempId = item._id;
+          break;
+        }
+      }
+
+      if (tempId) {
+        const response = await this.http.delete<any>(`http://localhost:5172/watchlist/${tempId}`).toPromise();
+      } else {
+        console.error('No item found in watchlist with the specified tickerValue');
+      }
+    } catch (error) {
+      console.error('Error sending data to backend:', error);
+    }
+  }
+
 
   buystock(action: string) {
     this.buysellaction = action;
-    console.log('triggered');
     if (!this.combinedData || !this.combinedData.quote_data || !this.combinedData.profile_data) {
       console.error("Data not available to perform buy transaction");
       return;
@@ -914,9 +993,10 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   checkTotal() {
     const totalCost = this.combinedData.quote_data.last_price * this.quantity;
     this.totalExceedsBalance = totalCost > this.balanceAmount;
-    }
+    this.notEnoughStocks = this.quantity > this.quant;
+  }
 
-  sellstock(action : string) {
+  sellstock(action: string) {
     this.buysellaction = action;
     if (!this.combinedData || !this.combinedData.quote_data || !this.combinedData.profile_data) {
       console.error("Data not available to perform sell transaction");
@@ -953,5 +1033,10 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 }
 
+function Addtime(timestamp: any) {
+  var zone = 'America/Los_Angeles',
+    timezoneOffset = -moment.tz(timestamp, zone).utcOffset();
 
+  return timezoneOffset;
+}
 

@@ -1,10 +1,10 @@
 <main>
 <header *ngIf="!isMobileView" style="padding: 0;">
-        <a routerLink="/" [ngClass]="[stockStyle]" routerLinkActive="activebutton" class="button logo" (click)="StockSearch()">Stock Search</a>
+        <h3>Stock Search</h3>
         <nav>
             <ul>
                 <li>
-                    <a class="button" [ngClass]="[searchStyle]" routerLink="/header" routerLinkActive="activebutton" (click)="Search()">Search</a>
+                    <a class="button" [ngClass]="[searchStyle]" routerLink="/search" routerLinkActive="activebutton" (click)="Search()">Search</a>
                 </li>
                 <li>
                     <a class="button" [ngClass]="[wlStyle]" routerLink="/watchlist" routerLinkActive="activebutton" (click)="Watchlist()">Watchlist</a>
@@ -18,7 +18,7 @@
 <header *ngIf="isMobileView">
     <nav class="navbar">
         <div class="container">
-            <a routerLink="/" [ngClass]="[stockStyle]" routerLinkActive="activebutton" class="navbar-brand" (click)="StockSearch()">Stock Search</a>
+            <h3>Stock Search</h3>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>

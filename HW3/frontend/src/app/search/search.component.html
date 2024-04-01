@@ -2,9 +2,8 @@
   <div id="inputWrapper">
     <div class="title-for-form">STOCK SEARCH</div>
     <div class="input-container">
-      <input matInput type="text" id="stock_ticker" name="stock_ticker" [matAutocomplete]="auto"
-        [(ngModel)]="tickerValue" (input)="onInput()" placeholder="Enter Stock Ticker Symbol" required
-        #tickerInput="ngModel" />
+      <input matInput type="text" id="stock_ticker" name="stock_ticker" [(ngModel)]="tickerValue" (input)="onInput()" 
+        placeholder="Enter Stock Ticker Symbol" required #tickerInput="ngModel" />
       <mat-autocomplete #auto="matAutocomplete" [panelWidth]="autocompleteWidth">
         <mat-option *ngFor="let option of autocompleteOptions" [value]="option.symbol">
           {{ option.symbol }} | {{ option.description }}
@@ -18,7 +17,8 @@
       </button>
     </div>
   </div>
-  <div *ngIf="stockForm.submitted && tickerInput.invalid" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+  <div *ngIf="stockForm.submitted && tickerInput.invalid" class="alert alert-danger alert-dismissible fade show mb-3"
+    role="alert">
     Please enter a valid sticker.
     <button type="button" class="close" aria-label="Close" (click)="clearInvalidTicker()">
       <i class="bi bi-x"></i>
@@ -41,7 +41,7 @@
     <i class="bi bi-x"></i>
   </button>
 </div>
-<div class="center-container">
+<div *ngIf="!showNoDataMessage && !tickerInput.invalid" class="center-container">
   <div class="search_data">
     <div *ngIf="submitted && combinedData" class="combined-data">
       <div *ngFor="let searchItem of combinedData.search_result">
@@ -60,14 +60,21 @@
               <h1 class="header-with-star">
                 {{ combinedData.profile_data.symbol }}
                 <span class="star-container" (click)="toggleStar()">
-                  <i class="bi bi-star star" [ngClass]="{ filled: isStarFilled, yellow: isStarYellow, black: !isStarYellow }"></i>
-                </span>                
+                  <svg *ngIf="isStarFilled" width="0.5em" height="0.5em" viewBox="0 0 16 16"
+                    class="bi bi-star-fill mx-1 my-0" fill="#FFC300" xmlns="http://www.w3.org/2000/svg">
+                    <path class="star-fill-icon"
+                      d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                  </svg>
+                  <i class="bi bi-star star" *ngIf="!isStarFilled"></i>
+                </span>
               </h1>
               <p class="company-name">{{ combinedData.profile_data.company_name }}</p>
               <p class="exchange">{{ combinedData.profile_data.exchange }}</p>
               <div class="button-container">
-                <button (click)="buystock('buy')" class="btn btn-success buy" data-toggle="modal" data-target="#buysellModal">Buy</button>
-                <button (click)="sellstock('sell')" class="btn btn-danger" data-toggle="modal" data-target="#buysellModal">Sell</button>
+                <button (click)="buystock('buy')" class="btn btn-success buy" data-toggle="modal"
+                  data-target="#buysellModal">Buy</button>
+                <button (click)="sellstock('sell')" class="btn btn-danger" data-toggle="modal" *ngIf="sellButtonActive"
+                  data-target="#buysellModal">Sell</button>
               </div>
             </div>
             <div class="col-md-4 logo-data">
@@ -82,27 +89,28 @@
                 positive: combinedData.quote_data.change > 0
               }">
                   {{ combinedData.quote_data.last_price | number:'1.2-2' }}
-            </h1>
+                </h1>
                 <h2 [ngClass]="{
                 negative: combinedData.quote_data.change < 0,
                 positive: combinedData.quote_data.change > 0
               }">
                   <i class="bi bi-caret-up-fill" *ngIf="combinedData.quote_data.change > 0"></i>
                   <i class="bi bi-caret-down-fill" *ngIf="combinedData.quote_data.change < 0"></i>
-                  {{ combinedData.quote_data.change | number:'1.2-2' }} ({{ combinedData.quote_data.percent_change | number:'1.2-2' }}%)
-            </h2>
+                  {{ combinedData.quote_data.change | number:'1.2-2' }} ({{ combinedData.quote_data.percent_change |
+                  number:'1.2-2' }}%)
+                </h2>
                 <p class="dateTime">{{ dateAndtime }}</p>
               </div>
             </div>
           </div>
-        <div class="row">
-          <div class="col-md-12 marketStatus">
-            <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
-              {{ isMarketOpen() }}
-            </p>
+          <div class="row">
+            <div class="col-md-12 marketStatus">
+              <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
+                {{ isMarketOpen() }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
       </div>
       <div class="profile-info" *ngIf="isMobileView">
         <div class="container">
@@ -111,14 +119,17 @@
               <h1 class="header-with-star">
                 {{ combinedData.profile_data.symbol }}
                 <span class="star-container" (click)="toggleStar()">
-                  <i class="bi bi-star star" [ngClass]="{ filled: isStarFilled, yellow: isStarYellow, black: !isStarYellow }"></i>
-                </span>                
+                  <i class="bi bi-star star"
+                    [ngClass]="{ filled: isStarFilled, yellow: isStarYellow, black: !isStarYellow }"></i>
+                </span>
               </h1>
               <p class="company-name">{{ combinedData.profile_data.company_name }}</p>
               <p class="exchange">{{ combinedData.profile_data.exchange }}</p>
               <div class="button-container">
-                <button (click)="buystock('buy')" class="btn btn-success buy" data-toggle="modal" data-target="#buysellModal">Buy</button>
-                <button (click)="sellstock('sell')" *ngIf="sellButtonActive" class="btn btn-danger" data-toggle="modal" data-target="#buysellModal">Sell</button>
+                <button (click)="buystock('buy')" class="btn btn-success buy" data-toggle="modal"
+                  data-target="#buysellModal">Buy</button>
+                <button (click)="sellstock('sell')" *ngIf="sellButtonActive" class="btn btn-danger" data-toggle="modal"
+                  data-target="#buysellModal">Sell</button>
               </div>
             </div>
             <div class="col-md-4 logo-data">
@@ -133,27 +144,28 @@
                 positive: combinedData.quote_data.change > 0
               }">
                   {{ combinedData.quote_data.last_price | number:'1.2-2' }}
-            </h1>
-            <h2 [ngClass]="{
+                </h1>
+                <h2 [ngClass]="{
               negative: combinedData.quote_data.change < 0,
               positive: combinedData.quote_data.change > 0
             }">
-              <i class="bi bi-caret-up-fill" *ngIf="combinedData.quote_data.change > 0"></i>
-              <i class="bi bi-caret-down-fill" *ngIf="combinedData.quote_data.change < 0"></i>
-              {{ combinedData.quote_data.change | number:'1.2-2' }} ({{ combinedData.quote_data.percent_change | number:'1.2-2'}}%)
-            </h2>            
+                  <i class="bi bi-caret-up-fill" *ngIf="combinedData.quote_data.change > 0"></i>
+                  <i class="bi bi-caret-down-fill" *ngIf="combinedData.quote_data.change < 0"></i>
+                  {{ combinedData.quote_data.change | number:'1.2-2' }} ({{ combinedData.quote_data.percent_change |
+                  number:'1.2-2'}}%)
+                </h2>
                 <p class="dateTime">{{ dateAndtime }}</p>
               </div>
             </div>
           </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 marketStatus">
-          <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
-            {{ isMarketOpen() }}
-          </p>
         </div>
-      </div>
+        <div class="row">
+          <div class="col-md-12 marketStatus">
+            <p [style.color]="isMarketOpen() === 'Market is Open' ? 'green' : 'red'">
+              {{ isMarketOpen() }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
     <div *ngIf="stockForm.submitted || submitted">
@@ -172,7 +184,8 @@
                   <h2 class="titleAbout">About the company</h2>
                   <p><strong>IPO Start Date: </strong> {{ summaryData.company_start_date }}</p>
                   <p><strong>Industry: </strong> {{ summaryData.company_industry }}</p>
-                  <p><strong>Webpage: </strong> <a href="{{ summaryData.company_website_url }}" target="_blank">{{ summaryData.company_website_url }}</a></p>
+                  <p><strong>Webpage: </strong> <a href="{{ summaryData.company_website_url }}" target="_blank">{{
+                      summaryData.company_website_url }}</a></p>
                   <p><strong>Company Peers: </strong></p>
                   <ul>
                     <ng-container *ngFor="let peer of summaryData.peers; let last = last">
@@ -180,18 +193,23 @@
                       <span *ngIf="!last">, </span>
                     </ng-container>
                   </ul>
-                </div>                
-                <div id="hourlychartContainer"></div>
+                </div>
+                <div id="hourlychartContainer">
+                  <highcharts-chart [Highcharts]="highcharts"
+                  [options]="hourlyChartOptions" style="width: 100%; height: 400px; display: block">
+                </highcharts-chart>
+                </div>
               </div>
             </div>
           </ng-template>
-        </mat-tab>        
+        </mat-tab>
         <mat-tab label="Top News">
           <ng-template matTabContent>
             <div *ngIf="topNewsData" class="card-container">
               <div class="row">
                 <div class="col-md-6 mb-4 card-box" *ngFor="let newsItem of topNewsData">
-                  <div type="button" class="card" (click)="openNewsModal(newsItem)" data-toggle="modal" data-target="#newsModal">
+                  <div type="button" class="card" (click)="openNewsModal(newsItem)" data-toggle="modal"
+                    data-target="#newsModal">
                     <div class="image-container">
                       <img class="card-img-top" [src]="newsItem.thumbnail" alt="Thumbnail">
                     </div>
@@ -239,8 +257,10 @@
                   </tr>
                 </table>
                 <div style="display: flex;" class="insight-charts">
-                  <highcharts-chart [Highcharts]="highcharts" [options]="chartOptions" class="custom-chart trends"></highcharts-chart>
-                  <highcharts-chart [Highcharts]="highcharts" [options]="historicalChartOptions" class="custom-chart history"></highcharts-chart>
+                  <highcharts-chart [Highcharts]="highcharts" [options]="chartOptions"
+                    class="custom-chart trends"></highcharts-chart>
+                  <highcharts-chart [Highcharts]="highcharts" [options]="historicalChartOptions"
+                    class="custom-chart history"></highcharts-chart>
                 </div>
               </div>
             </div>
@@ -252,35 +272,43 @@
 </div>
 
 <ng-template #newsModal>
-  <div class="modal fade newsmodal" data-backdrop="false" id="newsModal" tabindex="-1" role="dialog" aria-labelledby="newsModalLabel" aria-hidden="true" role="dialog">
+  <div class="modal fade newsmodal" data-backdrop="false" id="newsModal" tabindex="-1" role="dialog"
+    aria-labelledby="newsModalLabel" aria-hidden="true" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="newsmodal modal-header">
-          <button type="button" class="close" data-dismiss="modal" (click)="closeNewsModal()">&times;</button>
-          <div class="source">{{ newsmodal.source }}</div>
-          <div class="datetime">{{ formattedDateAndTime }}</div>
-        </div>        
+          <div class="modal-title" id="modal-basic-title">
+            <h2 class="m-0">{{ newsmodal.source }}</h2>
+            <div class="text-black-50 m-0">
+              {{ formattedDateAndTime }}
+            </div></div>
+            <button type="button" class="close" data-dismiss="modal" (click)="closeNewsModal()">&times;</button>
+        </div>
         <div class="modal-body">
-          <p class="headline">{{ newsmodal.headline }}</p>
-          <p class="summary">{{ newsmodal.summary }} For more details click here <a href="{{ newsmodal.url }}" target="_blank">Read more</a></p>
+          <h2 class="headline">{{ newsmodal.headline }}</h2>
+          <p class="summary">{{ newsmodal.summary }}</p>
+          <p>For more details click here <a href="{{ newsmodal.url }}" target="_blank">Read more</a></p>
         </div>
         <div class="modalFooter">
           <div>
             <p style="font-weight: bold;">Share</p>
           </div>
           <div class="share-buttons">
-            <a class="twitter-share-button" href="https://twitter.com/intent/tweet?url={{ newsmodal.url }}&text={{ newsmodal.headline }}" target="_blank" data-show-count="false">
-            Tweet</a>
-            <a class="facebook-share-button" href="https://www.facebook.com/sharer/sharer.php?u={{ newsmodal.url }}" target="_blank">
-            Facebook</a>
+            <a class="twitter-share-button"
+              href="https://twitter.com/intent/tweet?url={{ newsmodal.url }}&text={{ newsmodal.headline }}"
+              target="_blank" data-show-count="false"><i class="bi bi-twitter-x"></i></a>
+            <a class="facebook-share-button" href="https://www.facebook.com/sharer/sharer.php?u={{ newsmodal.url }}"
+              target="_blank">
+              <i class="bi bi-facebook" style="font-size:16px;color:#0061ff;"></i></a>
           </div>
-        </div>        
+        </div>
       </div>
     </div>
   </div>
 </ng-template>
 
-<div class="modal fade" data-backdrop="false" id="buysellModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true" role="dialog">
+<div class="modal fade" data-backdrop="false" id="buysellModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+  aria-hidden="true" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -294,17 +322,19 @@
         <p *ngIf="balanceAmount">Money in Wallet: {{ this.balanceAmount | number:'1.2-2' }}</p>
         <div class="form-container">
           <p>Quantity: </p>
-          <input type="number" class="input-quant" placeholder="Enter quantity" [(ngModel)]="quantity" (input)="checkTotal()">
-        </div> 
-        <p *ngIf="totalExceedsBalance">Not enough money in wallet!</p>
+          <input type="number" class="input-quant" placeholder="Enter quantity" [(ngModel)]="quantity"
+            (input)="checkTotal()">
+        </div>
+        <p *ngIf="buysellaction == 'buy' && totalExceedsBalance" style="color: red; font-weight: bold; padding-top: 5px;">Not enough money in wallet!</p>
+        <p *ngIf="buysellaction == 'sell' && notEnoughStocks" style="color: red; font-weight: bold; padding-top: 5px;">You cannot sell the stocks that you don't have!</p>
       </div>
       <div class="modal-footer">
         <p *ngIf="getTotal() !== undefined">Total: {{ getTotal() | number:'1.2-2' }}</p>
-        <button *ngIf="buysellaction == 'buy'" class="btn btn-success" [disabled]="quantity <= 0 || totalExceedsBalance" (click)="buy()">Buy</button>
-        <button *ngIf="buysellaction == 'sell'" class="btn btn-danger" [disabled]="quantity <= 0" (click)="sell()">Sell</button>
+        <button *ngIf="buysellaction == 'buy'" class="btn btn-success" [disabled]="quantity <= 0 || totalExceedsBalance"
+          (click)="buy()">Buy</button>
+        <button *ngIf="buysellaction == 'sell'" class="btn btn-danger" [disabled]="quantity <= 0"
+          (click)="sell()">Sell</button>
       </div>
     </div>
   </div>
 </div>
-
-  

@@ -303,4 +303,63 @@
   .inline {
     display: inline;
   }
+
+  /* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalclose {
+  color: #2276f3;
+  font-size: 24px;
+  text-decoration: underline;
+  border: none;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.modal-header p {
+  text-align: left;
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+/* Modal Body */
+.modal-body {
+  font-size: 14px;
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+}
+
+.form-container p {
+  margin-right: 10px;
+  margin-top: 8px;
+}
+
+.input-quant {
+  width: calc(100% - 160px); 
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer p {
+  margin: 0;
+  font-size: 16px; /* Adjust font size */
+}
+
+.modal-footer button {
+  font-size: 16px; /* Adjust font size */
+}
 }

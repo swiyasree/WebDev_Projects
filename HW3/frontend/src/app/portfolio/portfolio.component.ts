@@ -41,6 +41,7 @@ export class PortfolioComponent implements OnInit {
   quantity: number = 0;
   total: number = 0;
   totalPrice = 0;
+  notEnoughStocks: boolean = false;
   totalExceedsBalance: boolean = false;
   item: any;
   dataLoaded: boolean = false;
@@ -51,13 +52,14 @@ export class PortfolioComponent implements OnInit {
   currentPrice: any;
   calcCost: any;
   buysellaction: any;
+  currentQuantity: any;
 
   constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.checkMobileView();
-    this.fetchPortfolioData();
     this.fetchCurrentBalance();
+    this.fetchPortfolioData();
   }
   checkMobileView() {
     this.isMobileView = window.innerWidth <= 768;
@@ -72,11 +74,11 @@ export class PortfolioComponent implements OnInit {
   }
 
   isAllStocksQuantityOneOrLess(): boolean {
-    return this.portfolioData.every((item: { quantity: number; }) => item.quantity <= 1);
+    return this.portfolioData.every((item: { quantity: number; }) => item.quantity <= 0);
   }
 
   fetchPortfolioData() {
-    this.http.get<any>('https://stocksearchon.azurewebsites.net/portfolio').subscribe(
+    this.http.get<any>('http://localhost:5172/portfolio').subscribe(
       (data) => {
         
         this.portfolioData = data;
@@ -84,8 +86,8 @@ export class PortfolioComponent implements OnInit {
         for (const item of this.portfolioData) 
         {
           this.dictionary[item.symbol] = item;
+          this.currentQuantity = item.quantity;
         }
-        console.log('dict: ', this.dictionary);
       },
 
       (error) => {
@@ -95,11 +97,11 @@ export class PortfolioComponent implements OnInit {
   }
 
   fetchtickerData(symbolticker: string) {
-    return this.http.get<any>(`https://stocksearchon.azurewebsites.net/?ticker=${symbolticker}`);
+    return this.http.get<any>(`http://localhost:5172/?ticker=${symbolticker}`);
   }
 
   fetchCurrentBalance() {
-    this.http.get<any>('https://stocksearchon.azurewebsites.net/currentBalance').subscribe(
+    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
       (data) => {
         this.currentAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -134,13 +136,13 @@ export class PortfolioComponent implements OnInit {
     }
   }
 
-  sell(symbolticker : string) 
+  async sell(symbolticker : string) 
   {
+    this.soldSymbol = symbolticker;
     if (this.quantity <= 0) {
       return;
     }
 
-    console.log('ticker: ', symbolticker, ' ', this.dictionary);
   
     const requestData = {
       company: this.dictionary[symbolticker].company,
@@ -153,22 +155,19 @@ export class PortfolioComponent implements OnInit {
       symbol: this.dictionary[symbolticker].symbol
     };
 
-    console.log('requestdata', requestData);
   
-    this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
-      .subscribe({
-        next: () => {
-
-        },
-        error: (error) => {
-          console.error('Error selling:', error);
-        }
-      });
-      this.ngOnInit();
+    try {
+      await this.http.post<any>('http://localhost:5172/portfolio', requestData).toPromise();
+      // Code to execute after successful POST
+    } catch (error) {
+      console.error('Error selling:', error);
+    }
+    this.fetchPortfolioData();
   }
   
-  buy(symbolticker: string) 
+  async buy(symbolticker: string) 
   {
+    this.boughtSymbol = symbolticker;
     if (this.quantity <= 0) {
       // Handle invalid quantity
       return;
@@ -189,18 +188,14 @@ export class PortfolioComponent implements OnInit {
         marketPrice: this.dictionary[symbolticker].currentPrice * this.quantity,
         symbol: this.dictionary[symbolticker].symbol
       };
-
-      console.log('requestdata', requestData);
       
-      this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
-        .subscribe({
-          next: () => {
-          },
-          error: (error) => {
-            console.error('Error buying:', error);
-          }
-        });
-        this.ngOnInit();
+      try {
+        await this.http.post<any>('http://localhost:5172/portfolio', requestData).toPromise();
+        // Code to execute after successful POST
+      } catch (error) {
+        console.error('Error buying:', error);
+      }
+      this.fetchPortfolioData();
   }
 
     checkTotal(symbolticker: string) 
@@ -208,7 +203,7 @@ export class PortfolioComponent implements OnInit {
       const totalCost = this.dictionary[symbolticker].currentPrice * this.quantity;
       this.calcCost = this.dictionary[symbolticker].currentPrice;
       this.totalExceedsBalance = totalCost > this.currentAmount;
-      return this.totalExceedsBalance;
+      this.notEnoughStocks = this.currentQuantity < this.quantity;
     }
 
     getTotal() 

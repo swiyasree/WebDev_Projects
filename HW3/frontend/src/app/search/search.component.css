@@ -1,4 +1,9 @@
 @media screen and (min-width: 767px) {
+
+  path.star-fill-icon {
+    color: rgb(255, 195, 0);
+  }
+  
 .title-for-form {
     padding-top: 30px;
     padding-bottom: 30px;
@@ -166,7 +171,7 @@ input[type="text"] {
   }
   
   .star {
-    font-size: 1rem;
+    font-size: 0.5em;
   }
   
   .star::before {
@@ -445,9 +450,15 @@ input[type="text"] {
   padding: 20px;
 }
 
+.newsmodal .modal-header h2 {
+  font-size: 40px;
+  font-weight: 500;
+}
+
 .newsmodal .headline {
   font-size: large;
   font-weight: 3rem;
+  line-height: 25px;
 }
 
 .newsmodal .summary {
@@ -537,6 +548,10 @@ input[type="text"] {
 }
 
 @media (max-width: 767px) {
+  path.star-fill-icon {
+    color: rgb(255, 195, 0);
+  }
+
   .title-for-form {
     padding-top: 30px;
     padding-bottom: 30px;
