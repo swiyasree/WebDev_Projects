@@ -31,6 +31,7 @@ import { ShareIconsModule } from 'ngx-sharebuttons/icons';
 import { HeaderService } from '../headers.service';
 import { WatchlistService } from '../watchlist.service';
 import 'moment-timezone';
+import { ActivatedRoute } from '@angular/router';
 
 HC_indicators(Highstockcharts);
 HC_VBP(Highstockcharts);
@@ -88,7 +89,7 @@ export class SearchComponent implements OnInit {
   autocompleteWidth: string = '240px';
   highcharts = Highcharts;
   symbolDictionary: { [key: string]: string } = {};
-
+  selectedIndex: any;
   sellButtonActive: boolean = false;
   quantity: number = 0;
   total: number = 0;
@@ -120,7 +121,7 @@ export class SearchComponent implements OnInit {
   hourlyChartOptions: any;
   quant: any;
 
-  constructor(private http: HttpClient, private dialog: MatDialog, private headerService: HeaderService, private watchlistservice: WatchlistService, private router: Router) {
+  constructor(private route: ActivatedRoute, private http: HttpClient, private dialog: MatDialog, private headerService: HeaderService, private watchlistservice: WatchlistService, private router: Router) {
     this.inputSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -154,7 +155,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    
     const storedData = sessionStorage.getItem('headerComponentData');
     if (storedData) {
       const parsedData = JSON.parse(storedData);
@@ -274,9 +275,9 @@ export class SearchComponent implements OnInit {
   }
 
   handleTabChange(event: MatTabChangeEvent): void {
-    const selectedIndex = event.index;
+    this.selectedIndex = event.index;
 
-    switch (selectedIndex) {
+    switch (this.selectedIndex) {
       case 0:
         this.summary();
         break;
@@ -386,6 +387,7 @@ export class SearchComponent implements OnInit {
     this.http.post<any>('http://localhost:5172/portfolio', requestData)
       .subscribe({
         next: () => {
+          this.sellButtonActive = true;
         },
         error: (error) => {
           console.error('Error buying:', error);
@@ -439,7 +441,7 @@ export class SearchComponent implements OnInit {
 
   selectSummaryTab(): void {
     if (this.tabGroup) {
-      this.tabGroup.selectedIndex = 0; // Index of the summary tab
+      this.selectedIndex = 0; // Index of the summary tab
       const fakeEvent = { index: 0 } as MatTabChangeEvent;
       this.handleTabChange(fakeEvent); // Call handleTabChange method with a simulated event
     }
@@ -476,7 +478,8 @@ export class SearchComponent implements OnInit {
           formattedTimestamp: this.formattedTimestamp
         }));
 
-        // this.selectSummaryTab();
+        
+        this.selectSummaryTab();
 
       },
       (error) => {
@@ -484,6 +487,7 @@ export class SearchComponent implements OnInit {
       }
     );
     this.fetchPortFolioData();
+    this.router.navigate(['/search', this.tickerValue]);
   }
 
   fetchPortFolioData() {

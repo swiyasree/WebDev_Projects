@@ -172,20 +172,20 @@
       <mat-tab-group #tabGroup [selectedIndex]="0" (selectedTabChange)="handleTabChange($event)">
         <mat-tab label="Summary">
           <ng-template matTabContent>
-            <div *ngIf="summaryData" class="tab-content">
+            <div *ngIf="combinedData && summaryData" class="tab-content">
               <div class="summarygridcontainer">
                 <div class="pricesContainer">
-                  <p><strong>High Price:</strong> {{ summaryData.high_price }}</p>
-                  <p><strong>Low Price:</strong> {{ summaryData.low_price }}</p>
-                  <p><strong>Open Price:</strong> {{ summaryData.open_price }}</p>
-                  <p><strong>Prev. Close:</strong> {{ summaryData.previous_close_price }}</p>
+                  <p><strong>High Price:</strong> {{ combinedData.quote_data.highprice }}</p>
+                  <p><strong>Low Price:</strong> {{ combinedData.quote_data.lowprice }}</p>
+                  <p><strong>Open Price:</strong> {{ combinedData.quote_data.openprice }}</p>
+                  <p><strong>Prev. Close:</strong> {{ combinedData.quote_data.prevprice }}</p>
                 </div>
                 <div class="aboutPeersContainer">
                   <h2 class="titleAbout">About the company</h2>
-                  <p><strong>IPO Start Date: </strong> {{ summaryData.company_start_date }}</p>
-                  <p><strong>Industry: </strong> {{ summaryData.company_industry }}</p>
-                  <p><strong>Webpage: </strong> <a href="{{ summaryData.company_website_url }}" target="_blank">{{
-                      summaryData.company_website_url }}</a></p>
+                  <p><strong>IPO Start Date: </strong> {{ combinedData.profile_data.ipo }}</p>
+                  <p><strong>Industry: </strong> {{ combinedData.profile_data.ind }}</p>
+                  <p><strong>Webpage: </strong> <a href="{{ combinedData.profile_data.webpage }}" target="_blank">{{
+                      combinedData.profile_data.webpage }}</a></p>
                   <p><strong>Company Peers: </strong></p>
                   <ul>
                     <ng-container *ngFor="let peer of summaryData.peers; let last = last">

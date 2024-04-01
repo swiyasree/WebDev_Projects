@@ -9,6 +9,7 @@ const moment = require('moment');
 const hApi = '7dEn5T3jjmb21Ef1NDWKedyMsaycmj4Z';
 const fApi = 'cn18egpr01qvjam1s380cn18egpr01qvjam1s38g';
 let lastTickerValue = '';
+let lastTimeStamp = null;
 
 const app = express();
 app.use(cors());
@@ -62,19 +63,29 @@ app.get('/search', async (request, response) => {
     const profileResponse = await axios.get(`https://finnhub.io/api/v1/stock/profile2?symbol=${lastTickerValue}&token=${fApi}`);
     const profileData = profileResponse.data;
 
+    lastTimeStamp = (quoteData.t * 1000);
+
     // Filtered data from the two APIs
     const filteredProfileData = {
       symbol: profileData.ticker,
       company_name: profileData.name,
       exchange: profileData.exchange,
-      logo: profileData.logo
+      logo: profileData.logo,
+      ipo: profileData.ipo,
+      ind: profileData.finnhubIndustry,
+      webpage: profileData.weburl
     };
 
     const filteredQuoteData = {
       last_price: quoteData.c,
       change: quoteData.d,
       percent_change: quoteData.dp,
-      timestamp: quoteData.t
+      timestamp: quoteData.t,
+      highprice: quoteData.h,
+      lowprice: quoteData.l,
+      openprice: quoteData.o,
+      closeprice: quoteData.c,
+      prevprice: quoteData.pc
     };
 
     // Combine data from the two APIs
@@ -82,6 +93,8 @@ app.get('/search', async (request, response) => {
       profile_data: filteredProfileData,
       quote_data: filteredQuoteData
     };
+
+    console.log('combined data in backend', combinedData);
 
     response.json(combinedData);
   } catch (error) {
@@ -93,39 +106,28 @@ app.get('/search', async (request, response) => {
 app.get('/summary', async (request, response) => {
   const { ticker } = request.query;
 
-  try {
-    // Fetch quote data
-    const quoteResponse = await axios.get(`https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${fApi}`);
-    const quoteData = quoteResponse.data;
-
-    // Fetch profile data
-    const profileResponse = await axios.get(`https://finnhub.io/api/v1/stock/profile2?symbol=${ticker}&token=${fApi}`);
-    const profileData = profileResponse.data;
-
-    // Fetch peers data
-    const peersResponse = await axios.get(`https://finnhub.io/api/v1/stock/peers?symbol=${ticker}&token=${fApi}`);
-    const peersData = peersResponse.data;
-
-    const toDate = moment(quoteData.t * 1000).valueOf();
+  try 
+  {
+    const toDate = moment(lastTimeStamp).valueOf();
     const fromDate = moment(toDate).subtract(24, 'hours').valueOf();
 
     const multiplier = "1";
     const timespan = "hour";
 
+    console.log('todate: ', toDate, 'from: ', fromDate);
     // Fetch HPV data
     const HPResponse = await axios.get(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${timespan}/${fromDate}/${toDate}?adjusted=true&sort=asc&limit=5000&apiKey=${hApi}`);
     const HPData = HPResponse.data;
 
+    console.log('hpdata: ', HPData);
+
+    // Fetch peers data
+    const peersResponse = await axios.get(`https://finnhub.io/api/v1/stock/peers?symbol=${ticker}&token=${fApi}`);
+    const peersData = peersResponse.data;
+
 
     // Organize summary data
     const summaryData = {
-      high_price: quoteData.h,
-      low_price: quoteData.l,
-      open_price: quoteData.o,
-      previous_close_price: quoteData.pc,
-      company_start_date: profileData.ipo,
-      company_website_url: profileData.weburl,
-      company_industry: profileData.finnhubIndustry,
       peers: peersData,
       hourlyPrices: HPData.results
     };
