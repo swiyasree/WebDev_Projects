@@ -163,8 +163,18 @@ app.get('/topnews', async (request, response) => {
     const topNewsResponse = await axios.get(`https://finnhub.io/api/v1/company-news?symbol=${ticker}&from=${fromDateFormatted}&to=${toDateFormatted}&token=${fApi}`);
     const topNewsData = topNewsResponse.data;
 
-    // Limit to the first 10 news items
-    const formattedNews = topNewsData.slice(0, 10).map(newsItem => ({
+    // Filter news items to exclude those with null properties
+    const filteredNews = topNewsData.filter(newsItem => (
+      newsItem.datetime &&
+      newsItem.headline &&
+      newsItem.image &&
+      newsItem.source &&
+      newsItem.summary &&
+      newsItem.url
+    ));
+
+    // Limit to the first 10 valid news items
+    const formattedNews = filteredNews.slice(0, 10).map(newsItem => ({
       datetime: newsItem.datetime,
       headline: newsItem.headline,
       thumbnail: newsItem.image,
@@ -179,6 +189,7 @@ app.get('/topnews', async (request, response) => {
     response.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 app.get('/charts', async (request, response) => {
   const { ticker } = request.query;

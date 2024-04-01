@@ -623,6 +623,7 @@ export class SearchComponent implements OnInit {
     this.http.get<any>(`http://localhost:5172/topnews?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.topNewsData = data; // Assign response data to topNewsData property
+        console.log('news: ', this.topNewsData)
       },
       (error) => {
         console.error("Error fetching top news data:", error);

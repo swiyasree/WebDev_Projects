@@ -392,7 +392,7 @@ input[type="text"] {
 }
 
 .modalclose {
-  color: #2276f3;
+  color: #84b5fe;
   font-size: 24px;
   text-decoration: underline;
   border: none;
@@ -451,8 +451,7 @@ input[type="text"] {
 }
 
 .newsmodal .modal-header h2 {
-  font-size: 40px;
-  font-weight: 500;
+  font-size: 28px;
 }
 
 .newsmodal .headline {
@@ -477,7 +476,7 @@ input[type="text"] {
 
 .newsmodal .modalFooter {
   box-sizing: border-box;
-  border: 1px solid gray;
+  border: 1px solid #e2e5ea;
   margin-left: 20px;
   margin-right: 20px;
   margin-bottom: 20px;
@@ -490,13 +489,6 @@ input[type="text"] {
   display: flex;
   justify-content: flex-start;
   padding: 10px;
-}
-
-.newsmodal .modalFooter a {
-}
-
-.newsmodal .modalFooter {
-  display: flex;
   flex-direction: column; /* Arrange items vertically */
   align-items: flex-start; /* Align items to the left */
 }
@@ -889,6 +881,100 @@ tr {
 .modal-footer button {
   font-size: 16px; /* Adjust font size */
 }
+
+.newsmodal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.newsmodal .modal-header h2 {
+  font-size: 28px;
+}
+
+.newsmodal .headline {
+  font-size: large;
+  font-weight: 3rem;
+  line-height: 25px;
+}
+
+.newsmodal .summary {
+  font-size: small;
+  font-weight: 1rem;
+}
+
+/* Modal Body */
+.newsmodal .modal-body {
+  padding: 20px;
+}
+
+.newsmodal .modal-body h2 {
+  margin-top: 0;
+}
+
+.newsmodal .modalFooter {
+  box-sizing: border-box;
+  border: 1px solid gray;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  margin-top: 0;
+  border-radius: 10px;
+}
+
+/* Modal Footer */
+.newsmodal .modalFooter {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+  flex-direction: column; /* Arrange items vertically */
+  align-items: flex-start; /* Align items to the left */
+}
+
+.newsmodal .share-buttons {
+  margin-top: 10px; /* Adjust margin between "Share" text and buttons */
+}
+
+/* Share button box */
+.newsmodal .share-button-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: calc(100% - 40px); /* Adjust width based on padding and borders */
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Twitter and Facebook share buttons */
+.newsmodal .twitter-share-button,
+.facebook-share-button {
+  text-decoration: none;
+  color: #000;
+  margin-right: 10px;
+}
+
+/* Close button */
+.newsmodal .modal-header .close {
+  color: #2276f3;
+  font-size: 24px;
+  text-decoration: underline;
+  border: none;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+/* Align source and datetime on left */
+.newsmodal .modal-header p:nth-child(1),
+.modal-header p:nth-child(2) {
+  order: 0; /* Move source and datetime to the left */
+}
+
+.newsmodal .modal-header p:nth-child(2) {
+  margin-top: 10px; /* Add space between source and datetime */
+}
+
 
 }
 
