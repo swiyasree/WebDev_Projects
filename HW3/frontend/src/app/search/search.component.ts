@@ -178,7 +178,7 @@ export class SearchComponent implements OnInit {
       this.getCurrentDateTime();
     });
 
-    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/currentBalance').subscribe(
       (data) => {
         this.balanceAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -255,7 +255,7 @@ export class SearchComponent implements OnInit {
 
   loadFormattedTimestamp() {
     // Make HTTP request to fetch the formatted timestamp
-    this.http.get<any>('http://localhost:5172/?ticker=' + this.tickerValue).subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/?ticker=' + this.tickerValue).subscribe(
       (data) => {
         this.combinedData = data;
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
@@ -301,7 +301,7 @@ export class SearchComponent implements OnInit {
   }
 
   fetchAutocompleteOptions(input: string) {
-    return this.http.get<any>(`http://localhost:5172/autocomplete?input=${input}`);
+    return this.http.get<any>(`https://stocksearchon.azurewebsites.net/autocomplete?input=${input}`);
   }
 
   clear_results() {
@@ -349,7 +349,7 @@ export class SearchComponent implements OnInit {
     };
 
 
-    this.http.post<any>('http://localhost:5172/portfolio', requestData)
+    this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
       .subscribe({
         next: () => {
         },
@@ -384,7 +384,7 @@ export class SearchComponent implements OnInit {
     };
 
 
-    this.http.post<any>('http://localhost:5172/portfolio', requestData)
+    this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData)
       .subscribe({
         next: () => {
           this.sellButtonActive = true;
@@ -457,7 +457,7 @@ export class SearchComponent implements OnInit {
     this.fetchWatchlistData()
 
     this.submitted = true;
-    this.http.get<any>(`http://localhost:5172/search?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/search?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.combinedData = data;
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
@@ -491,7 +491,7 @@ export class SearchComponent implements OnInit {
   }
 
   fetchPortFolioData() {
-    this.http.get<any>('http://localhost:5172/portfolio').subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/portfolio').subscribe(
       (data) => {
         this.portfolioData = data;
         console.log('fetched portfolio data: ', this.portfolioData);
@@ -532,7 +532,7 @@ export class SearchComponent implements OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/summary?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/summary?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.summaryData = data;
 
@@ -620,7 +620,7 @@ export class SearchComponent implements OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/topnews?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/topnews?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.topNewsData = data; // Assign response data to topNewsData property
         console.log('news: ', this.topNewsData)
@@ -636,7 +636,7 @@ export class SearchComponent implements OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/charts?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/charts?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.createChart(data);
 
@@ -762,7 +762,7 @@ export class SearchComponent implements OnInit {
       console.error("Ticker value is required");
       return;
     }
-    this.http.get<any>(`http://localhost:5172/insights?ticker=${this.tickerValue}`).subscribe(
+    this.http.get<any>(`https://stocksearchon.azurewebsites.net/insights?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.insightsData = data;
 
@@ -958,7 +958,7 @@ export class SearchComponent implements OnInit {
   async sendDataToBackend() {
     try {
 
-      const response = await this.http.post<any>('http://localhost:5172/watchlist', this.combinedData).toPromise();
+      const response = await this.http.post<any>('https://stocksearchon.azurewebsites.net/watchlist', this.combinedData).toPromise();
     }
     catch (error) {
       console.error('Error sending data to backend:', error);
@@ -977,7 +977,7 @@ export class SearchComponent implements OnInit {
       }
 
       if (tempId) {
-        const response = await this.http.delete<any>(`http://localhost:5172/watchlist/${tempId}`).toPromise();
+        const response = await this.http.delete<any>(`https://stocksearchon.azurewebsites.net/watchlist/${tempId}`).toPromise();
       } else {
         console.error('No item found in watchlist with the specified tickerValue');
       }

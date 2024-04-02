@@ -78,7 +78,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   fetchPortfolioData() {
-    this.http.get<any>('http://localhost:5172/portfolio').subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/portfolio').subscribe(
       (data) => {
         
         this.portfolioData = data;
@@ -97,11 +97,11 @@ export class PortfolioComponent implements OnInit {
   }
 
   fetchtickerData(symbolticker: string) {
-    return this.http.get<any>(`http://localhost:5172/?ticker=${symbolticker}`);
+    return this.http.get<any>(`https://stocksearchon.azurewebsites.net/?ticker=${symbolticker}`);
   }
 
   fetchCurrentBalance() {
-    this.http.get<any>('http://localhost:5172/currentBalance').subscribe(
+    this.http.get<any>('https://stocksearchon.azurewebsites.net/currentBalance').subscribe(
       (data) => {
         this.currentAmount = data.currentAmount;
         this.quantityOfStock = data.quantity;
@@ -157,7 +157,7 @@ export class PortfolioComponent implements OnInit {
 
   
     try {
-      await this.http.post<any>('http://localhost:5172/portfolio', requestData).toPromise();
+      await this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData).toPromise();
       // Code to execute after successful POST
     } catch (error) {
       console.error('Error selling:', error);
@@ -190,7 +190,7 @@ export class PortfolioComponent implements OnInit {
       };
       
       try {
-        await this.http.post<any>('http://localhost:5172/portfolio', requestData).toPromise();
+        await this.http.post<any>('https://stocksearchon.azurewebsites.net/portfolio', requestData).toPromise();
         // Code to execute after successful POST
       } catch (error) {
         console.error('Error buying:', error);

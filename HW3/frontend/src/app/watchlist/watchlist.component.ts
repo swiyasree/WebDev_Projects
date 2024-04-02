@@ -29,7 +29,7 @@ export class WatchlistComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkMobileView();
-    this.http.get<any[]>('http://localhost:5172/watchlist')
+    this.http.get<any[]>('https://stocksearchon.azurewebsites.net/watchlist')
       .subscribe(data => {
         this.watchlistData = data;
       });
@@ -48,7 +48,7 @@ export class WatchlistComponent implements OnInit {
       this.watchlistservice.updateTicker(ticker);
     }
 
-    this.http.delete<any>(`http://localhost:5172/watchlist/${id}`)
+    this.http.delete<any>(`https://stocksearchon.azurewebsites.net/watchlist/${id}`)
       .subscribe(response => 
         {
         this.watchlistData = this.watchlistData.filter((item: { _id: string; }) => item._id !== id);

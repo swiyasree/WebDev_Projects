@@ -42,7 +42,7 @@ export class MainComponent implements OnInit {
         tap(() => (this.isLoading = true)),
         switchMap((value) =>
           this.http
-            .get<any>(`http://localhost:5172/autocomplete?input=${value}`)
+            .get<any>(`https://stocksearchon.azurewebsites.net/autocomplete?input=${value}`)
             .pipe(finalize(() => (this.isLoading = false)))
         )
       )
