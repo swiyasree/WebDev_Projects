@@ -75,7 +75,7 @@ export class MainComponent {
        map(options => {
         if (options && options.result && Array.isArray(options.result)) {
 
-          return options.result.slice(0, 5).map((item: any) => ({
+          return options.result.slice(0, options.result.length).map((item: any) => ({
             symbol: item.symbol,
             description: item.description
           }));
