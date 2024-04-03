@@ -1,8 +1,11 @@
-<form id="stockform" (ngSubmit)="search_results()" method="get" #stockForm="ngForm">
+
+
+
+<!-- <form id="stockform" (ngSubmit)="search_results()" method="get" #stockForm="ngForm">
   <div id="inputWrapper">
     <div class="title-for-form">STOCK SEARCH</div>
     <div class="input-container">
-      <input matInput type="text" id="stock_ticker" name="stock_ticker" [(ngModel)]="tickerValue" (input)="onInput()" 
+      <input matInput type="text" id="stock_ticker" name="stock_ticker" [(ngModel)]="tickerValue" (input)="onInput()" [matAutocomplete]="auto"
         placeholder="Enter Stock Ticker Symbol" required #tickerInput="ngModel" />
       <mat-autocomplete #auto="matAutocomplete" [panelWidth]="autocompleteWidth">
         <mat-option *ngFor="let option of autocompleteOptions" [value]="option.symbol">
@@ -27,7 +30,9 @@
   <div *ngIf="showNoDataMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
     No data found. Please enter a valid Ticker.
   </div>
-</form>
+</form> -->
+<router-outlet></router-outlet>
+
 <div *ngIf="boughtSymbol" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
   {{ boughtSymbol }} bought successfully.
   <button type="button" class="close" aria-label="Close" (click)="closeboughtMessage()">
@@ -41,9 +46,9 @@
     <i class="bi bi-x"></i>
   </button>
 </div>
-<div *ngIf="!showNoDataMessage && !tickerInput.invalid" class="center-container">
+<div class="center-container">
   <div class="search_data">
-    <div *ngIf="submitted && combinedData" class="combined-data">
+    <div *ngIf="combinedData" class="combined-data">
       <div *ngFor="let searchItem of combinedData.search_result">
         <h3>Description: {{ searchItem.description }}</h3>
         <ul>
@@ -168,7 +173,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="stockForm.submitted || submitted">
+    <div>
       <mat-tab-group #tabGroup [selectedIndex]="0" (selectedTabChange)="handleTabChange($event)">
         <mat-tab label="Summary">
           <ng-template matTabContent>
@@ -189,7 +194,7 @@
                   <p><strong>Company Peers: </strong></p>
                   <ul>
                     <ng-container *ngFor="let peer of summaryData.peers; let last = last">
-                      <li style="display: inline;">{{ peer }}</li>
+                      <a [routerLink]="['/search', peer]">{{ peer }}</a>
                       <span *ngIf="!last">, </span>
                     </ng-container>
                   </ul>

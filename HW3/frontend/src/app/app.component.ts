@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { MainComponent } from './main/main.component';
 import { SearchComponent } from './search/search.component';
 import { WatchlistComponent } from './watchlist/watchlist.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
@@ -7,25 +8,35 @@ import { NgClass, NgIf } from '@angular/common';
 import 'bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+
 @Component({
     selector: 'app-root',
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
-    imports: [NgClass, NgIf, NgbModule, RouterOutlet, RouterLink, RouterLinkActive, SearchComponent, WatchlistComponent, PortfolioComponent]
+    imports: [NgClass, NgIf, NgbModule, RouterOutlet, MainComponent, RouterLink, RouterLinkActive, SearchComponent, WatchlistComponent, PortfolioComponent]
 })
 export class AppComponent implements OnInit {
+Onsearchtab() {
+    this.storedTicker = localStorage.getItem('ticker');
+    return true;
+}
     title = 'frontend';
     searchStyle = 'btn-default';
     wlStyle = 'btn-default';
     pfStyle = 'btn-default';
     isMobileView: boolean = false;
+    ticker: any;
+    storedTicker: string;
 
     constructor() {
         this.checkMobileView();
+        
     }
 
     ngOnInit(): void {
+        this.storedTicker = localStorage.getItem('ticker');
+        console.log('app : ', this.storedTicker)
         // Check localStorage for previous state
         const savedActiveButton = localStorage.getItem('activeButton');
         if (savedActiveButton) {

@@ -1,88 +1,94 @@
-import { Component, OnInit, input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { switchMap, debounceTime, tap, finalize } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { SearchUtility } from '../search-utility';
-import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Component, Injectable, ViewChild } from '@angular/core';
+import {  FormBuilder,FormControl, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Observable, of, Subscription } from 'rxjs';
+import { tap, startWith, debounceTime, distinctUntilChanged, switchMap, map, finalize } from 'rxjs/operators';
+import {HttpClientModule} from '@angular/common/http';
+import { Router } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatNativeDateModule} from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field'; 
+import { AutoCompleteService } from '../autocomplete.service';
 import { CommonModule } from '@angular/common';
-@Component({
-  standalone:true,
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  imports: [MatInputModule, MatAutocompleteModule, MatProgressSpinnerModule, ReactiveFormsModule, CommonModule],
-  styleUrls: ['./main.component.css'],
-})
-export class MainComponent implements OnInit {
-  filteredCompanies: SearchUtility[] = [];
-  searchForm: FormGroup;
-  isLoading = false;
-  ticker: string;
-  http: HttpClient;
-  combinedData: any;
-  formattedTimestamp: string;
+import { SearchComponent } from '../search/search.component';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router
-  ) {}
+@Component({
+  standalone: true,
+  selector: 'autocomplete-simple-example',
+  imports: [
+    FormsModule,
+    HttpClientModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,MatFormFieldModule, MatInputModule,MatAutocompleteModule, CommonModule, SearchComponent, RouterOutlet, RouterLink, RouterLinkActive, MatProgressSpinnerModule],
+  providers: [AutoCompleteService],
+  templateUrl: 'main.component.html',
+  styleUrls: ['main.component.css'],
+})
+export class MainComponent {
+  @ViewChild(SearchComponent) searchComponent: SearchComponent;
+  tickerInput = new FormControl();
+  options = [];
+  filteredOptions: Observable<any[]>;
+  ticker: string;
+  searchForm: FormGroup; 
+  isLoading: boolean = false;
+
+  constructor( private http: HttpClient, private service:AutoCompleteService, private router: Router, private formBuilder: FormBuilder,) {
+    this.searchForm = this.formBuilder.group({ tickerInput: '' });
+     this.filteredOptions = this.tickerInput.valueChanges.pipe(
+      startWith(''),
+      debounceTime(400),
+      tap(() => (this.isLoading = true)),
+      distinctUntilChanged(),
+      switchMap(val => {
+            return this.filter(val || '')
+       }) 
+    )
+   }
 
   ngOnInit() {
-    this.searchForm = this.formBuilder.group({ tickerInput: '' });
-    
-    this.searchForm
-      .get('tickerInput')!
-      .valueChanges.pipe(
-        tap(value => console.log('Input value:', value)),
-        debounceTime(300),
-        tap(() => (this.isLoading = true)),
-        switchMap((value) =>
-          this.http
-            .get<any>(`https://stocksearchon.azurewebsites.net/autocomplete?input=${value}`)
-            .pipe(finalize(() => (this.isLoading = false)))
-        )
-      )
-      .subscribe(
-        (options) => {
-          if (options && options.result && Array.isArray(options.result)) {
-            this.combinedData = options.result.slice(0, 5).map((item: any) => ({
-              symbol: item.symbol,
-              description: item.description
-            }));
-          } else {
-            console.error('Invalid response format:', options);
-            this.combinedData = [];
-          }
-        },
-        (error) => {
-          console.error("Error fetching autocomplete data:", error);
-        }
-      );
+   
   }
 
-  onSubmit(tickerData) 
-  {
-    if (tickerData.tickerInput.symbol) 
-    {
+  onSubmit(tickerData) {
+    console.log('ticker name in form: ', tickerData, this.tickerInput);
+    if (tickerData.tickerInput.symbol) {
       this.ticker = tickerData.tickerInput.symbol;
-    } 
-    else 
-    {
+    } else {
       this.ticker = tickerData.tickerInput;
     }
-    console.log('ticker name in form: ', this.ticker);
-    // this.router.navigateByUrl('/search/' + this.ticker);
-    this.searchForm.reset();
+    localStorage.setItem('ticker', this.tickerInput.value);
+    console.log('ticker name in form: ', this.tickerInput.value);
+    this.router.navigateByUrl('/search/' + this.tickerInput.value);
+    this.tickerInput.reset();
   }
 
-  displayFn(company: SearchUtility) {
-    if (company) {
-      return company.symbol;
-    }
-    return ""
-  }
+
+  filter(val: string): Observable<any[]> {
+    return this.service.getData(val)
+     .pipe(
+       map(options => {
+        if (options && options.result && Array.isArray(options.result)) {
+
+          return options.result.slice(0, 5).map((item: any) => ({
+            symbol: item.symbol,
+            description: item.description
+          }));
+        } 
+          console.error('Invalid response format:', options);
+          
+          // return  [];
+      }), finalize(() => (this.isLoading = false))
+     )
+   }  
 }
+
+
+/**  Copyright 2019 Google Inc. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at http://angular.io/license */

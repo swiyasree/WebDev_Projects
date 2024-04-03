@@ -18,6 +18,7 @@ export class WatchlistComponent implements OnInit {
   loading: boolean | undefined;
   isMobileView: boolean = false;
   cticker: any;
+  storedTicker: string;
 
   constructor(private http: HttpClient, private watchlistservice: WatchlistService) {
     this.watchlistservice.tickerUpdate$.subscribe(ticker => 
@@ -28,6 +29,7 @@ export class WatchlistComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.storedTicker = localStorage.getItem('ticker');
     this.checkMobileView();
     this.http.get<any[]>('https://stocksearchon.azurewebsites.net/watchlist')
       .subscribe(data => {

@@ -32,6 +32,9 @@ import { HeaderService } from '../headers.service';
 import { WatchlistService } from '../watchlist.service';
 import 'moment-timezone';
 import { ActivatedRoute } from '@angular/router';
+import { RouterModule } from '@angular/router'; 
+import { MainComponent } from '../main/main.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 HC_indicators(Highstockcharts);
 HC_VBP(Highstockcharts);
@@ -52,16 +55,18 @@ interface DictionaryEntry {
 
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-search',
   standalone: true,
   imports: [NgClass, ReactiveFormsModule, FormsModule, NgIf, HttpClientModule, CommonModule,
     MatInputModule, MatFormFieldModule, MatAutocompleteModule, MatTabsModule,
     HighchartsChartModule, NgbModule, ShareButtonsModule,
-    ShareIconsModule],
+    ShareIconsModule, RouterModule, MatProgressSpinnerModule],
   providers: [HeaderService],
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  template: `<div>
+  <app-main></app-main><div>`
 })
 
 export class SearchComponent implements OnInit {
@@ -97,6 +102,7 @@ export class SearchComponent implements OnInit {
   buysellaction: any;
   DateandTime: any;
   temp: any;
+  public maincomponent = MainComponent;
 
   @ViewChild('stockForm') stockForm!: NgForm;
   @ViewChild('tabGroup') tabGroup!: MatTabGroup;
@@ -120,23 +126,24 @@ export class SearchComponent implements OnInit {
   cticker: any;
   hourlyChartOptions: any;
   quant: any;
+  validTicker: boolean = false;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private dialog: MatDialog, private headerService: HeaderService, private watchlistservice: WatchlistService, private router: Router) {
-    this.inputSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(input => this.fetchAutocompleteOptions(input))
-    ).subscribe(options => {
-      if (options && options.result && Array.isArray(options.result)) {
-        this.autocompleteOptions = options.result.slice(0, 5).map((item: any) => ({
-          symbol: item.symbol,
-          description: item.description
-        }));
-      } else {
-        console.error('Invalid response format:', options);
-        this.autocompleteOptions = [];
-      }
-    });
+    // this.inputSubject.pipe(
+    //   debounceTime(300),
+    //   distinctUntilChanged(),
+    //   switchMap(input => this.fetchAutocompleteOptions(input))
+    // ).subscribe(options => {
+    //   if (options && options.result && Array.isArray(options.result)) {
+    //     this.autocompleteOptions = options.result.slice(0, 5).map((item: any) => ({
+    //       symbol: item.symbol,
+    //       description: item.description
+    //     }));
+    //   } else {
+    //     console.error('Invalid response format:', options);
+    //     this.autocompleteOptions = [];
+    //   }
+    // });
     this.watchlistservice.tickerUpdate$.subscribe(ticker => {
       this.cticker = ticker;
       this.fetchWatchlistData();
@@ -155,6 +162,15 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      console.log('params', params.get('ticker'));
+      this.tickerValue = params.get('ticker');
+      localStorage.setItem('ticker', this.tickerValue);
+      console.log('ticker name in details: ', this.tickerValue);
+    
+    this.validTicker = true;
+    console.log('tickerValue: ', this.tickerValue);
+    this.search_results();
     
     const storedData = sessionStorage.getItem('headerComponentData');
     if (storedData) {
@@ -201,7 +217,7 @@ export class SearchComponent implements OnInit {
       .subscribe(() => {
         this.loadData();
       });
-
+    })
   }
 
   async fetchWatchlistData() {
@@ -448,18 +464,21 @@ export class SearchComponent implements OnInit {
   }
 
   search_results() {
+    console.log('ticker value', this.tickerValue);
     this.summary();
     if (!this.tickerValue) {
       console.error("Ticker value is required");
       return;
     }
 
+    console.log('triger', this.tickerValue);
     this.fetchWatchlistData()
 
     this.submitted = true;
     this.http.get<any>(`https://stocksearchon.azurewebsites.net/search?ticker=${this.tickerValue}`).subscribe(
       (data) => {
         this.combinedData = data;
+        console.log('combined: ', this.combinedData);
         const timestamp = new Date(this.combinedData.quote_data.timestamp * 1000); // Convert to milliseconds
         this.formattedTimestamp = timestamp.toLocaleString();
 

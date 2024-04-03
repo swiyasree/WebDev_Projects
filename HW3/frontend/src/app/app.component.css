@@ -94,6 +94,54 @@ p {
   text-align: center;
   font-family: cursive;
 }
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+h1 {
+  font-size: 60px;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.2;
+}
+
+#header-text {
+  margin-top: 100px;
+  margin-bottom: 50px;
+}
+
+#group-outer {
+  border: 2px solid rgb(104, 88, 242);
+  height: 100%;
+}
+
+
+input[type="text"] {
+  outline: none;
+  box-shadow: none;
+  font-size: 13px;
+  height: 20px;
+}
+
+form {
+  width: 180px;
+  height: 30px;
+}
+
+div button {
+  outline: none;
+  box-shadow: none;
+}
+
+/* search icon color */
+path {
+  fill: rgb(104, 88, 242);
+}
 }
 
 @media screen and (max-width: 767px) {
@@ -184,6 +232,54 @@ p {
 .navbar-toggler[aria-expanded="true"] ~ .content-container {
   padding-top: 112px; /* Adjust based on your navbar and expanded navbar height */
   transition: padding-top 0.3s ease; /* Add transition for smooth animation */
+}
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+h1 {
+  font-size: 60px;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.2;
+}
+
+#header-text {
+  margin-top: 100px;
+  margin-bottom: 50px;
+}
+
+#group-outer {
+  border: 2px solid rgb(104, 88, 242);
+  height: 100%;
+}
+
+
+input[type="text"] {
+  outline: none;
+  box-shadow: none;
+  font-size: 13px;
+  height: 20px;
+}
+
+form {
+  width: 180px;
+  height: 30px;
+}
+
+div button {
+  outline: none;
+  box-shadow: none;
+}
+
+/* search icon color */
+path {
+  fill: rgb(104, 88, 242);
 }
 } 
 

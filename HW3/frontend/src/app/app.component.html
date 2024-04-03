@@ -4,7 +4,8 @@
         <nav>
             <ul>
                 <li>
-                    <a class="button" [ngClass]="[searchStyle]" routerLink="/search" routerLinkActive="activebutton" (click)="Search()">Search</a>
+                    <div *ngIf="Onsearchtab()"></div>
+                    <a class="button" [ngClass]="[searchStyle]" (click)="Onsearchtab()"[routerLink]="'/search/' + storedTicker" routerLinkActive="activebutton" (click)="Search()">Search</a>
                 </li>
                 <li>
                     <a class="button" [ngClass]="[wlStyle]" routerLink="/watchlist" routerLinkActive="activebutton" (click)="Watchlist()">Watchlist</a>
@@ -25,7 +26,7 @@
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link button" [ngClass]="[searchStyle]" routerLink="/header" routerLinkActive="activebutton" (click)="Search()">Search</a>
+                        <a class="nav-link button" [ngClass]="[searchStyle]" [routerLink]="'/search/' + storedTicker" routerLinkActive="activebutton" (click)="Search()">Search</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link button" [ngClass]="[wlStyle]" routerLink="/watchlist" routerLinkActive="activebutton" (click)="Watchlist()">Watchlist</a>
@@ -38,7 +39,7 @@
         </div>
     </nav>
 </header>
-<div class="content-container">
+<div class="content-container"> 
 <router-outlet></router-outlet>
 </div>
 <div class="footer-container">Powered by <a href="https://finnhub.io">Finhub.io</a></div>

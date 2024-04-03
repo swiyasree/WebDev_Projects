@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/a4fc30bc-fa46-492e-b045-c874c43666b5/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/angular-deploy-01",
+    "appService.deploySubpath": "dist/frontend"
+}

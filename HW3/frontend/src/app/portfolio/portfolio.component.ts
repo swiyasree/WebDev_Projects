@@ -53,10 +53,13 @@ export class PortfolioComponent implements OnInit {
   calcCost: any;
   buysellaction: any;
   currentQuantity: any;
+  storedTicker: string;
 
   constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   ngOnInit() {
+    this.storedTicker = localStorage.getItem('ticker');
+    console.log('in ngoninit pf')
     this.checkMobileView();
     this.fetchCurrentBalance();
     this.fetchPortfolioData();
