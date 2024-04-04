@@ -2,5 +2,7 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
         ".vscode{,/**}"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/a4fc30bc-fa46-492e-b045-c874c43666b5/resourceGroups/testing2ang_group/providers/Microsoft.Web/sites/testing2ang",
+    "appService.deploySubpath": "HW3/frontend/dist/frontend"
 }

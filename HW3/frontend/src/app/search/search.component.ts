@@ -61,12 +61,10 @@ interface DictionaryEntry {
     MatInputModule, MatFormFieldModule, MatAutocompleteModule, MatTabsModule,
     HighchartsChartModule, NgbModule, ShareButtonsModule,
     ShareIconsModule, RouterModule, MatProgressSpinnerModule],
-  providers: [HeaderService],
+  providers: [HeaderService, HttpClientModule],
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  template: `<div>
-  <app-main></app-main><div>`
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class SearchComponent implements OnInit {
@@ -102,11 +100,14 @@ export class SearchComponent implements OnInit {
   buysellaction: any;
   DateandTime: any;
   temp: any;
-  public maincomponent = MainComponent;
+  
 
   @ViewChild('stockForm') stockForm!: NgForm;
   @ViewChild('tabGroup') tabGroup!: MatTabGroup;
   @ViewChild('newsModal', { static: true }) newsModalRef!: TemplateRef<any>;
+
+  // name = 'jimmikki';
+  // @ViewChild('mainComponent', { static: false }) mainComponent: MainComponent;
 
   private inputSubject = new Subject<string>();
   chartOptions: any;
@@ -243,10 +244,9 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  // ngAfterViewInit(): void {
-  //   // Initialize Highcharts modules after the view has been initialized
-  //   this.initializeHighcharts();
-  // }
+  ngAfterViewInit(): void {
+    // console.log('main component contents ', this.mainComponent.tickerInput);
+  }
 
   loadInitialData() {
     // Load initial data such as dateAndtime, balance, and search results
@@ -332,7 +332,7 @@ export class SearchComponent implements OnInit {
     this.topNewsData = null;
     this.insightsData = null;
     this.showNoDataMessage = false;
-    this.stockForm.resetForm();
+    this.showInvalidTickerMessage = true;
   }
 
   closeboughtMessage() {
@@ -419,12 +419,14 @@ export class SearchComponent implements OnInit {
   }
 
   clearInvalidTicker() {
-    this.stockForm.resetForm(); // Reset the form
-    this.showInvalidTickerMessage = false; // Hide the message
+    localStorage.setItem('ticker', '')
+    this.showInvalidTickerMessage = false;
+    this.router.navigateByUrl('/home');
+
   }
 
   clearWrongInput() {
-    this.showNoDataMessage = false; // Hide the message
+    this.showNoDataMessage = false;
   }
 
   handleEmptyData() {
@@ -483,9 +485,15 @@ export class SearchComponent implements OnInit {
         this.formattedTimestamp = timestamp.toLocaleString();
 
         if (!this.combinedData.profile_data || Object.keys(this.combinedData.profile_data).length === 0) {
+          console.log('invalid ticker case');
+          this.showInvalidTickerMessage = true;
+          this.validTicker = false;
           this.handleEmptyData();
           return;
         }
+
+        this.showInvalidTickerMessage = false;
+        this.validTicker = true;
 
         sessionStorage.setItem('headerComponentData', JSON.stringify({
           tickerValue: this.tickerValue,

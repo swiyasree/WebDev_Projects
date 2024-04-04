@@ -1,4 +1,4 @@
-import { Component, Injectable, ViewChild } from '@angular/core';
+import { Component, Injectable, ViewChild, Input} from '@angular/core';
 import {  FormBuilder,FormControl, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subscription } from 'rxjs';
@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../search/search.component';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { HeaderService } from '../headers.service';
 
 @Component({
   standalone: true,
@@ -25,20 +26,24 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     HttpClientModule,
     MatNativeDateModule,
     ReactiveFormsModule,MatFormFieldModule, MatInputModule,MatAutocompleteModule, CommonModule, SearchComponent, RouterOutlet, RouterLink, RouterLinkActive, MatProgressSpinnerModule],
-  providers: [AutoCompleteService],
+  providers: [AutoCompleteService, HeaderService, HttpClientModule, SearchComponent],
   templateUrl: 'main.component.html',
   styleUrls: ['main.component.css'],
 })
 export class MainComponent {
-  @ViewChild(SearchComponent) searchComponent: SearchComponent;
+
+  // @ViewChild(SearchComponent) searchComponent: SearchComponent;
+  
   tickerInput = new FormControl();
   options = [];
   filteredOptions: Observable<any[]>;
   ticker: string;
   searchForm: FormGroup; 
   isLoading: boolean = false;
+  showNoDataMessage: boolean = false;
+  submitted: boolean = false;
 
-  constructor( private http: HttpClient, private service:AutoCompleteService, private router: Router, private formBuilder: FormBuilder,) {
+  constructor( private http: HttpClient, private service:AutoCompleteService, private router: Router, private formBuilder: FormBuilder, private searchComponent:SearchComponent) {
     this.searchForm = this.formBuilder.group({ tickerInput: '' });
      this.filteredOptions = this.tickerInput.valueChanges.pipe(
       startWith(''),
@@ -52,21 +57,43 @@ export class MainComponent {
    }
 
   ngOnInit() {
+   this.tickerInput.setValue(localStorage.getItem('ticker'));
    
   }
 
   onSubmit(tickerData) {
-    console.log('ticker name in form: ', tickerData, this.tickerInput);
-    if (tickerData.tickerInput.symbol) {
-      this.ticker = tickerData.tickerInput.symbol;
-    } else {
-      this.ticker = tickerData.tickerInput;
+    if(this.tickerInput.value == '')
+    {
+      console.log('is empty');
+      this.showNoDataMessage = true;
     }
-    localStorage.setItem('ticker', this.tickerInput.value);
-    console.log('ticker name in form: ', this.tickerInput.value);
-    this.router.navigateByUrl('/search/' + this.tickerInput.value);
-    this.tickerInput.reset();
+    else {
+      this.showNoDataMessage = false;
+      this.submitted = true;
+      console.log('ticker name in form: ', tickerData, this.tickerInput);
+      if (tickerData.tickerInput.symbol) {
+        this.ticker = tickerData.tickerInput.symbol;
+      } else {
+        this.ticker = tickerData.tickerInput;
+      }
+      localStorage.setItem('ticker', this.tickerInput.value);
+      console.log('ticker name in form: ', this.tickerInput.value);
+      this.router.navigateByUrl('/search/' + this.tickerInput.value);
+      // this.tickerInput.reset();
+    }
+   
   }
+
+  clearResults() {
+    console.log('clearing results');
+    this.tickerInput.reset();
+    localStorage.setItem('ticker', '')
+    this.tickerInput.setValue('');
+    console.log('tickerinput: cleared', this.tickerInput.value)
+    this.router.navigateByUrl('/home');
+    this.showNoDataMessage = true;
+    this.searchComponent.clear_results();
+    }
 
 
   filter(val: string): Observable<any[]> {

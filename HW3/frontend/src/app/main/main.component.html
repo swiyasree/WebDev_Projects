@@ -14,7 +14,7 @@
     <button type="submit" class="search-icon button">
       <i class="bi bi-search"></i>
     </button>
-    <button type="button" class="clear-icon button">
+    <button type="button" (click)="clearResults()" class="clear-icon button">
       <i class="bi bi-x"></i>
     </button>
 </div>
@@ -26,9 +26,9 @@
       <i class="bi bi-x"></i>
     </button>
   </div> -->
-  <!-- <div *ngIf="showNoDataMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+  <div *ngIf="showNoDataMessage" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
     No data found. Please enter a valid Ticker.
-  </div>  -->
+  </div> 
 </form>
 <router-outlet></router-outlet>
 
