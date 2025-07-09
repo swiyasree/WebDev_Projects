@@ -1,70 +1,75 @@
-💻 WebDev Projects – swiyasree.github.io
+# swiyasree.github.io
 
-This repository contains a set of web development projects completed as part of a course series. Each project demonstrates progressive learning in frontend, backend, and full-stack development using technologies such as HTML/CSS, Flask, and Angular.
+This repository contains three individual web development assignments completed as part of a course series. Each homework builds upon previous skills, progressing from static websites to dynamic backend and full-stack applications.
 
-📁 HW1 – Static Personal Website
+## HW1: Static Personal Website
 
-Overview:
-A basic static website built using HTML and CSS. It showcases personal information and navigation between multiple pages.
+A basic static website built using HTML and CSS.
 
-Key Features:
+Contents:
+- HW1.html: Main homepage with personal information
+- page2.html: Second page linked from the homepage
+- HW1.css: Stylesheet used across pages
+- images/: Folder containing image assets
 
-Clean layout styled with custom CSS (HW1.css)
-Multiple pages (HW1.html, page2.html)
-Image assets displayed through the /images folder
-No backend; fully frontend-based
-📁 HW2 – Flask Web App
+Key Concepts:
+- HTML structure and navigation
+- CSS for layout and styling
+- Linking between pages
 
-Overview:
-A dynamic web application built with Flask using a Jinja2 template. It simulates server-side rendering with static files and a minimal Python backend.
+## HW2: Flask Web Application
 
-Key Features:
+A dynamic web app using Python Flask with server-side rendering.
 
-Flask server logic (mediate.py)
-HTML rendering via Jinja2 (templates/HW2.html)
-Static files (index.css, home.js, images)
-Virtual environment management with Pipfile
-Flask project structure: /templates, /static, and __pycache__
-📁 HW3 – Full-Stack Angular + Node.js App
+Contents:
+- mediate.py: Flask backend application
+- templates/HW2.html: Jinja2 template for the HTML page
+- static/: Contains index.css, home.js, and image assets
+- Pipfile: Python dependency and virtual environment manager
 
-Overview:
-A full-stack web application using Angular on the frontend and Node.js as the backend server. This is a production-grade scaffolded project using Angular CLI.
+Key Concepts:
+- Flask routing and template rendering
+- Use of static files (CSS, JS) in a backend setup
+- Local development with Python
 
-Key Features:
-
-Frontend written in Angular (src/app, main.ts, styles.css)
-Node.js backend (server.js, server.ts)
-Project setup with package.json, angular.json, tsconfig.json
-Modular structure for deployment and testing
-Asset management via src/assets
-Local server configuration with TypeScript support
-🛠 Technologies Used
-
-Frontend: HTML, CSS, JavaScript, Angular
-Backend: Flask, Node.js
-Tools: GitHub Pages, VSCode, Python (venv), Angular CLI
-DevOps: Pipenv, npm, workspace settings
-📂 Directory Structure
-
-├── HW1/              # Static website using HTML/CSS
-├── HW2/              # Flask + Jinja + JS web app
-├── HW3/              # Angular + Node.js full-stack app
-├── index.html        # Entry point (likely for GitHub Pages)
-├── requirements.txt  # Python dependency list
-└── Pipfile           # Virtual environment config
-🚀 Setup Instructions
-
-HW2 (Flask App)
+To run locally:
 cd HW2
 pip install pipenv
 pipenv install
 pipenv run python mediate.py
-HW3 (Angular + Node App)
+
+
+## HW3: Full-Stack Angular + Node.js Application
+
+A complete full-stack web application using Angular for the frontend and Node.js for the backend.
+
+Contents:
+- frontend/src/: Contains Angular source files (HTML, CSS, TypeScript)
+- server.js and server.ts: Node.js backend entry points
+- angular.json, package.json, tsconfig.json: Project configuration files
+
+Key Concepts:
+- Angular CLI project setup with components and routing
+- Node.js backend integration
+- TypeScript build configurations
+
+To run locally:
 cd HW3/frontend
 npm install
-ng serve   # For frontend
-node server.js   # For backend
-👩‍💻 Author
+ng serve (starts the Angular frontend)
 
-Sree Swiya Yarlagadda
-Personal Portfolio: swiyasree.github.io
+node server.js (in parallel, starts the Node backend)
+
+
+## Project Structure
+
+- HW1/: HTML and CSS static website
+- HW2/: Flask web app with server-side templates and static files
+- HW3/: Full-stack Angular frontend and Node.js backend
+- index.html: Entry-point used for GitHub Pages or testing
+- Pipfile, requirements.txt: Python dependencies for HW2
+
+## Author
+
+Sree Swiya Yarlagadda  
+https://swiyasree.github.io
