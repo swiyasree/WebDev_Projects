@@ -1,4 +1,4 @@
-# swiyasree.github.io
+# Web Development Projects
 
 This repository contains three individual web development assignments completed as part of a course series. Each homework builds upon previous skills, progressing from static websites to dynamic backend and full-stack applications.
 
