@@ -2,7 +2,7 @@
 
 This repository contains three individual web development assignments completed as part of a course series. Each homework builds upon previous skills, progressing from static websites to dynamic backend and full-stack applications.
 
-## HW1: Static Personal Website
+## Static Personal Website
 
 A basic static website built using HTML and CSS.
 
@@ -17,7 +17,7 @@ Key Concepts:
 - CSS for layout and styling
 - Linking between pages
 
-## HW2: Flask Web Application
+## Flask Web Application
 
 A dynamic web app using Python Flask with server-side rendering.
 
@@ -39,7 +39,7 @@ pipenv install
 pipenv run python mediate.py
 
 
-## HW3: Full-Stack Angular + Node.js Application
+## Full-Stack Angular + Node.js Application
 
 A complete full-stack web application using Angular for the frontend and Node.js for the backend.
 
